@@ -1,0 +1,10 @@
+artifact_location: file:///D:/vinAI/GSM/Map/ETA-prediction/mlruns/867866839574862663/models/m-267e102561954da9aecfc49c25cfe8f9/artifacts
+creation_timestamp: 1779881832461
+experiment_id: '867866839574862663'
+last_updated_timestamp: 1779881839628
+model_id: m-267e102561954da9aecfc49c25cfe8f9
+model_type: null
+name: xgb_eta_pipeline
+source_run_id: c7b6a22e608045a5a9613d401f473b70
+status: 2
+status_message: null

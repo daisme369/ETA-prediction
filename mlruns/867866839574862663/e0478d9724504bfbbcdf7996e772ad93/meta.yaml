@@ -1,0 +1,14 @@
+artifact_uri: file:///D:/vinAI/GSM/Map/ETA-prediction/mlruns/867866839574862663/e0478d9724504bfbbcdf7996e772ad93/artifacts
+end_time: 1779881824476
+entry_point_name: ''
+experiment_id: '867866839574862663'
+lifecycle_stage: active
+run_id: e0478d9724504bfbbcdf7996e772ad93
+run_name: trial_12
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1779881823316
+status: 3
+tags: []
+user_id: ducanh

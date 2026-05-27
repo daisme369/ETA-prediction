@@ -1,0 +1,8 @@
+execution_duration_ms: 30
+request_time: '2026-05-27T11:34:12.341Z'
+state: OK
+trace_id: tr-3761e95eda78cd3fcb0c2e7ea679bafd
+trace_location:
+  mlflow_experiment:
+    experiment_id: '867866839574862663'
+  type: MLFLOW_EXPERIMENT
