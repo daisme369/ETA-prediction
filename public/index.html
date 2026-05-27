@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vietmap Route Studio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <aside class="control-panel">
+        <div class="panel-kicker">Backend-controlled Vietmap routing</div>
+        <h1>Route Studio</h1>
+        <p class="panel-copy">
+          Build routes against Vietmap from your backend without exposing the API key in the browser.
+        </p>
+
+        <form id="route-form" class="route-form">
+          <div class="field-grid">
+            <label class="field">
+              <span>Origin address</span>
+              <input
+                id="origin-address"
+                name="origin-address"
+                type="text"
+                autocomplete="street-address"
+                placeholder="197 Tran Phu, Quan 5, Ho Chi Minh City"
+                required
+              />
+            </label>
+            <label class="field">
+              <span>Destination address</span>
+              <input
+                id="destination-address"
+                name="destination-address"
+                type="text"
+                autocomplete="street-address"
+                placeholder="Ben xe Mien Dong moi, Thu Duc, Ho Chi Minh City"
+                required
+              />
+            </label>
+          </div>
+
+          <div class="resolved-grid">
+            <article class="resolved-card">
+              <div class="resolved-head">
+                <h3>Origin extract</h3>
+                <span id="origin-resolve-state" class="resolve-state">Waiting</span>
+              </div>
+              <p id="origin-display" class="resolved-display">-</p>
+              <div class="resolved-meta">
+                <span>Lat: <strong id="origin-lat">-</strong></span>
+                <span>Lng: <strong id="origin-lng">-</strong></span>
+              </div>
+            </article>
+            <article class="resolved-card">
+              <div class="resolved-head">
+                <h3>Destination extract</h3>
+                <span id="destination-resolve-state" class="resolve-state">Waiting</span>
+              </div>
+              <p id="destination-display" class="resolved-display">-</p>
+              <div class="resolved-meta">
+                <span>Lat: <strong id="destination-lat">-</strong></span>
+                <span>Lng: <strong id="destination-lng">-</strong></span>
+              </div>
+            </article>
+          </div>
+
+          <div class="field-grid">
+            <label class="field">
+              <span>Vehicle</span>
+              <select id="vehicle" name="vehicle">
+                <option value="car">Car</option>
+                <option value="motorcycle">Motorcycle</option>
+                <option value="truck">Truck</option>
+              </select>
+            </label>
+            <label class="field">
+              <span>Truck capacity (kg)</span>
+              <input id="capacity-kg" name="capacity-kg" type="number" min="1" placeholder="Optional" />
+            </label>
+            <label class="field field-wide">
+              <span>Departure time</span>
+              <input id="departure-time" name="departure-time" type="datetime-local" />
+            </label>
+          </div>
+
+          <label class="toggle">
+            <input id="alternative" name="alternative" type="checkbox" />
+            <span>Ask Vietmap for an alternative route when available</span>
+          </label>
+
+          <div class="action-row">
+            <button class="primary-action" type="submit">Calculate route</button>
+            <button class="secondary-action" id="resolve-button" type="button">Extract coordinates</button>
+            <button class="secondary-action" id="sample-button" type="button">Load HCMC sample</button>
+            <button class="ghost-action" id="clear-button" type="button">Clear route</button>
+          </div>
+
+          <p class="helper-copy">
+            Enter full addresses. The backend resolves them through VietMap and keeps the API key off the browser.
+          </p>
+          <p class="helper-copy">
+            Departure time is entered in your local timezone and converted to UTC automatically before calling VietMap.
+          </p>
+        </form>
+
+        <section class="summary-card">
+          <div class="summary-header">
+            <h2>Route summary</h2>
+            <span id="status-pill" class="status-pill">Idle</span>
+          </div>
+          <div class="metric-row">
+            <div class="metric-card">
+              <span class="metric-label">Distance</span>
+              <strong id="distance-value">-</strong>
+            </div>
+            <div class="metric-card">
+              <span class="metric-label">Travel time</span>
+              <strong id="duration-value">-</strong>
+            </div>
+            <div class="metric-card">
+              <span class="metric-label">Vehicle</span>
+              <strong id="vehicle-value">-</strong>
+            </div>
+          </div>
+          <p id="error-message" class="error-message" hidden></p>
+        </section>
+
+        <section class="steps-card">
+          <div class="summary-header">
+            <h2>Turn guidance</h2>
+            <span id="steps-count">0 steps</span>
+          </div>
+          <ol id="steps-list" class="steps-list"></ol>
+        </section>
+      </aside>
+
+      <main class="map-stage">
+        <div class="map-header">
+          <div>
+            <p class="map-eyebrow">Interactive routing canvas</p>
+            <h2>Map-first route planning for Vietnam</h2>
+          </div>
+          <div class="legend-card">
+            <span><i class="legend-swatch origin-swatch"></i> Origin</span>
+            <span><i class="legend-swatch destination-swatch"></i> Destination</span>
+            <span><i class="legend-swatch route-swatch"></i> Vietmap route</span>
+          </div>
+        </div>
+        <div id="map" class="map-canvas" aria-label="Interactive route map"></div>
+      </main>
+    </div>
+
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
+    <script src="/app.js" defer></script>
+  </body>
+</html>
