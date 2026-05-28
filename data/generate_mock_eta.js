@@ -7,18 +7,19 @@ const DEFAULT_NUM_ROWS = 80000;
 const DEFAULT_SEED = "hanoi-eta-mock";
 const DEFAULT_FORMAT = "csv";
 const DEFAULT_OUTPUT_BASENAME = "mock_eta_trips";
+const DEFAULT_START_DATE = "2026-05-01";
+const DEFAULT_DATE_RANGE_DAYS = 30;
+const TIMEZONE = "Asia/Ho_Chi_Minh";
+const TIMEZONE_OFFSET = "+07:00";
 const H3_RESOLUTION = 9;
 const HANOI_LAT_RANGE = [20.9, 21.15];
 const HANOI_LNG_RANGE = [105.7, 106.05];
-const MOCK_START_DATE = { year: 2026, month: 1, day: 1 };
-const MOCK_END_DATE = { year: 2026, month: 2, day: 28 };
-const MS_PER_DAY = 24 * 60 * 60 * 1000;
-const MOCK_TOTAL_DAYS =
-  Math.round(
-    (Date.UTC(MOCK_END_DATE.year, MOCK_END_DATE.month - 1, MOCK_END_DATE.day) -
-      Date.UTC(MOCK_START_DATE.year, MOCK_START_DATE.month - 1, MOCK_START_DATE.day)) /
-      MS_PER_DAY,
-  ) + 1;
+const MOCK_HOLIDAY_DATES = new Set([
+  "2026-01-01",
+  "2026-04-30",
+  "2026-05-01",
+  "2026-09-02",
+]);
 
 const LOCATIONS = [
   {
@@ -231,6 +232,8 @@ function printUsage() {
   console.log("  --seed <value>   Seed for reproducibility (default hanoi-eta-mock)");
   console.log("  --format <type>  csv, json, or both (default csv)");
   console.log("  --output <path>  Output file for csv/json or base path for both");
+  console.log("  --start-date <YYYY-MM-DD>       Local start date (default 2026-05-01)");
+  console.log("  --date-range-days <n>           Local date range in days (default 30)");
   console.log("  --help           Show this message");
 }
 
@@ -240,6 +243,8 @@ function parseArgs(argv) {
     seed: DEFAULT_SEED,
     format: DEFAULT_FORMAT,
     output: "",
+    startDate: DEFAULT_START_DATE,
+    dateRangeDays: DEFAULT_DATE_RANGE_DAYS,
   };
 
   for (let i = 0; i < argv.length; i += 1) {
@@ -262,6 +267,15 @@ function parseArgs(argv) {
         options.output = String(argv[i + 1] || "");
         i += 1;
         break;
+      case "--start-date":
+        options.startDate = String(argv[i + 1] || "");
+        i += 1;
+        break;
+      case "--date-range-days":
+      case "--date_range_days":
+        options.dateRangeDays = Number(argv[i + 1]);
+        i += 1;
+        break;
       case "--help":
         printUsage();
         process.exit(0);
@@ -281,6 +295,11 @@ function parseArgs(argv) {
 
   if (!["csv", "json", "both"].includes(options.format)) {
     throw new Error("--format must be csv, json, or both.");
+  }
+
+  parseLocalDate(options.startDate);
+  if (!Number.isInteger(options.dateRangeDays) || options.dateRangeDays <= 0) {
+    throw new Error("--date-range-days must be a positive integer.");
   }
 
   return options;
@@ -349,6 +368,38 @@ function pad2(value) {
   return String(value).padStart(2, "0");
 }
 
+function formatLocalDate(parts) {
+  return `${parts.year}-${pad2(parts.month)}-${pad2(parts.day)}`;
+}
+
+function parseLocalDate(value) {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(value));
+  if (!match) {
+    throw new Error(`Invalid date ${value}; expected YYYY-MM-DD.`);
+  }
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+  const date = new Date(Date.UTC(year, month - 1, day));
+  if (
+    date.getUTCFullYear() !== year ||
+    date.getUTCMonth() !== month - 1 ||
+    date.getUTCDate() !== day
+  ) {
+    throw new Error(`Invalid date ${value}; expected a real calendar date.`);
+  }
+  return { year, month, day };
+}
+
+function addDaysToLocalDate(parts, days) {
+  const date = new Date(Date.UTC(parts.year, parts.month - 1, parts.day + days));
+  return {
+    year: date.getUTCFullYear(),
+    month: date.getUTCMonth() + 1,
+    day: date.getUTCDate(),
+  };
+}
+
 function toRadians(value) {
   return (value * Math.PI) / 180;
 }
@@ -386,37 +437,45 @@ function dayNameFromDate(date) {
   return ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][jsDay];
 }
 
-function sampleTripTimestamp(rng) {
-  const dayOffset = randomInt(rng, 0, MOCK_TOTAL_DAYS - 1);
+function buildHolidayDates(rng, startDateParts, dateRangeDays) {
+  const holidays = new Set();
+  for (let offset = 0; offset < dateRangeDays; offset += 1) {
+    const dateParts = addDaysToLocalDate(startDateParts, offset);
+    const dateString = formatLocalDate(dateParts);
+    if (MOCK_HOLIDAY_DATES.has(dateString) || rng() < 0.03) {
+      holidays.add(dateString);
+    }
+  }
+  return holidays;
+}
+
+function sampleRequestTimestamp(rng, timeConfig) {
+  const dayOffset = randomInt(rng, 0, timeConfig.dateRangeDays - 1);
   const hour = sampleHourOfDay(rng);
   const minute = randomInt(rng, 0, 59);
   const second = randomInt(rng, 0, 59);
-  const utcDate = new Date(
-    Date.UTC(
-      MOCK_START_DATE.year,
-      MOCK_START_DATE.month - 1,
-      MOCK_START_DATE.day + dayOffset,
-      hour,
-      minute,
-      second,
-    ),
-  );
-
-  const year = utcDate.getUTCFullYear();
-  const month = utcDate.getUTCMonth() + 1;
-  const day = utcDate.getUTCDate();
+  const dateParts = addDaysToLocalDate(timeConfig.startDateParts, dayOffset);
+  const utcDate = new Date(Date.UTC(dateParts.year, dateParts.month - 1, dateParts.day));
+  const year = dateParts.year;
+  const month = dateParts.month;
+  const day = dateParts.day;
   const timestamp = `${year}-${pad2(month)}-${pad2(day)}T${pad2(hour)}:${pad2(
     minute,
-  )}:${pad2(second)}+07:00`;
+  )}:${pad2(second)}${TIMEZONE_OFFSET}`;
+  const requestDate = formatLocalDate(dateParts);
+  const dayOfWeek = dayNameFromDate(utcDate);
 
   return {
     timestamp,
-    tripDate: `${year}-${pad2(month)}-${pad2(day)}`,
+    requestDate,
     month,
     dayOfMonth: day,
-    dayOfWeek: dayNameFromDate(utcDate),
+    dayOfWeek,
     hourOfDay: hour,
     minuteOfHour: minute,
+    isWeekend: dayOfWeek === "Sat" || dayOfWeek === "Sun",
+    isRushHour: [7, 8, 17, 18, 19].includes(hour),
+    isHoliday: timeConfig.holidayDates.has(requestDate),
   };
 }
 
@@ -551,7 +610,7 @@ function computeResidualSeconds(rng, context) {
   return Math.max(-900, Math.min(1800, residual));
 }
 
-function buildRow(rng, locations) {
+function buildRow(rng, locations, timeConfig) {
   const origin = weightedChoice(rng, locations.map((location) => ({ value: location, weight: 1 })));
   let destination = weightedChoice(rng, locations.map((location) => ({ value: location, weight: 1 })));
 
@@ -570,12 +629,12 @@ function buildRow(rng, locations) {
     destination = locations.find((location) => location.id !== origin.id) || destination;
   }
 
-  const tripTime = sampleTripTimestamp(rng);
-  const hourOfDay = tripTime.hourOfDay;
-  const isRushHour = [7, 8, 17, 18, 19].includes(hourOfDay);
-  const dayOfWeek = tripTime.dayOfWeek;
-  const isWeekend = dayOfWeek === "Sat" || dayOfWeek === "Sun";
-  const isHoliday = rng() < 0.07; // Low holiday probability for realism.
+  const requestTime = sampleRequestTimestamp(rng, timeConfig);
+  const hourOfDay = requestTime.hourOfDay;
+  const isRushHour = requestTime.isRushHour;
+  const dayOfWeek = requestTime.dayOfWeek;
+  const isWeekend = requestTime.isWeekend;
+  const isHoliday = requestTime.isHoliday;
 
   const isRaining = rng() < 0.22; // A moderate chance to show weather impact in the MVP.
   const rainLevel = sampleRainLevel(rng, isRaining);
@@ -613,11 +672,12 @@ function buildRow(rng, locations) {
   const adjustedResidualSeconds = actualEtaSeconds - baselineEtaSeconds;
 
   return {
-    trip_timestamp: tripTime.timestamp,
-    trip_date: tripTime.tripDate,
-    month: tripTime.month,
-    day_of_month: tripTime.dayOfMonth,
-    minute_of_hour: tripTime.minuteOfHour,
+    request_timestamp: requestTime.timestamp,
+    trip_timestamp: requestTime.timestamp,
+    trip_date: requestTime.requestDate,
+    month: requestTime.month,
+    day_of_month: requestTime.dayOfMonth,
+    minute_of_hour: requestTime.minuteOfHour,
     origin_h3: origin.h3_id,
     destination_h3: destination.h3_id,
     origin_lng: origin.lng,
@@ -641,36 +701,40 @@ function buildRow(rng, locations) {
   };
 }
 
-function validateRow(row, index) {
+function validateRow(row, index, timeConfig) {
   const prefix = `Row ${index + 1}:`;
 
-  if (!/^2026-(01|02)-\d{2}T\d{2}:\d{2}:\d{2}\+07:00$/.test(row.trip_timestamp)) {
-    throw new Error(`${prefix} trip_timestamp must be in the 2026-01..2026-02 Hanoi window.`);
+  if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\+07:00$/.test(row.request_timestamp)) {
+    throw new Error(`${prefix} request_timestamp must be ISO-8601 with +07:00 offset.`);
   }
 
-  const timestampDate = row.trip_timestamp.slice(0, 10);
-  if (timestampDate < "2026-01-01" || timestampDate > "2026-02-28") {
-    throw new Error(`${prefix} trip_timestamp outside 2026-01-01..2026-02-28.`);
+  if (row.trip_timestamp !== row.request_timestamp) {
+    throw new Error(`${prefix} trip_timestamp must match request_timestamp.`);
+  }
+
+  const timestampDate = row.request_timestamp.slice(0, 10);
+  if (timestampDate < timeConfig.startDate || timestampDate > timeConfig.endDate) {
+    throw new Error(`${prefix} request_timestamp outside configured date range.`);
   }
 
   if (row.trip_date !== timestampDate) {
-    throw new Error(`${prefix} trip_date inconsistent with trip_timestamp.`);
+    throw new Error(`${prefix} trip_date inconsistent with request_timestamp.`);
   }
 
   if (row.month !== Number(timestampDate.slice(5, 7))) {
-    throw new Error(`${prefix} month inconsistent with trip_timestamp.`);
+    throw new Error(`${prefix} month inconsistent with request_timestamp.`);
   }
 
   if (row.day_of_month !== Number(timestampDate.slice(8, 10))) {
-    throw new Error(`${prefix} day_of_month inconsistent with trip_timestamp.`);
+    throw new Error(`${prefix} day_of_month inconsistent with request_timestamp.`);
   }
 
-  if (row.hour_of_day !== Number(row.trip_timestamp.slice(11, 13))) {
-    throw new Error(`${prefix} hour_of_day inconsistent with trip_timestamp.`);
+  if (row.hour_of_day !== Number(row.request_timestamp.slice(11, 13))) {
+    throw new Error(`${prefix} hour_of_day inconsistent with request_timestamp.`);
   }
 
-  if (row.minute_of_hour !== Number(row.trip_timestamp.slice(14, 16))) {
-    throw new Error(`${prefix} minute_of_hour inconsistent with trip_timestamp.`);
+  if (row.minute_of_hour !== Number(row.request_timestamp.slice(14, 16))) {
+    throw new Error(`${prefix} minute_of_hour inconsistent with request_timestamp.`);
   }
 
   if (!withinRange(row.origin_lat, HANOI_LAT_RANGE)) {
@@ -716,6 +780,10 @@ function validateRow(row, index) {
     throw new Error(`${prefix} is_rush_hour inconsistent with hour_of_day.`);
   }
 
+  if (row.is_holiday !== timeConfig.holidayDates.has(timestampDate)) {
+    throw new Error(`${prefix} is_holiday inconsistent with configured holiday dates.`);
+  }
+
   if (!row.is_raining && row.rain_level !== "none") {
     throw new Error(`${prefix} rain_level must be none when is_raining is false.`);
   }
@@ -755,6 +823,7 @@ function escapeCsv(value) {
 
 function toCsv(rows) {
   const headers = [
+    "request_timestamp",
     "trip_timestamp",
     "trip_date",
     "month",
@@ -828,6 +897,15 @@ function ensureDir(filePath) {
 function main() {
   const options = parseArgs(process.argv.slice(2));
   const rng = createRng(options.seed);
+  const startDateParts = parseLocalDate(options.startDate);
+  const endDateParts = addDaysToLocalDate(startDateParts, options.dateRangeDays - 1);
+  const timeConfig = {
+    startDate: formatLocalDate(startDateParts),
+    endDate: formatLocalDate(endDateParts),
+    startDateParts,
+    dateRangeDays: options.dateRangeDays,
+    holidayDates: buildHolidayDates(rng, startDateParts, options.dateRangeDays),
+  };
 
   const locations = LOCATIONS.map((location) => ({
     ...location,
@@ -836,8 +914,8 @@ function main() {
 
   const rows = [];
   for (let i = 0; i < options.numRows; i += 1) {
-    const row = buildRow(rng, locations);
-    validateRow(row, i);
+    const row = buildRow(rng, locations, timeConfig);
+    validateRow(row, i, timeConfig);
     rows.push(row);
   }
 
@@ -853,6 +931,9 @@ function main() {
 
   const outputs = [csvPath, jsonPath].filter(Boolean).map((file) => path.relative(process.cwd(), file));
   console.log(`Generated ${rows.length} rows.`);
+  console.log(
+    `Date range: ${timeConfig.startDate}..${timeConfig.endDate} (${TIMEZONE}, ${TIMEZONE_OFFSET})`,
+  );
   console.log(`Output: ${outputs.join(", ")}`);
 }
 

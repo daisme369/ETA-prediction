@@ -87,10 +87,33 @@ If these are not set, the frontend falls back to the public OpenStreetMap tile l
 
 ## Mock ETA residual data (Hanoi MVP)
 
-Use the generator in `mock-data/` to create realistic Hanoi origin/destination trips and mock ETA residuals.
+Use the generator in `data/` to create realistic Hanoi origin/destination trips and mock ETA residuals.
 
 ```bash
 npm run generate:mock
 ```
 
-See `mock-data/README.md` for schema details, validation checks, and CLI options.
+The generated rows include `request_timestamp` in `Asia/Ho_Chi_Minh` ISO-8601 format. Time features such as `hour_of_day`, `day_of_week`, `is_weekend`, and `is_rush_hour` are derived from that timestamp.
+
+Useful generator options:
+
+```bash
+node data/generate_mock_eta.js --start-date 2026-05-01 --date-range-days 30 --format both
+```
+
+The XGBoost training pipeline supports either random or chronological splitting:
+
+```bash
+python model/model_baseline.py --split-strategy time
+```
+
+For a fresh Python environment:
+
+```bash
+python -m venv .venv
+.\.venv\Scripts\pip install -r requirements.txt
+.\.venv\Scripts\python model\model_baseline.py --split-strategy time --n-trials 16 --cv-folds 3
+.\.venv\Scripts\mlflow ui --backend-store-uri .\mlruns
+```
+
+The MLflow run logs dataset metrics, split metadata, nested tuning trials, trace spans, best hyperparameters, model metrics, feature importance, and the serialized sklearn/XGBoost pipeline.

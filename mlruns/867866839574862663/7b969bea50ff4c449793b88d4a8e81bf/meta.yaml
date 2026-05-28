@@ -1,0 +1,14 @@
+artifact_uri: file:///D:/vinAI/GSM/Map/ETA-prediction/mlruns/867866839574862663/7b969bea50ff4c449793b88d4a8e81bf/artifacts
+end_time: 1779932930191
+entry_point_name: ''
+experiment_id: '867866839574862663'
+lifecycle_stage: active
+run_id: 7b969bea50ff4c449793b88d4a8e81bf
+run_name: xgboost_eta_baseline
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1779932898321
+status: 4
+tags: []
+user_id: Admin

@@ -1,10 +1,10 @@
 {
-  "test_baseline_mae": 494.6625,
-  "test_baseline_mape": 0.31165923170534127,
-  "test_mae": 177.99236833572388,
-  "test_mape": 0.1585000210724888,
-  "train_baseline_mae": 451.009375,
-  "train_baseline_mape": 0.3189434830690734,
-  "train_mae": 124.06780467510224,
-  "train_mape": 0.138455571130185
+  "test_baseline_mae": 463.7456875,
+  "test_baseline_mape": 0.32263936116639025,
+  "test_mae": 150.53322182369232,
+  "test_mape": 0.15076696895645228,
+  "train_baseline_mae": 460.139234375,
+  "train_baseline_mape": 0.3197782218677103,
+  "train_mae": 145.43528449237346,
+  "train_mape": 0.14506849025464463
 }

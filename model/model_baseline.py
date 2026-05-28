@@ -25,7 +25,13 @@ from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.compose import ColumnTransformer
 from sklearn.impute import SimpleImputer
 from sklearn.metrics import mean_absolute_error, mean_absolute_percentage_error
-from sklearn.model_selection import KFold, ParameterSampler, cross_validate, train_test_split
+from sklearn.model_selection import (
+    KFold,
+    ParameterSampler,
+    TimeSeriesSplit,
+    cross_validate,
+    train_test_split,
+)
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from xgboost import XGBRegressor
@@ -36,7 +42,8 @@ DEFAULT_DATA_PATH = ROOT_DIR / "data" / "mock_eta_trips.csv"
 DEFAULT_OUTPUT_DIR = ROOT_DIR / "model" / "artifacts"
 DEFAULT_TRACKING_URI = (ROOT_DIR / "mlruns").as_uri()
 TARGET_COLUMN = "actual_eta_secs"
-LEAKAGE_COLUMNS = {"actual_eta_secs", "residual_secs"}
+REQUEST_TIMESTAMP_COLUMN = "request_timestamp"
+DEFAULT_RUN_NAME = "xgboost_eta_baseline"
 
 BASE_FEATURE_COLUMNS = [
     "origin_h3",
@@ -96,6 +103,7 @@ CATEGORICAL_FEATURES = [
 ]
 
 INTEGER_HYPERPARAMS = {"n_estimators", "max_depth", "min_child_weight"}
+CV_STRATEGIES = {"auto", "kfold", "time"}
 
 
 class ETAFeatureEngineer(BaseEstimator, TransformerMixin):
@@ -207,12 +215,33 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR)
     parser.add_argument("--tracking-uri", type=str, default=DEFAULT_TRACKING_URI)
     parser.add_argument("--experiment-name", type=str, default="eta_xgboost_baseline")
+    parser.add_argument("--run-name", type=str, default=DEFAULT_RUN_NAME)
     parser.add_argument("--test-size", type=float, default=0.20)
+    parser.add_argument(
+        "--split-strategy",
+        choices=["random", "time"],
+        default="random",
+        help="Use random train_test_split or chronological split by request_timestamp.",
+    )
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--n-trials", type=int, default=16)
     parser.add_argument("--cv-folds", type=int, default=3)
+    parser.add_argument(
+        "--cv-strategy",
+        choices=sorted(CV_STRATEGIES),
+        default="auto",
+        help="Use kfold, time-series CV, or infer from --split-strategy.",
+    )
     parser.add_argument("--cv-jobs", type=int, default=1)
-    return parser.parse_args()
+    parser.add_argument("--xgb-jobs", type=int, default=1)
+    args = parser.parse_args()
+    if not 0.0 < args.test_size < 1.0:
+        raise ValueError("--test-size must be greater than 0 and less than 1.")
+    if args.n_trials <= 0:
+        raise ValueError("--n-trials must be a positive integer.")
+    if args.cv_folds < 2:
+        raise ValueError("--cv-folds must be at least 2.")
+    return args
 
 
 def load_dataset(path: Path) -> pd.DataFrame:
@@ -228,12 +257,51 @@ def load_dataset(path: Path) -> pd.DataFrame:
 
 
 def make_train_test_split(
-    df: pd.DataFrame, test_size: float, seed: int
+    df: pd.DataFrame, test_size: float, seed: int, split_strategy: str
 ) -> tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series]:
     with mlflow.start_span(
-        "train_test_split", attributes={"test_size": test_size, "seed": seed}
+        "train_test_split",
+        attributes={
+            "test_size": test_size,
+            "seed": seed,
+            "split_strategy": split_strategy,
+        },
     ):
-        features = df.drop(columns=[col for col in LEAKAGE_COLUMNS if col in df.columns])
+        feature_columns = list(BASE_FEATURE_COLUMNS)
+
+        if split_strategy == "time":
+            if REQUEST_TIMESTAMP_COLUMN not in df.columns:
+                raise ValueError(
+                    f"--split-strategy time requires {REQUEST_TIMESTAMP_COLUMN!r} column."
+                )
+
+            timestamp = pd.to_datetime(df[REQUEST_TIMESTAMP_COLUMN], errors="coerce")
+            if timestamp.isna().any():
+                raise ValueError(
+                    f"Column {REQUEST_TIMESTAMP_COLUMN!r} contains invalid timestamps."
+                )
+
+            sorted_df = (
+                df.assign(_request_timestamp=timestamp)
+                .sort_values("_request_timestamp", kind="mergesort")
+                .drop(columns="_request_timestamp")
+            )
+            split_index = int((1.0 - test_size) * len(sorted_df))
+            if split_index <= 0 or split_index >= len(sorted_df):
+                raise ValueError(
+                    "Time split produced an empty train or test set; adjust --test-size."
+                )
+
+            features = sorted_df[feature_columns].copy()
+            target = sorted_df[TARGET_COLUMN].astype(float)
+            return (
+                features.iloc[:split_index],
+                features.iloc[split_index:],
+                target.iloc[:split_index],
+                target.iloc[split_index:],
+            )
+
+        features = df[feature_columns].copy()
         target = df[TARGET_COLUMN].astype(float)
         return train_test_split(
             features,
@@ -244,7 +312,7 @@ def make_train_test_split(
         )
 
 
-def build_pipeline(params: dict[str, Any], seed: int) -> Pipeline:
+def build_pipeline(params: dict[str, Any], seed: int, xgb_jobs: int) -> Pipeline:
     numeric_pipeline = Pipeline(
         steps=[
             ("imputer", SimpleImputer(strategy="median")),
@@ -269,7 +337,7 @@ def build_pipeline(params: dict[str, Any], seed: int) -> Pipeline:
         eval_metric="mae",
         tree_method="hist",
         random_state=seed,
-        n_jobs=1,
+        n_jobs=xgb_jobs,
         **params,
     )
     return Pipeline(
@@ -306,19 +374,43 @@ def coerce_hyperparameter_types(params: dict[str, Any]) -> dict[str, Any]:
     return typed_params
 
 
+def resolve_cv_strategy(split_strategy: str, cv_strategy: str) -> str:
+    if cv_strategy != "auto":
+        return cv_strategy
+    return "time" if split_strategy == "time" else "kfold"
+
+
+def make_cv(cv_strategy: str, cv_folds: int, seed: int) -> KFold | TimeSeriesSplit:
+    if cv_strategy == "time":
+        return TimeSeriesSplit(n_splits=cv_folds)
+    return KFold(n_splits=cv_folds, shuffle=True, random_state=seed)
+
+
+def flatten_for_mlflow(prefix: str, payload: dict[str, Any]) -> dict[str, Any]:
+    return {f"{prefix}_{key}": value for key, value in payload.items()}
+
+
 def tune_hyperparameters(
     X_train: pd.DataFrame,
     y_train: pd.Series,
     n_trials: int,
     cv_folds: int,
+    cv_strategy: str,
     cv_jobs: int,
+    xgb_jobs: int,
     seed: int,
 ) -> tuple[dict[str, Any], pd.DataFrame]:
     with mlflow.start_span(
         "hyperparameter_tuning",
-        attributes={"n_trials": n_trials, "cv_folds": cv_folds},
+        attributes={
+            "n_trials": n_trials,
+            "cv_folds": cv_folds,
+            "cv_strategy": cv_strategy,
+            "cv_jobs": cv_jobs,
+            "xgb_jobs": xgb_jobs,
+        },
     ):
-        cv = KFold(n_splits=cv_folds, shuffle=True, random_state=seed)
+        cv = make_cv(cv_strategy=cv_strategy, cv_folds=cv_folds, seed=seed)
         scoring = {
             "mae": "neg_mean_absolute_error",
             "mape": "neg_mean_absolute_percentage_error",
@@ -327,31 +419,43 @@ def tune_hyperparameters(
 
         for trial_index, params in enumerate(sample_hyperparameters(n_trials, seed), start=1):
             with mlflow.start_run(run_name=f"trial_{trial_index:02d}", nested=True):
-                mlflow.log_params(params)
-                pipeline = build_pipeline(params, seed=seed)
-                scores = cross_validate(
-                    pipeline,
-                    X_train,
-                    y_train,
-                    cv=cv,
-                    scoring=scoring,
-                    n_jobs=cv_jobs,
-                    error_score="raise",
+                mlflow.log_params(
+                    {
+                        **params,
+                        "trial": trial_index,
+                        "cv_strategy": cv_strategy,
+                    }
                 )
-                metrics = {
-                    "cv_mae_mean": float(-scores["test_mae"].mean()),
-                    "cv_mae_std": float(scores["test_mae"].std()),
-                    "cv_mape_mean": float(-scores["test_mape"].mean()),
-                    "cv_mape_std": float(scores["test_mape"].std()),
-                    "fit_time_mean": float(scores["fit_time"].mean()),
+                span_attributes = {
+                    "trial": trial_index,
+                    "cv_strategy": cv_strategy,
+                    **flatten_for_mlflow("param", params),
                 }
-                mlflow.log_metrics(metrics)
-                records.append({"trial": trial_index, **params, **metrics})
-                print(
-                    f"Trial {trial_index:02d}/{n_trials} | "
-                    f"CV MAE={metrics['cv_mae_mean']:.2f}s | "
-                    f"CV MAPE={metrics['cv_mape_mean']:.4f}"
-                )
+                with mlflow.start_span("tune_trial", attributes=span_attributes):
+                    pipeline = build_pipeline(params, seed=seed, xgb_jobs=xgb_jobs)
+                    scores = cross_validate(
+                        pipeline,
+                        X_train,
+                        y_train,
+                        cv=cv,
+                        scoring=scoring,
+                        n_jobs=cv_jobs,
+                        error_score="raise",
+                    )
+                    metrics = {
+                        "cv_mae_mean": float(-scores["test_mae"].mean()),
+                        "cv_mae_std": float(scores["test_mae"].std()),
+                        "cv_mape_mean": float(-scores["test_mape"].mean()),
+                        "cv_mape_std": float(scores["test_mape"].std()),
+                        "fit_time_mean": float(scores["fit_time"].mean()),
+                    }
+                    mlflow.log_metrics(metrics)
+                    records.append({"trial": trial_index, **params, **metrics})
+                    print(
+                        f"Trial {trial_index:02d}/{n_trials} | "
+                        f"CV MAE={metrics['cv_mae_mean']:.2f}s | "
+                        f"CV MAPE={metrics['cv_mape_mean']:.4f}"
+                    )
 
         results = pd.DataFrame(records).sort_values(
             ["cv_mae_mean", "cv_mape_mean"], ascending=[True, True]
@@ -408,19 +512,34 @@ def save_json(path: Path, payload: dict[str, Any]) -> None:
 def main() -> None:
     args = parse_args()
     args.output_dir.mkdir(parents=True, exist_ok=True)
+    cv_strategy = resolve_cv_strategy(
+        split_strategy=args.split_strategy,
+        cv_strategy=args.cv_strategy,
+    )
 
     mlflow.set_tracking_uri(args.tracking_uri)
     mlflow.set_experiment(args.experiment_name)
 
-    with mlflow.start_run(run_name="xgboost_eta_baseline"):
+    with mlflow.start_run(run_name=args.run_name):
+        mlflow.set_tags(
+            {
+                "model_family": "xgboost",
+                "pipeline": "eta_baseline",
+                "split_strategy": args.split_strategy,
+                "cv_strategy": cv_strategy,
+            }
+        )
         mlflow.log_params(
             {
                 "data_path": str(args.data_path),
                 "test_size": args.test_size,
+                "split_strategy": args.split_strategy,
+                "cv_strategy": cv_strategy,
                 "seed": args.seed,
                 "n_trials": args.n_trials,
                 "cv_folds": args.cv_folds,
                 "cv_jobs": args.cv_jobs,
+                "xgb_jobs": args.xgb_jobs,
                 "target": TARGET_COLUMN,
             }
         )
@@ -436,14 +555,19 @@ def main() -> None:
         )
 
         X_train, X_test, y_train, y_test = make_train_test_split(
-            df, test_size=args.test_size, seed=args.seed
+            df,
+            test_size=args.test_size,
+            seed=args.seed,
+            split_strategy=args.split_strategy,
         )
         best_params, tuning_results = tune_hyperparameters(
             X_train,
             y_train,
             n_trials=args.n_trials,
             cv_folds=args.cv_folds,
+            cv_strategy=cv_strategy,
             cv_jobs=args.cv_jobs,
+            xgb_jobs=args.xgb_jobs,
             seed=args.seed,
         )
 
@@ -453,7 +577,11 @@ def main() -> None:
         mlflow.log_params({f"best_{key}": value for key, value in best_params.items()})
 
         with mlflow.start_span("fit_final_model", attributes={"best_params": best_params}):
-            final_model = build_pipeline(best_params, seed=args.seed)
+            final_model = build_pipeline(
+                best_params,
+                seed=args.seed,
+                xgb_jobs=args.xgb_jobs,
+            )
             final_model.fit(X_train, y_train)
 
         metrics = {
