@@ -116,4 +116,19 @@ python -m venv .venv
 .\.venv\Scripts\mlflow ui --backend-store-uri .\mlruns
 ```
 
-The MLflow run logs dataset metrics, split metadata, nested tuning trials, trace spans, best hyperparameters, model metrics, feature importance, and the serialized sklearn/XGBoost pipeline.
+The training run fits a residual ETA model:
+
+- target: `actual_eta_secs - baseline_eta_secs`
+- final ETA: `baseline_eta_secs + predicted_residual_secs`
+
+Useful artifacts in `model/artifacts/`:
+
+- `xgb_residual_evaluation.csv`: train/test MAE, MAPE, RMSE, bias, underprediction rate, and improvement versus baseline ETA
+- `xgb_bucket_evaluation.csv`: error slices by duration, distance, time-of-day, rush/weekend flags, origin H3, and destination H3
+- `xgb_h3_pair_error_analysis.csv`: worst H3-pair corridors with baseline and residual MAE
+- `xgb_feature_importance.csv` and `xgb_residual_feature_importance.csv`: feature importance for the residual model
+- `xgb_feature_importance_summary.json`: compact check for dependency on `baseline_eta_secs`
+- `xgb_test_predictions.csv`: per-row test predictions and errors for baseline and residual ETA
+- `xgb_eta_residual.joblib`: serialized residual sklearn/XGBoost pipeline
+
+The MLflow run logs dataset metrics, split metadata, nested tuning trials, trace spans, best hyperparameters, residual model metrics, bucket diagnostics, H3-pair diagnostics, feature importance, and the serialized sklearn/XGBoost residual pipeline.

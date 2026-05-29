@@ -1,0 +1,3092 @@
+[
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 14,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 141.87961
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 16,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 214.738806
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 18,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 131.112207
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 14,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 197.674791
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 7,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 191.282736
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 12,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 151.191171
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 10,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 139.44808
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 6,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 192.903437
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 15,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 144.048183
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 16,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 127.109001
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 18,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 165.513797
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 16,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 167.208697
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 16,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 122.040953
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 4,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 105.69429
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 18,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 264.974134
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 13,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 154.048239
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 16,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 282.663723
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 18,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 125.516936
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 18,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 186.561094
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 17,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 188.390242
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 18,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 891.276558
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 13,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 168.780527
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 18,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 245.359421
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 18,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 271.776229
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 20,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 134.840238
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 16,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 270.504265
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 12,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 186.246179
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 16,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 173.124683
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 4,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 115.338834
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 15,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 169.847855
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 16,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 143.994139
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 6,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 166.358352
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 14,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 149.00237
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 15,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 217.078088
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 13,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 125.454702
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 18,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 180.079239
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 18,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 220.233606
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 7,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 156.961362
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 13,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 168.862328
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 16,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 143.686219
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 5,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 205.923949
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 13,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 157.622065
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 16,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 403.212852
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 9,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 215.30098
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 8,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 196.244438
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 15,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 150.870688
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 7,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 197.943323
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 11,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 207.265681
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 16,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 109.814938
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 10,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 249.612398
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 18,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 256.725803
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 13,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 127.447877
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 9,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 181.688713
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 18,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 141.924353
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 16,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 225.852017
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 15,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 199.957071
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 15,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 220.532914
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 14,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 151.297978
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 16,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 189.247543
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 6,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 134.005744
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 18,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 108.253739
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 17,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 122.145718
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 16,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 146.307438
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 17,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 152.219589
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 8,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 214.65625
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 18,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 168.252759
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 10,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 221.416963
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 16,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 463.685515
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 7,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 179.378821
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 7,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 116.226052
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 17,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 215.894019
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 12,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 145.978647
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 16,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 162.205217
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 10,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 74.19985
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 7,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 150.119051
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 5,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 172.532774
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 17,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 199.359322
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 18,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 232.504568
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 18,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 239.381413
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 17,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 407.100183
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 16,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 154.558682
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 7,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 322.676246
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 17,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 208.990548
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 5,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 146.897563
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 16,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 217.573651
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 17,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 199.894792
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 19,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 145.144576
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 17,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 226.356253
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 18,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 151.060325
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 8,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 126.477462
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 16,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 147.024577
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 18,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 142.48942
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 7,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 194.380181
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 17,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 300.140042
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 16,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 154.480262
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 18,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 191.375219
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 15,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 204.54542
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 13,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 265.851588
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 17,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 164.467814
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 17,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 122.599616
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 16,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 128.70132
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 18,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 178.203832
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 18,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 162.169883
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 9,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 170.379745
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 5,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 115.681382
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 16,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 142.923988
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 16,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 141.471597
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 17,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 153.993669
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 16,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 148.919548
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 6,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 203.728744
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 6,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 167.002425
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 17,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 127.54909
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 7,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 234.380484
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 10,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 205.264654
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 16,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 188.516997
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 16,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 197.827347
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 7,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 169.297446
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 7,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 143.093382
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 7,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 194.747942
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 6,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 120.540122
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 21,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 146.834683
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 18,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 153.405473
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 18,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 228.355487
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 8,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 128.765517
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 5,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 119.710764
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 12,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 145.172321
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 16,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 169.290396
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 16,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 141.944366
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 17,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 103.462509
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 15,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 128.891307
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 15,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 190.112815
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 16,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 222.253618
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 13,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 158.30876
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 16,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 235.108672
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 16,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 126.667216
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 12,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 179.570234
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 10,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 135.757809
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 18,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 152.080916
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 5,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 154.818586
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 16,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 313.60008
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 16,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 182.154717
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 18,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 166.513777
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 14,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 272.775825
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 16,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 187.575016
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 5,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 137.43289
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 7,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 186.696968
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 18,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 185.005702
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 5,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 113.701563
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 15,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 230.090806
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 5,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 156.733146
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 5,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 130.612319
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 8,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 142.215702
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 5,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 110.284911
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 17,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 175.900347
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 18,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 361.549488
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 7,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 447.148806
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 13,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 142.829933
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 17,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 228.362833
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 10,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 197.431904
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 16,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 142.607197
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 13,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 165.951452
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 6,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 200.015886
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 15,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 136.421588
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 15,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 206.373481
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 7,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 186.348081
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 18,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 157.527725
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 13,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 134.813429
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 12,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 116.921048
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 16,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 193.950412
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 17,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 191.498743
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 18,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 157.162467
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 8,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 155.914646
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 16,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 164.822371
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 15,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 277.287797
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 8,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 266.926047
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 7,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 134.536776
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 17,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 196.882018
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 16,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 223.631432
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 6,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 193.98498
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 11,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 141.30336
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 16,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 215.77052
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 13,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 156.699012
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 16,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 287.300599
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 17,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 144.267011
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 6,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 241.472063
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 19,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 195.424602
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 18,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 129.96713
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 17,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 464.346872
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 16,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 209.414962
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 18,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 170.824392
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 16,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 203.409707
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 7,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 219.560744
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 4,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 128.15681
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 16,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 330.1481
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 16,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 106.979185
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 5,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 143.476798
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 16,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 200.898159
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 18,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 158.519179
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 19,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 178.022474
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 17,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 159.48618
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 16,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 250.270297
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 18,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 196.48842
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 10,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 116.886076
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 16,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 175.40009
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 11,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 177.917302
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 10,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 243.250156
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 19,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 130.993052
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 17,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 316.607726
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 17,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 159.193826
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 7,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 125.614876
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 6,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 195.935527
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 5,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 197.100975
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 14,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 197.558863
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 7,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 168.799194
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 16,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 248.684288
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 10,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 198.213674
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 14,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 129.06082
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 17,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 188.353599
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 8,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 153.767765
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 10,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 254.950271
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 4,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 172.533917
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 16,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 136.662447
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 17,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 481.953571
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 18,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 197.986014
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 6,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 226.065157
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 17,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 200.307564
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 9,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 254.498329
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 5,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 188.977326
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 16,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 282.024877
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 15,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 336.415586
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 5,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 248.28744
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 16,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 145.682976
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 10,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 163.233489
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 16,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 249.707966
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 5,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 173.044782
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 14,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 223.594038
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 8,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 186.01597
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 16,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 534.211356
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 6,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 100.51191
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 6,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 151.366614
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 16,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 257.633232
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 16,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 195.730668
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 18,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 191.93058
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 17,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 178.367721
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 17,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 297.490746
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 14,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 153.086086
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 9,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 225.067367
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 17,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 135.068211
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 14,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 134.004628
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 17,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 244.009806
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 13,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 112.862173
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 8,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 125.118076
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 11,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 135.097632
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 18,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 157.876949
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 8,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 173.34361
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 14,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 170.172401
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 18,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 293.304278
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 8,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 153.926297
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 17,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 169.216706
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 12,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 132.108958
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 17,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 185.577081
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 7,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 161.266
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 7,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 120.194174
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 6,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 163.966572
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 11,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 159.926111
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 18,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 135.777184
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 7,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 150.932069
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 17,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 144.507318
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 14,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 129.531295
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 16,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 165.432266
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 18,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 158.792614
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 6,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 151.540279
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 6,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 244.457375
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 16,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 106.659528
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 15,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 228.996223
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 18,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 159.010799
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 16,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 176.473746
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 14,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 241.449314
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 16,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 172.535908
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 16,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 164.096513
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 18,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 224.094324
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 6,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 149.613385
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 13,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 146.251245
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 16,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 174.03233
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 18,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 216.655255
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 10,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 130.264686
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 18,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 193.764665
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 17,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 143.268145
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 6,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 209.351139
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 16,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 183.591879
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 18,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 111.552723
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 16,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 128.991148
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 18,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 144.754188
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 6,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 146.27907
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 17,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 364.23732
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 18,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 144.466433
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 7,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 138.980806
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 7,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 306.748056
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 19,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 137.510612
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 6,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 333.943517
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 18,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 312.462563
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 18,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 222.891994
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 11,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 171.686855
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 6,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 127.953904
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 15,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 105.603747
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 17,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 178.325573
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 4,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 156.959874
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 13,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 171.611727
+  },
+  {
+    "stationId": 1992,
+    "destination_stationId": 323,
+    "hour": 17,
+    "lat": 10.872419,
+    "lng": 106.768248,
+    "destination_lat": 10.875454,
+    "destination_lng": 106.758689,
+    "delta_time": 108.892335
+  }
+]

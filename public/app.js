@@ -38,12 +38,16 @@ const elements = {
   vehicle: document.getElementById("vehicle"),
   capacityKg: document.getElementById("capacity-kg"),
   departureTime: document.getElementById("departure-time"),
+  isRaining: document.getElementById("is-raining"),
+  rainLevel: document.getElementById("rain-level"),
+  weatherCondition: document.getElementById("weather-condition"),
   alternative: document.getElementById("alternative"),
   resolveButton: document.getElementById("resolve-button"),
   sampleButton: document.getElementById("sample-button"),
   clearButton: document.getElementById("clear-button"),
   distanceValue: document.getElementById("distance-value"),
   durationValue: document.getElementById("duration-value"),
+  etaValue: document.getElementById("eta-value"),
   vehicleValue: document.getElementById("vehicle-value"),
   stepsList: document.getElementById("steps-list"),
   stepsCount: document.getElementById("steps-count"),
@@ -241,6 +245,7 @@ function applyResolvedLocation(kind, resolved) {
 function resetSummary() {
   elements.distanceValue.textContent = "-";
   elements.durationValue.textContent = "-";
+  elements.etaValue.textContent = "-";
   elements.vehicleValue.textContent = "-";
   elements.stepsCount.textContent = "0 steps";
   elements.stepsList.innerHTML = "";
@@ -342,6 +347,9 @@ function populateSample() {
   elements.vehicle.value = "car";
   elements.capacityKg.value = "";
   elements.departureTime.value = "";
+  elements.isRaining.value = "false";
+  elements.rainLevel.value = "none";
+  elements.weatherCondition.value = "clear";
   elements.alternative.checked = false;
 
   setLocationDraft("origin", elements.originAddress.value);
@@ -362,7 +370,7 @@ function renderSteps(instructions) {
   }
 }
 
-function renderRoute(geometry, summary, instructions, resolvedLocations) {
+function renderRoute(geometry, summary, instructions, resolvedLocations, eta) {
   clearRouteVisuals();
 
   state.routeLine = L.polyline(geometry, {
@@ -379,6 +387,7 @@ function renderRoute(geometry, summary, instructions, resolvedLocations) {
 
   elements.distanceValue.textContent = summary.distanceLabel;
   elements.durationValue.textContent = summary.durationLabel;
+  elements.etaValue.textContent = eta?.label || "-";
   elements.vehicleValue.textContent = summary.vehicle;
   renderSteps(instructions);
 
@@ -411,6 +420,9 @@ async function calculateRoute(event) {
         address: state.locations.destination.address,
       },
       vehicle: elements.vehicle.value,
+      is_raining: elements.isRaining.value === "true",
+      rain_level: elements.rainLevel.value,
+      weather_condition: elements.weatherCondition.value,
       alternative: elements.alternative.checked,
     };
 
@@ -429,7 +441,7 @@ async function calculateRoute(event) {
     }
 
     setStatus("Ready");
-    renderRoute(geometry, data.summary, data.instructions || [], data.resolvedLocations);
+    renderRoute(geometry, data.summary, data.instructions || [], data.resolvedLocations, data.eta);
   } catch (error) {
     setStatus("Error");
     resetSummary();

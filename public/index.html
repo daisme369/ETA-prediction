@@ -97,13 +97,43 @@
             </label>
           </div>
 
+          <div class="field-grid">
+            <label class="field">
+              <span>Raining</span>
+              <select id="is-raining" name="is-raining">
+                <option value="false" selected>No</option>
+                <option value="true">Yes</option>
+              </select>
+            </label>
+            <label class="field">
+              <span>Rain level</span>
+              <select id="rain-level" name="rain-level">
+                <option value="none" selected>None</option>
+                <option value="light">Light</option>
+                <option value="moderate">Moderate</option>
+                <option value="heavy">Heavy</option>
+                <option value="very_heavy">Very heavy</option>
+              </select>
+            </label>
+            <label class="field">
+              <span>Weather condition</span>
+              <select id="weather-condition" name="weather-condition">
+                <option value="clear" selected>Clear</option>
+                <option value="cloudy">Cloudy</option>
+                <option value="rain">Rain</option>
+                <option value="storm">Storm</option>
+                <option value="fog">Fog</option>
+              </select>
+            </label>
+          </div>
+
           <label class="toggle">
             <input id="alternative" name="alternative" type="checkbox" />
             <span>Ask Vietmap for an alternative route when available</span>
           </label>
 
           <div class="action-row">
-            <button class="primary-action" type="submit">Calculate route</button>
+            <button class="primary-action" type="submit">Calculate ETA</button>
             <button class="secondary-action" id="resolve-button" type="button">Extract coordinates</button>
             <button class="secondary-action" id="sample-button" type="button">Load HCMC sample</button>
             <button class="ghost-action" id="clear-button" type="button">Clear route</button>
@@ -130,6 +160,10 @@
             <div class="metric-card">
               <span class="metric-label">Travel time</span>
               <strong id="duration-value">-</strong>
+            </div>
+            <div class="metric-card">
+              <span class="metric-label">Predicted ETA</span>
+              <strong id="eta-value">-</strong>
             </div>
             <div class="metric-card">
               <span class="metric-label">Vehicle</span>

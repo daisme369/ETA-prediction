@@ -5,6 +5,12 @@ const fs = require("node:fs");
 const fsp = require("node:fs/promises");
 const path = require("node:path");
 const { URL } = require("node:url");
+let h3 = null;
+try {
+  h3 = require("h3-js");
+} catch {
+  h3 = null;
+}
 
 const rootDir = __dirname;
 const publicDir = path.join(rootDir, "public");
@@ -34,6 +40,15 @@ function loadEnv(filePath) {
   return result;
 }
 
+function parseHolidayDates(rawValue) {
+  return new Set(
+    String(rawValue || "")
+      .split(",")
+      .map((value) => value.trim())
+      .filter(Boolean),
+  );
+}
+
 const env = {
   ...loadEnv(path.join(rootDir, ".env")),
   ...process.env,
@@ -54,6 +69,14 @@ const config = {
   mapCenterLat: Number(env.MAP_CENTER_LAT || 10.7769),
   mapCenterLng: Number(env.MAP_CENTER_LNG || 106.7009),
   mapZoom: Number(env.MAP_ZOOM || 12),
+  etaServiceUrl: env.ETA_SERVICE_URL || "http://localhost:8000",
+  etaTimeoutMs: Number(env.ETA_TIMEOUT_MS || 3500),
+  etaH3Resolution: Number(env.ETA_H3_RESOLUTION || 9),
+  etaDefaultTrafficLevel: env.ETA_DEFAULT_TRAFFIC_LEVEL || "medium",
+  etaDefaultIsRaining: String(env.ETA_DEFAULT_IS_RAINING || "").toLowerCase() === "true",
+  etaDefaultRainLevel: env.ETA_DEFAULT_RAIN_LEVEL || "none",
+  etaDefaultWeatherCondition: env.ETA_DEFAULT_WEATHER_CONDITION || "clear",
+  etaHolidayDates: parseHolidayDates(env.ETA_HOLIDAY_DATES),
 };
 
 const mimeTypes = {
@@ -64,6 +87,10 @@ const mimeTypes = {
   ".svg": "image/svg+xml",
   ".png": "image/png",
 };
+
+const TRAFFIC_LEVELS = ["low", "medium", "high", "severe"];
+const RAIN_LEVELS = ["none", "light", "moderate", "heavy", "very_heavy"];
+const WEATHER_CONDITIONS = ["clear", "cloudy", "rain", "storm", "fog"];
 
 function sendJson(response, statusCode, payload) {
   response.writeHead(statusCode, { "Content-Type": "application/json; charset=utf-8" });
@@ -145,6 +172,205 @@ function formatDistance(meters) {
     return `${Math.round(meters)} m`;
   }
   return `${(meters / 1000).toFixed(1)} km`;
+}
+
+function pad2(value) {
+  return String(value).padStart(2, "0");
+}
+
+function formatLocalDate(date) {
+  return `${date.getFullYear()}-${pad2(date.getMonth() + 1)}-${pad2(date.getDate())}`;
+}
+
+function dayNameFromDate(date) {
+  return ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][date.getDay()];
+}
+
+function isRushHour(hourOfDay) {
+  return [7, 8, 17, 18, 19].includes(hourOfDay);
+}
+
+function toRadians(value) {
+  return (value * Math.PI) / 180;
+}
+
+function haversineMeters(lat1, lng1, lat2, lng2) {
+  const radius = 6371000;
+  const dLat = toRadians(lat2 - lat1);
+  const dLng = toRadians(lng2 - lng1);
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(toRadians(lat1)) * Math.cos(toRadians(lat2)) * Math.sin(dLng / 2) ** 2;
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return radius * c;
+}
+
+function normalizeEnum(value, allowedValues, fallbackValue) {
+  const normalized = typeof value === "string" ? value.trim().toLowerCase() : "";
+  if (allowedValues.includes(normalized)) {
+    return normalized;
+  }
+  return fallbackValue;
+}
+
+function parseBoolean(value, fallbackValue) {
+  if (typeof value === "boolean") {
+    return value;
+  }
+  const normalized = typeof value === "string" ? value.trim().toLowerCase() : "";
+  if (["true", "1", "yes"].includes(normalized)) {
+    return true;
+  }
+  if (["false", "0", "no"].includes(normalized)) {
+    return false;
+  }
+  return fallbackValue;
+}
+
+function computeH3Cell(point) {
+  if (h3 && typeof h3.latLngToCell === "function") {
+    return h3.latLngToCell(point.lat, point.lng, config.etaH3Resolution);
+  }
+  return `h3_${point.lat.toFixed(4)}_${point.lng.toFixed(4)}`;
+}
+
+function deriveTrafficLevelFromAnnotations(congestion) {
+  const values = Array.isArray(congestion)
+    ? congestion.map((value) => Number(value)).filter((value) => Number.isFinite(value))
+    : [];
+
+  if (!values.length) {
+    return normalizeEnum(config.etaDefaultTrafficLevel, TRAFFIC_LEVELS, "medium");
+  }
+
+  const average = values.reduce((sum, value) => sum + value, 0) / values.length;
+  if (average >= 3.2) {
+    return "severe";
+  }
+  if (average >= 2.2) {
+    return "high";
+  }
+  if (average >= 1.1) {
+    return "medium";
+  }
+  return "low";
+}
+
+function buildEtaFeatures(payload, origin, destination, routePath) {
+  const departureDate = payload?.departureTime ? new Date(payload.departureTime) : new Date();
+  const safeDate = Number.isNaN(departureDate.getTime()) ? new Date() : departureDate;
+  const hourOfDay = safeDate.getHours();
+  const dayOfWeek = dayNameFromDate(safeDate);
+  const dateKey = formatLocalDate(safeDate);
+
+  const defaultTrafficLevel = deriveTrafficLevelFromAnnotations(routePath?.annotations?.congestion);
+  const trafficLevel = normalizeEnum(
+    payload?.traffic_level || payload?.trafficLevel,
+    TRAFFIC_LEVELS,
+    defaultTrafficLevel,
+  );
+
+  const isRainingDefault =
+    config.etaDefaultIsRaining || ["rain", "storm"].includes(config.etaDefaultWeatherCondition);
+  const isRaining = parseBoolean(payload?.is_raining ?? payload?.isRaining, isRainingDefault);
+  const rainLevel = normalizeEnum(
+    payload?.rain_level || payload?.rainLevel,
+    RAIN_LEVELS,
+    normalizeEnum(config.etaDefaultRainLevel, RAIN_LEVELS, isRaining ? "light" : "none"),
+  );
+  const weatherCondition = normalizeEnum(
+    payload?.weather_condition || payload?.weatherCondition,
+    WEATHER_CONDITIONS,
+    normalizeEnum(
+      config.etaDefaultWeatherCondition,
+      WEATHER_CONDITIONS,
+      isRaining ? "rain" : "clear",
+    ),
+  );
+
+  const distanceValue = Number(routePath?.distance);
+  const timeValue = Number(routePath?.time);
+  const baselineDistanceMeters = Number.isFinite(distanceValue)
+    ? distanceValue
+    : haversineMeters(origin.lat, origin.lng, destination.lat, destination.lng);
+  const baselineEtaSecs = Number.isFinite(timeValue)
+    ? Math.max(1, Math.round(timeValue / 1000))
+    : Math.max(1, Math.round(baselineDistanceMeters / 6));
+
+  return {
+    origin_h3: computeH3Cell(origin),
+    destination_h3: computeH3Cell(destination),
+    origin_lng: origin.lng,
+    origin_lat: origin.lat,
+    destination_lng: destination.lng,
+    destination_lat: destination.lat,
+    hour_of_day: hourOfDay,
+    is_rush_hour: isRushHour(hourOfDay),
+    day_of_week: dayOfWeek,
+    is_weekend: dayOfWeek === "Sat" || dayOfWeek === "Sun",
+    is_holiday: config.etaHolidayDates.has(dateKey),
+    haversine_distance_meters: haversineMeters(
+      origin.lat,
+      origin.lng,
+      destination.lat,
+      destination.lng,
+    ),
+    baseline_distance_meters: baselineDistanceMeters,
+    traffic_level: trafficLevel,
+    is_raining: isRaining,
+    rain_level: rainLevel,
+    weather_condition: weatherCondition,
+    baseline_eta_secs: baselineEtaSecs,
+  };
+}
+
+async function fetchEtaPrediction(features) {
+  if (!config.etaServiceUrl) {
+    return { error: "ETA service URL is not configured." };
+  }
+
+  const requestUrl = new URL("/predict", config.etaServiceUrl);
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), config.etaTimeoutMs);
+
+  try {
+    const response = await fetch(requestUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ records: [features] }),
+      signal: controller.signal,
+    });
+
+    const data = await response.json();
+    if (!response.ok) {
+      return {
+        error: data?.detail || data?.error || "ETA service returned an error.",
+      };
+    }
+
+    const prediction = Array.isArray(data?.predictions) ? data.predictions[0] : null;
+    if (!prediction || !Number.isFinite(Number(prediction.eta_seconds))) {
+      return { error: "ETA service did not return a prediction." };
+    }
+
+    return {
+      etaSeconds: Number(prediction.eta_seconds),
+      modelName: data?.model_name || "xgboost",
+      modelUri: data?.model_uri || "",
+    };
+  } catch (error) {
+    const message =
+      error && error.name === "AbortError"
+        ? "ETA service timed out."
+        : error instanceof Error
+          ? error.message
+          : "ETA service request failed.";
+    return { error: message };
+  } finally {
+    clearTimeout(timeoutId);
+  }
 }
 
 function normalizeGeometry(points) {
@@ -446,7 +672,19 @@ async function handleRoute(request, response) {
   const primaryPath = data.paths[0];
   const geometry = normalizeGeometry(primaryPath.points);
 
-  sendJson(response, 200, {
+  const etaFeatures = buildEtaFeatures(payload, origin, destination, primaryPath);
+  const etaResult = await fetchEtaPrediction(etaFeatures);
+  const etaPayload = etaResult.error
+    ? null
+    : {
+        seconds: etaResult.etaSeconds,
+        minutes: etaResult.etaSeconds / 60,
+        label: formatDuration(etaResult.etaSeconds * 1000),
+        modelName: etaResult.modelName,
+        modelUri: etaResult.modelUri,
+      };
+
+  const responsePayload = {
     summary: {
       vehicle,
       distanceMeters: primaryPath.distance,
@@ -475,7 +713,19 @@ async function handleRoute(request, response) {
       destination: serializeResolvedLocation(resolvedDestination),
     },
     raw: data,
-  });
+  };
+
+  if (etaPayload) {
+    responsePayload.eta = etaPayload;
+  }
+  if (etaResult.error) {
+    responsePayload.etaError = etaResult.error;
+  }
+  if (payload.debugEta) {
+    responsePayload.etaFeatures = etaFeatures;
+  }
+
+  sendJson(response, 200, responsePayload);
 }
 
 async function handleTileProxy(url, response) {
