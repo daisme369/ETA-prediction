@@ -131,6 +131,14 @@ select {
   grid-column: 1 / -1;
 }
 
+.model-time-grid {
+  grid-template-columns: 1fr;
+}
+
+.model-hidden {
+  display: none;
+}
+
 input,
 select,
 button {

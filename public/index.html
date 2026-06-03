@@ -21,10 +21,10 @@
   <body>
     <div class="page-shell">
       <aside class="control-panel">
-        <div class="panel-kicker">Backend-controlled Vietmap routing</div>
-        <h1>Route Studio</h1>
+        <div class="panel-kicker">FastAPI ETA model</div>
+        <h1>Fixed Bus ETA</h1>
         <p class="panel-copy">
-          Build routes against Vietmap from your backend without exposing the API key in the browser.
+          Test the packed ETA model on the fixed two-station route. Change only departure time.
         </p>
 
         <form id="route-form" class="route-form">
@@ -36,7 +36,8 @@
                 name="origin-address"
                 type="text"
                 autocomplete="street-address"
-                placeholder="197 Tran Phu, Quan 5, Ho Chi Minh City"
+                placeholder="Fixed origin station"
+                readonly
                 required
               />
             </label>
@@ -47,7 +48,8 @@
                 name="destination-address"
                 type="text"
                 autocomplete="street-address"
-                placeholder="Ben xe Mien Dong moi, Thu Duc, Ho Chi Minh City"
+                placeholder="Fixed destination station"
+                readonly
                 required
               />
             </label>
@@ -56,7 +58,7 @@
           <div class="resolved-grid">
             <article class="resolved-card">
               <div class="resolved-head">
-                <h3>Origin extract</h3>
+                <h3>Origin station</h3>
                 <span id="origin-resolve-state" class="resolve-state">Waiting</span>
               </div>
               <p id="origin-display" class="resolved-display">-</p>
@@ -67,7 +69,7 @@
             </article>
             <article class="resolved-card">
               <div class="resolved-head">
-                <h3>Destination extract</h3>
+                <h3>Destination station</h3>
                 <span id="destination-resolve-state" class="resolve-state">Waiting</span>
               </div>
               <p id="destination-display" class="resolved-display">-</p>
@@ -78,8 +80,8 @@
             </article>
           </div>
 
-          <div class="field-grid">
-            <label class="field">
+          <div class="field-grid model-time-grid">
+            <label class="field model-hidden">
               <span>Vehicle</span>
               <select id="vehicle" name="vehicle">
                 <option value="car">Car</option>
@@ -87,7 +89,7 @@
                 <option value="truck">Truck</option>
               </select>
             </label>
-            <label class="field">
+            <label class="field model-hidden">
               <span>Truck capacity (kg)</span>
               <input id="capacity-kg" name="capacity-kg" type="number" min="1" placeholder="Optional" />
             </label>
@@ -97,23 +99,23 @@
             </label>
           </div>
 
-          <label class="toggle">
+          <label class="toggle model-hidden">
             <input id="alternative" name="alternative" type="checkbox" />
             <span>Ask Vietmap for an alternative route when available</span>
           </label>
 
           <div class="action-row">
-            <button class="primary-action" type="submit">Calculate route</button>
-            <button class="secondary-action" id="resolve-button" type="button">Extract coordinates</button>
-            <button class="secondary-action" id="sample-button" type="button">Load HCMC sample</button>
-            <button class="ghost-action" id="clear-button" type="button">Clear route</button>
+            <button class="primary-action" type="submit">Predict ETA</button>
+            <button class="secondary-action model-hidden" id="resolve-button" type="button">Extract coordinates</button>
+            <button class="secondary-action" id="sample-button" type="button">Reset time</button>
+            <button class="ghost-action model-hidden" id="clear-button" type="button">Clear route</button>
           </div>
 
           <p class="helper-copy">
-            Enter full addresses. The backend resolves them through VietMap and keeps the API key off the browser.
+            FastAPI reads model/artifacts/fixed_route_eta_model.joblib and returns point ETA plus P50/P85/P90.
           </p>
           <p class="helper-copy">
-            Departure time is entered in your local timezone and converted to UTC automatically before calling VietMap.
+            Current dataset contains one fixed origin-destination pair, so station inputs are locked.
           </p>
         </form>
 
@@ -128,21 +130,42 @@
               <strong id="distance-value">-</strong>
             </div>
             <div class="metric-card">
-              <span class="metric-label">Travel time</span>
+              <span class="metric-label">Point ETA</span>
               <strong id="duration-value">-</strong>
             </div>
             <div class="metric-card">
-              <span class="metric-label">Vehicle</span>
+              <span class="metric-label">Point model</span>
               <strong id="vehicle-value">-</strong>
             </div>
           </div>
           <p id="error-message" class="error-message" hidden></p>
         </section>
 
+        <section class="summary-card">
+          <div class="summary-header">
+            <h2>Quantile ETA</h2>
+            <span id="eta-hour-value">-</span>
+          </div>
+          <div class="metric-row quantile-row">
+            <div class="metric-card">
+              <span class="metric-label">P50</span>
+              <strong id="eta-p50-value">-</strong>
+            </div>
+            <div class="metric-card">
+              <span class="metric-label">P85</span>
+              <strong id="eta-p85-value">-</strong>
+            </div>
+            <div class="metric-card">
+              <span class="metric-label">P90</span>
+              <strong id="eta-p90-value">-</strong>
+            </div>
+          </div>
+        </section>
+
         <section class="steps-card">
           <div class="summary-header">
-            <h2>Turn guidance</h2>
-            <span id="steps-count">0 steps</span>
+            <h2>Model diagnostics</h2>
+            <span id="steps-count">0 metrics</span>
           </div>
           <ol id="steps-list" class="steps-list"></ol>
         </section>
@@ -151,8 +174,8 @@
       <main class="map-stage">
         <div class="map-header">
           <div>
-            <p class="map-eyebrow">Interactive routing canvas</p>
-            <h2>Map-first route planning for Vietnam</h2>
+            <p class="map-eyebrow">Fixed route canvas</p>
+            <h2>Two-point bus ETA test</h2>
           </div>
           <div class="legend-card">
             <span><i class="legend-swatch origin-swatch"></i> Origin</span>
