@@ -24,6 +24,12 @@ npm start
 
 Open `http://localhost:3000`.
 
+Start the ETA model API in a second terminal when you need model predictions:
+
+```bash
+python -m uvicorn api.app:app --host 127.0.0.1 --port 8000
+```
+
 ## Suggested env values
 
 ### Route API
@@ -106,6 +112,14 @@ The XGBoost training pipeline supports either random or chronological splitting:
 ```bash
 python model/model_baseline.py --split-strategy time
 ```
+
+To fill `data/output_log.csv`, keep both APIs running and execute:
+
+```bash
+node data/fill_output_log.js
+```
+
+The script calls the Vietmap proxy with each row's `lat/lng`, `destination_lat/destination_lng`, and local Vietnam `hour`, using a random date per row from `2026-04-01` through `2026-04-30`. It then calls the model API with that same `hour`. Both `estimate_time` and `predict_time` are written in seconds.
 
 For a fresh Python environment:
 
