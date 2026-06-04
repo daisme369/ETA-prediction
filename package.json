@@ -8,6 +8,7 @@
     "dev": "node --watch server.js",
     "check": "node --check server.js",
     "fill:output-log": "node data/fill_output_log.js",
+    "fill:weather": "node data/fill_weather_data.js",
     "generate:mock": "node data/generate_mock_eta.js --num_rows 80000 --format both"
   },
   "dependencies": {

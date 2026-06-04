@@ -5,27 +5,28 @@ const path = require("node:path");
 const { randomInt } = require("node:crypto");
 
 const DEFAULT_INPUT = path.join(__dirname, "output_log.csv");
+const DEFAULT_TIMESTAMP_SOURCE = path.join(__dirname, "processed_data.csv");
 const DEFAULT_ROUTE_API = "http://localhost:3000/api/route";
 const DEFAULT_MODEL_API = "http://localhost:8000/api/eta/predict";
 const DEFAULT_TIME_ZONE_OFFSET = "+07:00";
-const DEFAULT_RANDOM_START_DATE = "2026-04-01";
-const DEFAULT_RANDOM_END_DATE = "2026-04-30";
 const DEFAULT_RETRIES = 5;
 const DEFAULT_RETRY_DELAY_MS = 750;
+const DEFAULT_ROUTE_DELAY_MS = 300;
+const DEFAULT_SAVE_EVERY = 25;
 
 function parseArgs(argv) {
   const args = {
     input: DEFAULT_INPUT,
     output: DEFAULT_INPUT,
-    date: "",
-    randomStartDate: DEFAULT_RANDOM_START_DATE,
-    randomEndDate: DEFAULT_RANDOM_END_DATE,
+    timestampSource: DEFAULT_TIMESTAMP_SOURCE,
     routeApi: DEFAULT_ROUTE_API,
     modelApi: DEFAULT_MODEL_API,
     vehicle: "car",
     decimals: 2,
     retries: DEFAULT_RETRIES,
     retryDelayMs: DEFAULT_RETRY_DELAY_MS,
+    routeDelayMs: DEFAULT_ROUTE_DELAY_MS,
+    saveEvery: DEFAULT_SAVE_EVERY,
   };
 
   for (let index = 2; index < argv.length; index += 1) {
@@ -38,14 +39,8 @@ function parseArgs(argv) {
     } else if (name === "--output" && value) {
       args.output = path.resolve(value);
       index += 1;
-    } else if (name === "--date" && value) {
-      args.date = value;
-      index += 1;
-    } else if (name === "--random-start-date" && value) {
-      args.randomStartDate = value;
-      index += 1;
-    } else if (name === "--random-end-date" && value) {
-      args.randomEndDate = value;
+    } else if (name === "--timestamp-source" && value) {
+      args.timestampSource = path.resolve(value);
       index += 1;
     } else if (name === "--route-api" && value) {
       args.routeApi = value;
@@ -65,28 +60,20 @@ function parseArgs(argv) {
     } else if (name === "--retry-delay-ms" && value) {
       args.retryDelayMs = Number(value);
       index += 1;
+    } else if (name === "--route-delay-ms" && value) {
+      args.routeDelayMs = Number(value);
+      index += 1;
+    } else if (name === "--save-every" && value) {
+      args.saveEvery = Number(value);
+      index += 1;
     } else if (name === "--help" || name === "-h") {
       printHelp();
       process.exit(0);
-    } else if (/^\d{4}-\d{2}-\d{2}$/.test(name)) {
-      args.date = name;
     } else {
       throw new Error(`Unknown or incomplete argument: ${name}`);
     }
   }
 
-  if (args.date && !/^\d{4}-\d{2}-\d{2}$/.test(args.date)) {
-    throw new Error("--date must use YYYY-MM-DD format.");
-  }
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(args.randomStartDate)) {
-    throw new Error("--random-start-date must use YYYY-MM-DD format.");
-  }
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(args.randomEndDate)) {
-    throw new Error("--random-end-date must use YYYY-MM-DD format.");
-  }
-  if (dateToUtcDay(args.randomStartDate) > dateToUtcDay(args.randomEndDate)) {
-    throw new Error("--random-start-date must be before or equal to --random-end-date.");
-  }
   if (!Number.isInteger(args.decimals) || args.decimals < 0 || args.decimals > 6) {
     throw new Error("--decimals must be an integer from 0 to 6.");
   }
@@ -95,6 +82,12 @@ function parseArgs(argv) {
   }
   if (!Number.isInteger(args.retryDelayMs) || args.retryDelayMs < 0) {
     throw new Error("--retry-delay-ms must be a non-negative integer.");
+  }
+  if (!Number.isInteger(args.routeDelayMs) || args.routeDelayMs < 0) {
+    throw new Error("--route-delay-ms must be a non-negative integer.");
+  }
+  if (!Number.isInteger(args.saveEvery) || args.saveEvery < 1) {
+    throw new Error("--save-every must be a positive integer.");
   }
 
   return args;
@@ -105,38 +98,17 @@ function printHelp() {
   node data/fill_output_log.js [options]
 
 Options:
-  --input <path>       CSV to read. Default: data/output_log.csv
-  --output <path>      CSV to write. Default: overwrite input
-  --date <YYYY-MM-DD>  Optional fixed local Vietnam date used with each row hour
-  --random-start-date <YYYY-MM-DD>
-                       Start of random date range. Default: ${DEFAULT_RANDOM_START_DATE}
-  --random-end-date <YYYY-MM-DD>
-                       End of random date range. Default: ${DEFAULT_RANDOM_END_DATE}
-  --route-api <url>    Vietmap proxy endpoint. Default: ${DEFAULT_ROUTE_API}
-  --model-api <url>    Model prediction endpoint. Default: ${DEFAULT_MODEL_API}
-  --vehicle <name>     Vietmap vehicle. Default: car
-  --decimals <n>       Decimal places for seconds. Default: 2
-  --retries <n>        Retries for transient API failures. Default: ${DEFAULT_RETRIES}
-  --retry-delay-ms <n> Base retry delay in milliseconds. Default: ${DEFAULT_RETRY_DELAY_MS}`);
-}
-
-function dateToUtcDay(value) {
-  const [year, month, day] = value.split("-").map(Number);
-  return Math.floor(Date.UTC(year, month - 1, day) / 86400000);
-}
-
-function utcDayToDate(dayNumber) {
-  const date = new Date(dayNumber * 86400000);
-  const year = date.getUTCFullYear();
-  const month = String(date.getUTCMonth() + 1).padStart(2, "0");
-  const day = String(date.getUTCDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
-}
-
-function randomDateBetween(startDate, endDate) {
-  const startDay = dateToUtcDay(startDate);
-  const endDay = dateToUtcDay(endDate);
-  return utcDayToDate(startDay + randomInt(endDay - startDay + 1));
+  --input <path>             CSV to read. Default: data/output_log.csv
+  --output <path>            CSV to write. Default: overwrite input
+  --timestamp-source <path>  CSV source for timestamp/hour alignment. Default: data/processed_data.csv
+  --route-api <url>          Vietmap proxy endpoint. Default: ${DEFAULT_ROUTE_API}
+  --model-api <url>          Model prediction endpoint. Default: ${DEFAULT_MODEL_API}
+  --vehicle <name>           Vietmap vehicle. Default: car
+  --decimals <n>             Decimal places for seconds. Default: 2
+  --retries <n>              Retries for transient API failures. Default: ${DEFAULT_RETRIES}
+  --retry-delay-ms <n>       Base retry delay in milliseconds. Default: ${DEFAULT_RETRY_DELAY_MS}
+  --route-delay-ms <n>       Delay after new Vietmap calls. Default: ${DEFAULT_ROUTE_DELAY_MS}
+  --save-every <n>           Persist CSV progress every n rows. Default: ${DEFAULT_SAVE_EVERY}`);
 }
 
 function parseCsv(text) {
@@ -186,13 +158,15 @@ function parseCsv(text) {
   }
 
   const headers = rows[0];
-  return rows.slice(1).filter((values) => values.some((value) => value !== "")).map((values) => {
+  const records = rows.slice(1).filter((values) => values.some((value) => value !== "")).map((values) => {
     const record = {};
     headers.forEach((header, index) => {
       record[header] = values[index] ?? "";
     });
     return record;
   });
+
+  return { headers, records };
 }
 
 function stringifyCsv(headers, records) {
@@ -210,16 +184,20 @@ function escapeCsv(value) {
   return text;
 }
 
-function asFiniteNumber(record, column, rowNumber) {
-  const value = Number(record[column]);
-  if (!Number.isFinite(value)) {
-    throw new Error(`Row ${rowNumber}: ${column} must be a finite number.`);
+function requireColumns(headers, columns) {
+  for (const column of columns) {
+    if (!headers.includes(column)) {
+      throw new Error(`Missing required column: ${column}`);
+    }
   }
-  return value;
 }
 
-function localDepartureTime(date, hour) {
-  return `${date}T${String(hour).padStart(2, "0")}:00:00${DEFAULT_TIME_ZONE_OFFSET}`;
+function addColumns(headers, columns) {
+  for (const column of columns) {
+    if (!headers.includes(column)) {
+      headers.push(column);
+    }
+  }
 }
 
 function sleep(ms) {
@@ -271,18 +249,184 @@ async function postJson(url, payload, args) {
       await sleep(delayMs);
     }
   }
+
+  throw new Error(`${url} failed without returning a response.`);
+}
+
+function asFiniteNumber(record, column, rowNumber) {
+  const value = Number(record[column]);
+  if (!Number.isFinite(value)) {
+    throw new Error(`Row ${rowNumber}: ${column} must be a finite number.`);
+  }
+  return value;
+}
+
+function normalizeHour(value, rowNumber) {
+  const hour = Number(value);
+  if (!Number.isInteger(hour) || hour < 0 || hour > 23) {
+    throw new Error(`Row ${rowNumber}: hour must be an integer from 0 to 23.`);
+  }
+  return hour;
+}
+
+function unixSecondsToTimestamp(value) {
+  const seconds = Number(value);
+  if (!Number.isFinite(seconds)) {
+    return "";
+  }
+
+  const date = new Date(seconds * 1000);
+  const year = date.getUTCFullYear();
+  const month = String(date.getUTCMonth() + 1).padStart(2, "0");
+  const day = String(date.getUTCDate()).padStart(2, "0");
+  const hour = String(date.getUTCHours()).padStart(2, "0");
+  const minute = String(date.getUTCMinutes()).padStart(2, "0");
+  const second = String(date.getUTCSeconds()).padStart(2, "0");
+  return `${year}-${month}-${day} ${hour}:${minute}:${second}`;
+}
+
+function sourceTimestamp(record) {
+  if (record.timestamp) {
+    return record.timestamp.trim();
+  }
+  if (record.datetime) {
+    return unixSecondsToTimestamp(record.datetime);
+  }
+  if (record.date && record.time) {
+    return `${record.date.trim()} ${record.time.trim()}`;
+  }
+  return "";
+}
+
+function timestampHour(timestamp) {
+  const match = /^(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2})(?::(\d{2}))?/.exec(timestamp);
+  if (!match) {
+    throw new Error(`Invalid timestamp format: ${timestamp}`);
+  }
+  return Number(match[4]);
+}
+
+function departureTimeFromTimestamp(timestamp) {
+  const match = /^(\d{4}-\d{2}-\d{2})[ T](\d{2}:\d{2}(?::\d{2})?)/.exec(timestamp);
+  if (!match) {
+    throw new Error(`Invalid timestamp format: ${timestamp}`);
+  }
+
+  const time = match[2].length === 5 ? `${match[2]}:00` : match[2];
+  return `${match[1]}T${time}${DEFAULT_TIME_ZONE_OFFSET}`;
+}
+
+function sameDelta(left, right) {
+  if (!left || !right) {
+    return false;
+  }
+  return Math.abs(Number(left) - Number(right)) < 0.000001;
+}
+
+function buildSourceByDelta(sourceRecords) {
+  const sourceByDelta = new Map();
+  const duplicateDeltas = new Set();
+
+  sourceRecords.forEach((record) => {
+    if (!record.delta_time) {
+      return;
+    }
+    if (sourceByDelta.has(record.delta_time)) {
+      duplicateDeltas.add(record.delta_time);
+      return;
+    }
+    sourceByDelta.set(record.delta_time, record);
+  });
+
+  for (const delta of duplicateDeltas) {
+    sourceByDelta.delete(delta);
+  }
+
+  return sourceByDelta;
+}
+
+function hydrateTimestamps(records, sourceRecords) {
+  if (!sourceRecords.length && records.every((record) => record.timestamp)) {
+    return { records, droppedRows: 0 };
+  }
+
+  const sourceByDelta = buildSourceByDelta(sourceRecords);
+  const hydrated = [];
+  let droppedRows = 0;
+
+  records.forEach((record, index) => {
+    let source = sourceRecords[index];
+    if (source && record.delta_time && source.delta_time && !sameDelta(record.delta_time, source.delta_time)) {
+      source = sourceByDelta.get(record.delta_time);
+    }
+
+    if (!source && !record.timestamp) {
+      droppedRows += 1;
+      return;
+    }
+
+    const timestamp = source ? sourceTimestamp(source) : record.timestamp;
+    if (!timestamp) {
+      droppedRows += 1;
+      return;
+    }
+
+    record.timestamp = timestamp;
+    const hourFromTimestamp = timestampHour(timestamp);
+    const sourceHour = source?.hour ? normalizeHour(source.hour, index + 2) : hourFromTimestamp;
+
+    if (sourceHour !== hourFromTimestamp) {
+      throw new Error(`Row ${index + 2}: source hour ${sourceHour} does not match timestamp ${timestamp}.`);
+    }
+
+    record.hour = String(hourFromTimestamp);
+    hydrated.push(record);
+  });
+
+  return { records: hydrated, droppedRows };
 }
 
 function formatSeconds(value, decimals) {
   return Number(value).toFixed(decimals);
 }
 
-async function getEstimateSeconds(args, row, rowNumber, departureDate, cache) {
-  const hour = asFiniteNumber(row, "hour", rowNumber);
-  if (!Number.isInteger(hour) || hour < 0 || hour > 23) {
-    throw new Error(`Row ${rowNumber}: hour must be an integer from 0 to 23.`);
+function extractPredictionSeconds(data, rowNumber) {
+  const secondCandidates = [
+    data?.prediction?.point?.seconds,
+    data?.prediction?.seconds,
+    data?.point?.seconds,
+    data?.seconds,
+    data?.predict_time,
+    data?.predicted_time,
+    data?.eta_seconds,
+  ];
+
+  for (const value of secondCandidates) {
+    const seconds = Number(value);
+    if (Number.isFinite(seconds)) {
+      return seconds;
+    }
   }
 
+  const minuteCandidates = [
+    data?.prediction?.point?.minutes,
+    data?.prediction?.minutes,
+    data?.point?.minutes,
+    data?.minutes,
+    data?.eta_minutes,
+  ];
+
+  for (const value of minuteCandidates) {
+    const minutes = Number(value);
+    if (Number.isFinite(minutes)) {
+      return minutes * 60;
+    }
+  }
+
+  throw new Error(`Row ${rowNumber}: model response did not include a supported prediction value.`);
+}
+
+async function getEstimateSeconds(args, row, rowNumber, departureTime, cache) {
   const origin = {
     lat: asFiniteNumber(row, "lat", rowNumber),
     lng: asFiniteNumber(row, "lng", rowNumber),
@@ -291,8 +435,7 @@ async function getEstimateSeconds(args, row, rowNumber, departureDate, cache) {
     lat: asFiniteNumber(row, "destination_lat", rowNumber),
     lng: asFiniteNumber(row, "destination_lng", rowNumber),
   };
-  const departureTime = localDepartureTime(departureDate, hour);
-  const cacheKey = JSON.stringify({ origin, destination, hour, vehicle: args.vehicle, date: departureDate });
+  const cacheKey = JSON.stringify({ origin, destination, vehicle: args.vehicle, departureTime });
 
   if (!cache.has(cacheKey)) {
     const data = await postJson(args.routeApi, {
@@ -308,41 +451,64 @@ async function getEstimateSeconds(args, row, rowNumber, departureDate, cache) {
       throw new Error(`Row ${rowNumber}: Vietmap response did not include summary.durationMs.`);
     }
     cache.set(cacheKey, durationMs / 1000);
+    if (args.routeDelayMs > 0) {
+      await sleep(args.routeDelayMs);
+    }
   }
 
   return cache.get(cacheKey);
 }
 
-async function getPredictSeconds(args, hour, rowNumber, cache) {
-  if (!cache.has(hour)) {
-    const data = await postJson(args.modelApi, { hour }, args);
-    const minutes = Number(data?.prediction?.point?.minutes);
-    if (!Number.isFinite(minutes)) {
-      throw new Error(`Row ${rowNumber}: model response did not include prediction.point.minutes.`);
-    }
-    cache.set(hour, minutes * 60);
+async function getPredictSeconds(args, row, rowNumber, departureTime, cache) {
+  const hour = normalizeHour(row.hour, rowNumber);
+  const cacheKey = departureTime;
+
+  if (!cache.has(cacheKey)) {
+    const data = await postJson(args.modelApi, {
+      departure_time: departureTime,
+      hour,
+    }, args);
+    cache.set(cacheKey, extractPredictionSeconds(data, rowNumber));
   }
 
-  return cache.get(hour);
+  return cache.get(cacheKey);
+}
+
+async function readTimestampSource(args) {
+  try {
+    const text = await fs.readFile(args.timestampSource, "utf8");
+    return parseCsv(text).records;
+  } catch (error) {
+    if (error.code === "ENOENT") {
+      return [];
+    }
+    throw error;
+  }
+}
+
+function hasFilledTimes(row) {
+  return row.estimate_time !== undefined
+    && row.predict_time !== undefined
+    && String(row.estimate_time).trim() !== ""
+    && String(row.predict_time).trim() !== "";
+}
+
+async function writeOutput(args, headers, records) {
+  await fs.writeFile(args.output, stringifyCsv(headers, records), "utf8");
 }
 
 async function main() {
   const args = parseArgs(process.argv);
   const text = await fs.readFile(args.input, "utf8");
-  const firstLine = text.split(/\r?\n/, 1)[0];
-  const headers = firstLine.split(",");
-  const records = parseCsv(text);
+  const { headers, records: rawRecords } = parseCsv(text);
+  const sourceRecords = await readTimestampSource(args);
 
-  for (const required of ["hour", "lat", "lng", "destination_lat", "destination_lng"]) {
-    if (!headers.includes(required)) {
-      throw new Error(`Missing required column: ${required}`);
-    }
-  }
+  requireColumns(headers, ["hour", "lat", "lng", "destination_lat", "destination_lng"]);
+  addColumns(headers, ["timestamp", "estimate_time", "predict_time"]);
 
-  for (const outputColumn of ["estimate_time", "predict_time"]) {
-    if (!headers.includes(outputColumn)) {
-      headers.push(outputColumn);
-    }
+  const { records, droppedRows } = hydrateTimestamps(rawRecords, sourceRecords);
+  if (!records.length) {
+    throw new Error("No rows with usable timestamp data were found.");
   }
 
   const estimateCache = new Map();
@@ -351,25 +517,42 @@ async function main() {
   for (let index = 0; index < records.length; index += 1) {
     const rowNumber = index + 2;
     const row = records[index];
-    const hour = asFiniteNumber(row, "hour", rowNumber);
-    const departureDate = args.date || randomDateBetween(args.randomStartDate, args.randomEndDate);
+    const departureTime = departureTimeFromTimestamp(row.timestamp);
 
-    const [estimateSeconds, predictSeconds] = await Promise.all([
-      getEstimateSeconds(args, row, rowNumber, departureDate, estimateCache),
-      getPredictSeconds(args, hour, rowNumber, predictCache),
-    ]);
+    if (hasFilledTimes(row)) {
+      if ((index + 1) % 25 === 0 || index === records.length - 1) {
+        console.log(`Skipped ${index + 1}/${records.length} rows`);
+      }
+      continue;
+    }
+
+    let estimateSeconds;
+    let predictSeconds;
+    try {
+      [estimateSeconds, predictSeconds] = await Promise.all([
+        getEstimateSeconds(args, row, rowNumber, departureTime, estimateCache),
+        getPredictSeconds(args, row, rowNumber, departureTime, predictCache),
+      ]);
+    } catch (error) {
+      await writeOutput(args, headers, records);
+      throw new Error(`Row ${rowNumber} (${row.timestamp}, hour ${row.hour}) failed: ${error.message}`);
+    }
 
     row.estimate_time = formatSeconds(estimateSeconds, args.decimals);
     row.predict_time = formatSeconds(predictSeconds, args.decimals);
+
+    if ((index + 1) % args.saveEvery === 0) {
+      await writeOutput(args, headers, records);
+    }
 
     if ((index + 1) % 25 === 0 || index === records.length - 1) {
       console.log(`Filled ${index + 1}/${records.length} rows`);
     }
   }
 
-  await fs.writeFile(args.output, stringifyCsv(headers, records), "utf8");
+  await writeOutput(args, headers, records);
   console.log(`Wrote ${args.output}`);
-  console.log(`Vietmap calls: ${estimateCache.size}; model calls: ${predictCache.size}`);
+  console.log(`Vietmap calls: ${estimateCache.size}; model calls: ${predictCache.size}; dropped rows: ${droppedRows}`);
 }
 
 main().catch((error) => {

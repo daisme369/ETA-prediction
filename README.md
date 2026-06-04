@@ -119,7 +119,7 @@ To fill `data/output_log.csv`, keep both APIs running and execute:
 node data/fill_output_log.js
 ```
 
-The script calls the Vietmap proxy with each row's `lat/lng`, `destination_lat/destination_lng`, and local Vietnam `hour`, using a random date per row from `2026-04-01` through `2026-04-30`. It then calls the model API with that same `hour`. Both `estimate_time` and `predict_time` are written in seconds.
+The script calls the Vietmap proxy with each row's `lat/lng`, `destination_lat/destination_lng`, and timestamp-aligned `departureTime`. If `data/output_log.csv` does not include `timestamp`, the script hydrates it from `data/processed_data.csv` and corrects `hour` to match that timestamp. It then calls the model API with the same `departure_time` and writes both `estimate_time` and `predict_time` in seconds.
 
 For a fresh Python environment:
 
