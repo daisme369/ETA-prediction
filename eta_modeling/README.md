@@ -59,6 +59,10 @@ python -m src.training.train_xgboost_direct --config configs/config.yaml
 python -m src.training.train_xgboost_residual --config configs/config.yaml
 python -m src.training.train_mlp_residual --config configs/config.yaml
 python -m src.training.train_deepr_eta_like --config configs/config.yaml
+python -m src.training.train_hour_bin_median --config configs/config.yaml
+python -m src.training.train_hour_bin_xgboost_residual --config configs/config.yaml
+python -m src.training.train_hour_bin_mlp_residual --config configs/config.yaml
+python -m src.training.train_hour_bin_deepr_eta_like --config configs/config.yaml
 python -m src.training.compare_models --config configs/config.yaml
 ```
 
@@ -69,6 +73,18 @@ The model stages are:
 - Stage 2: XGBoost residual model.
 - Stage 3: PyTorch MLP residual model.
 - Stage 4: DeeprETA-like embedding residual model.
+- Hour-bin variants: replace sparse raw `hour`, `hour_sin`, and `hour_cos` with a categorical `hour_bin`, then train bin median, XGBoost residual, MLP residual, and DeeprETA-like residual models.
+
+Hour-bin mapping:
+
+```text
+5-6   -> early_morning
+7-9   -> morning_peak
+10-14 -> off_peak_midday
+15-18 -> afternoon_evening_peak
+19-21 -> late_evening_low_service
+other -> outside configured service hours
+```
 
 ## MLflow
 
@@ -88,6 +104,10 @@ eta_fixed_trip_xgboost_direct
 eta_fixed_trip_xgboost_residual
 eta_fixed_trip_mlp_residual
 eta_fixed_trip_deepr_eta_like
+eta_fixed_trip_hour_bin_median
+eta_fixed_trip_hour_bin_xgboost_residual
+eta_fixed_trip_hour_bin_mlp_residual
+eta_fixed_trip_hour_bin_deepr_eta_like
 eta_fixed_trip_comparison
 ```
 
@@ -109,6 +129,10 @@ Important files:
 - `artifacts/models/xgb_residual_eta.joblib`
 - `artifacts/models/mlp_residual.pt`
 - `artifacts/models/deepr_eta_like.pt`
+- `artifacts/models/hour_bin_median_eta.joblib`
+- `artifacts/models/hour_bin_xgb_residual_eta.joblib`
+- `artifacts/models/hour_bin_mlp_residual_eta.pt`
+- `artifacts/models/hour_bin_deepr_eta_like.pt`
 - `artifacts/metrics/model_comparison.csv`
 - `artifacts/plots/model_comparison_mae_p95.png`
 

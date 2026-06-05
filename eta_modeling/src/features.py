@@ -30,6 +30,7 @@ def haversine_distance_meters(
 def add_engineered_features(df: pd.DataFrame, use_cyclic: bool = True, use_geohash: bool = False) -> pd.DataFrame:
     """Create reusable ETA features without target leakage."""
     out = df.copy()
+    out["hour_bin"] = create_hour_bins(out["hour"])
     out["stationId"] = out["stationId"].astype(str)
     out["destination_stationId"] = out["destination_stationId"].astype(str)
     out["od_pair"] = out["stationId"] + "_" + out["destination_stationId"]
@@ -70,6 +71,26 @@ def add_engineered_features(df: pd.DataFrame, use_cyclic: bool = True, use_geoha
             use_geohash = False
 
     return out
+
+
+def create_hour_bins(hour: pd.Series) -> pd.Series:
+    """Map sparse hourly ETA samples into operational service-period bins."""
+    hour_num = pd.to_numeric(hour, errors="coerce")
+    conditions = [
+        hour_num.between(5, 6, inclusive="both"),
+        hour_num.between(7, 9, inclusive="both"),
+        hour_num.between(10, 14, inclusive="both"),
+        hour_num.between(15, 18, inclusive="both"),
+        hour_num.between(19, 21, inclusive="both"),
+    ]
+    labels = [
+        "early_morning",
+        "morning_peak",
+        "off_peak_midday",
+        "afternoon_evening_peak",
+        "late_evening_low_service",
+    ]
+    return pd.Series(np.select(conditions, labels, default="other"), index=hour.index, dtype="object")
 
 
 def configured_feature_columns(df: pd.DataFrame, config: dict) -> tuple[list[str], list[str]]:

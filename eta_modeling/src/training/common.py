@@ -61,6 +61,35 @@ def prepare_data(config: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def prepare_hour_binned_data(config: dict[str, Any]) -> dict[str, Any]:
+    """Prepare data for models that replace sparse raw hour features with hour_bin."""
+    prepared = prepare_data(config)
+    if "hour_bin" not in prepared["train_df"].columns:
+        raise ValueError("hour_bin was not created during feature engineering.")
+
+    removed_numeric = {"hour", "hour_sin", "hour_cos"}
+    numeric = [feature for feature in prepared["numeric_features"] if feature not in removed_numeric]
+    categorical = list(prepared["categorical_features"])
+    if "hour_bin" not in categorical:
+        categorical.append("hour_bin")
+
+    prepared["numeric_features"] = numeric
+    prepared["categorical_features"] = categorical
+    prepared["feature_list"] = numeric + categorical
+    prepared["hour_binning"] = {
+        "hour_feature_strategy": "replace_raw_hour_with_hour_bin",
+        "bins": {
+            "early_morning": "5-6",
+            "morning_peak": "7-9",
+            "off_peak_midday": "10-14",
+            "afternoon_evening_peak": "15-18",
+            "late_evening_low_service": "19-21",
+            "other": "outside configured service hours",
+        },
+    }
+    return prepared
+
+
 def split_xy(frame: pd.DataFrame, features: list[str], target: str) -> tuple[pd.DataFrame, np.ndarray, np.ndarray, np.ndarray]:
     x = get_feature_frame(frame, [f for f in features if f in frame.columns and frame[f].dtype.kind in "biufc"], [])
     # Preserve original configured order and mixed dtypes.
@@ -102,17 +131,18 @@ def evaluate_all_splits(
 
 
 def prediction_frame(frame: pd.DataFrame, pred_eta: np.ndarray, model_name: str) -> pd.DataFrame:
-    out = frame[
-        [
-            "timestamp",
-            "stationId",
-            "destination_stationId",
-            "hour",
-            "baseline_eta_secs",
-            "actual_eta_secs",
-            "residual_secs",
-        ]
-    ].copy()
+    columns = [
+        "timestamp",
+        "stationId",
+        "destination_stationId",
+        "hour",
+        "baseline_eta_secs",
+        "actual_eta_secs",
+        "residual_secs",
+    ]
+    if "hour_bin" in frame.columns:
+        columns.insert(4, "hour_bin")
+    out = frame[columns].copy()
     out["model_name"] = model_name
     out["pred_eta_secs"] = np.asarray(pred_eta, dtype=float)
     out["pred_residual_secs"] = out["pred_eta_secs"] - out["baseline_eta_secs"]

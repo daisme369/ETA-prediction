@@ -34,9 +34,16 @@ def _present_columns(df, columns: list[str]) -> list[str]:
 
 def _build_deepr_feature_groups(train_df, cfg: dict) -> dict[str, object]:
     """Build DeeprETA-like embedding feature groups without target leakage."""
-    categorical_time_features = _present_columns(train_df, DEEPR_CATEGORICAL_TIME_FEATURES)
+    if cfg.get("use_hour_bin", False) and "hour_bin" in train_df.columns:
+        categorical_time_candidates = ["hour_bin", "weekday", "month", "is_weekend", "is_rush_hour"]
+        cyclic_time_candidates = [feature for feature in DEEPR_CYCLIC_TIME_FEATURES if feature not in {"hour_sin", "hour_cos"}]
+    else:
+        categorical_time_candidates = DEEPR_CATEGORICAL_TIME_FEATURES
+        cyclic_time_candidates = DEEPR_CYCLIC_TIME_FEATURES
+
+    categorical_time_features = _present_columns(train_df, categorical_time_candidates)
     categorical_route_features = _present_columns(train_df, DEEPR_CATEGORICAL_ROUTE_FEATURES)
-    cyclic_time_features = _present_columns(train_df, DEEPR_CYCLIC_TIME_FEATURES)
+    cyclic_time_features = _present_columns(train_df, cyclic_time_candidates)
     weather_features = _present_columns(train_df, DEEPR_WEATHER_FEATURES)
 
     bucket_features = {

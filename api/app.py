@@ -244,12 +244,12 @@ def read_metrics(model_name: str) -> dict[str, Any]:
     return {}
 
 
-def read_deepr_eta_metadata() -> dict[str, Any]:
+def read_deepr_eta_metadata(model_id: str = "deepr_eta_like") -> dict[str, Any]:
     """Read lightweight metadata from the latest DeeprETA-like artifacts."""
     if torch is None:
         return {}
-    model_path = EXPERIMENT_MODELS_DIR / "deepr_eta_like.pt"
-    bucketizer_path = EXPERIMENT_MODELS_DIR / "deepr_eta_like_bucketizers.joblib"
+    model_path = EXPERIMENT_MODELS_DIR / f"{model_id}.pt"
+    bucketizer_path = EXPERIMENT_MODELS_DIR / f"{model_id}_bucketizers.joblib"
     if not model_path.exists():
         return {}
     try:
@@ -290,7 +290,7 @@ def model_spec(
     missing = [str(path.relative_to(ROOT_DIR)) for path in artifact_paths if not path.exists()]
     available = not missing
     error = None
-    if model_type in {"mlp_residual", "deepr_eta_like"} and ETA_MODELING_IMPORT_ERROR is not None:
+    if ("mlp" in model_type or "deepr" in model_type) and ETA_MODELING_IMPORT_ERROR is not None:
         available = False
         error = f"Cannot import eta_modeling model code: {ETA_MODELING_IMPORT_ERROR}"
     return {
@@ -372,6 +372,61 @@ def available_model_specs() -> list[dict[str, Any]]:
             description="Embedding-based residual model inspired by DeeprETA.",
             metadata=read_deepr_eta_metadata(),
         ),
+        model_spec(
+            "hour_bin_median_eta",
+            "Hour-bin median residual",
+            "hour_bin_median",
+            "median_residual_secs_by_hour_bin",
+            requires_baseline=True,
+            artifact_paths=[EXPERIMENT_MODELS_DIR / "hour_bin_median_eta.joblib"],
+            description="Uses train-set median residual per service-period hour bin.",
+            metadata={
+                "hour_bin_feature": "hour_bin",
+                "hour_bins": {
+                    "early_morning": "5-6",
+                    "morning_peak": "7-9",
+                    "off_peak_midday": "10-14",
+                    "afternoon_evening_peak": "15-18",
+                    "late_evening_low_service": "19-21",
+                    "other": "outside configured service hours",
+                },
+            },
+        ),
+        model_spec(
+            "hour_bin_xgb_residual_eta",
+            "Hour-bin XGBoost residual",
+            "hour_bin_xgboost_residual",
+            "residual_secs",
+            requires_baseline=True,
+            artifact_paths=[EXPERIMENT_MODELS_DIR / "hour_bin_xgb_residual_eta.joblib"],
+            description="XGBoost residual model using categorical hour_bin instead of sparse raw hour.",
+        ),
+        model_spec(
+            "hour_bin_mlp_residual_eta",
+            "Hour-bin MLP residual",
+            "hour_bin_mlp_residual",
+            "residual_secs_final_eta_loss",
+            requires_baseline=True,
+            artifact_paths=[
+                EXPERIMENT_MODELS_DIR / "hour_bin_mlp_residual_eta.pt",
+                EXPERIMENT_MODELS_DIR / "hour_bin_mlp_residual_eta_preprocessor.joblib",
+            ],
+            description="PyTorch MLP residual model using categorical hour_bin.",
+        ),
+        model_spec(
+            "hour_bin_deepr_eta_like",
+            "Hour-bin DeeprETA-like residual",
+            "hour_bin_deepr_eta_like",
+            "residual_secs_final_eta_loss",
+            requires_baseline=True,
+            artifact_paths=[
+                EXPERIMENT_MODELS_DIR / "hour_bin_deepr_eta_like.pt",
+                EXPERIMENT_MODELS_DIR / "hour_bin_deepr_eta_like_encoder.joblib",
+                EXPERIMENT_MODELS_DIR / "hour_bin_deepr_eta_like_bucketizers.joblib",
+            ],
+            description="DeeprETA-like embedding residual model using hour_bin as the time token.",
+            metadata=read_deepr_eta_metadata("hour_bin_deepr_eta_like"),
+        ),
     ]
 
 
@@ -444,14 +499,20 @@ def load_joblib_experiment_model(filename: str) -> dict[str, Any]:
     return package
 
 
-@lru_cache(maxsize=1)
-def load_mlp_bundle() -> tuple[Any, Any, list[str]]:
+@lru_cache(maxsize=None)
+def load_mlp_bundle(model_id: str = "mlp_residual_eta") -> tuple[Any, Any, list[str]]:
     if torch is None or ResidualMLP is None:
         raise HTTPException(status_code=503, detail=f"PyTorch model code is not available: {ETA_MODELING_IMPORT_ERROR}")
-    model_path = EXPERIMENT_MODELS_DIR / "mlp_residual.pt"
-    preprocessor_path = EXPERIMENT_MODELS_DIR / "mlp_residual_preprocessor.joblib"
+    if model_id == "mlp_residual_eta":
+        model_path = EXPERIMENT_MODELS_DIR / "mlp_residual.pt"
+        preprocessor_path = EXPERIMENT_MODELS_DIR / "mlp_residual_preprocessor.joblib"
+    elif model_id == "hour_bin_mlp_residual_eta":
+        model_path = EXPERIMENT_MODELS_DIR / "hour_bin_mlp_residual_eta.pt"
+        preprocessor_path = EXPERIMENT_MODELS_DIR / "hour_bin_mlp_residual_eta_preprocessor.joblib"
+    else:
+        raise HTTPException(status_code=404, detail=f"Unsupported MLP model_id: {model_id}")
     if not model_path.exists() or not preprocessor_path.exists():
-        raise HTTPException(status_code=503, detail="MLP residual artifacts are missing.")
+        raise HTTPException(status_code=503, detail=f"MLP residual artifacts are missing for {model_id}.")
 
     checkpoint = torch.load(model_path, map_location="cpu")
     cfg = checkpoint.get("config", {})
@@ -471,28 +532,30 @@ def predict_xgb(model_id: str, frame: pd.DataFrame) -> float:
     features = package.get("features") or []
     x = package["preprocessor"].transform(frame[features])
     raw = float(np.asarray(package["model"].predict(x)).reshape(-1)[0])
-    if model_id == "xgb_residual_eta":
+    if model_id in {"xgb_residual_eta", "hour_bin_xgb_residual_eta"}:
         raw = float(frame["baseline_eta_secs"].iloc[0]) + raw
     return max(raw, 0.0)
 
 
-def predict_mlp(frame: pd.DataFrame) -> float:
+def predict_mlp(frame: pd.DataFrame, model_id: str = "mlp_residual_eta") -> float:
     if predict_residual is None:
         raise HTTPException(status_code=503, detail=f"PyTorch model code is not available: {ETA_MODELING_IMPORT_ERROR}")
-    model, preprocessor, features = load_mlp_bundle()
+    model, preprocessor, features = load_mlp_bundle(model_id)
     x = np.asarray(preprocessor.transform(frame[features]), dtype=np.float32)
     residual = float(np.asarray(predict_residual(model, x)).reshape(-1)[0])
     return max(float(frame["baseline_eta_secs"].iloc[0]) + residual, 0.0)
 
 
-@lru_cache(maxsize=1)
-def load_deep_bundle() -> tuple[Any, Any]:
+@lru_cache(maxsize=None)
+def load_deep_bundle(model_id: str = "deepr_eta_like") -> tuple[Any, Any]:
     if torch is None or DeepRETALikeModel is None:
         raise HTTPException(status_code=503, detail=f"DeepETA-like model code is not available: {ETA_MODELING_IMPORT_ERROR}")
-    model_path = EXPERIMENT_MODELS_DIR / "deepr_eta_like.pt"
-    encoder_path = EXPERIMENT_MODELS_DIR / "deepr_eta_like_encoder.joblib"
+    if model_id not in {"deepr_eta_like", "hour_bin_deepr_eta_like"}:
+        raise HTTPException(status_code=404, detail=f"Unsupported DeeprETA-like model_id: {model_id}")
+    model_path = EXPERIMENT_MODELS_DIR / f"{model_id}.pt"
+    encoder_path = EXPERIMENT_MODELS_DIR / f"{model_id}_encoder.joblib"
     if not model_path.exists() or not encoder_path.exists():
-        raise HTTPException(status_code=503, detail="DeeprETA-like artifacts are missing.")
+        raise HTTPException(status_code=503, detail=f"DeeprETA-like artifacts are missing for {model_id}.")
 
     checkpoint = torch.load(model_path, map_location="cpu")
     cfg = checkpoint.get("config", {})
@@ -510,11 +573,23 @@ def load_deep_bundle() -> tuple[Any, Any]:
     return model, encoder
 
 
-def predict_deep(frame: pd.DataFrame) -> float:
+def predict_deep(frame: pd.DataFrame, model_id: str = "deepr_eta_like") -> float:
     if predict_deepr_eta is None:
         raise HTTPException(status_code=503, detail=f"DeepETA-like model code is not available: {ETA_MODELING_IMPORT_ERROR}")
-    model, encoder = load_deep_bundle()
+    model, encoder = load_deep_bundle(model_id)
     return float(np.asarray(predict_deepr_eta(model, encoder, frame)).reshape(-1)[0])
+
+
+def predict_hour_bin_median(frame: pd.DataFrame) -> float:
+    path = EXPERIMENT_MODELS_DIR / "hour_bin_median_eta.joblib"
+    if not path.exists():
+        raise HTTPException(status_code=503, detail=f"Model artifact is missing: {path.relative_to(ROOT_DIR)}")
+    package = joblib.load(path)
+    medians = package.get("hour_bin_median_residual_secs") or {}
+    global_median = as_float(package.get("global_median_residual_secs"), 0.0)
+    hour_bin = as_str(frame["hour_bin"].iloc[0], "other")
+    residual = as_float(medians.get(hour_bin), global_median)
+    return max(float(frame["baseline_eta_secs"].iloc[0]) + residual, 0.0)
 
 
 def predict_experiment_model(model_id: str, payload: EtaPredictRequest, hour: int) -> dict[str, Any]:
@@ -522,12 +597,14 @@ def predict_experiment_model(model_id: str, payload: EtaPredictRequest, hour: in
     baseline = float(frame["baseline_eta_secs"].iloc[0])
     if model_id == "vietmap_baseline":
         pred_eta = baseline
-    elif model_id in {"xgb_direct_eta", "xgb_residual_eta"}:
+    elif model_id in {"xgb_direct_eta", "xgb_residual_eta", "hour_bin_xgb_residual_eta"}:
         pred_eta = predict_xgb(model_id, frame)
-    elif model_id == "mlp_residual_eta":
-        pred_eta = predict_mlp(frame)
-    elif model_id == "deepr_eta_like":
-        pred_eta = predict_deep(frame)
+    elif model_id == "hour_bin_median_eta":
+        pred_eta = predict_hour_bin_median(frame)
+    elif model_id in {"mlp_residual_eta", "hour_bin_mlp_residual_eta"}:
+        pred_eta = predict_mlp(frame, model_id)
+    elif model_id in {"deepr_eta_like", "hour_bin_deepr_eta_like"}:
+        pred_eta = predict_deep(frame, model_id)
     else:
         raise HTTPException(status_code=404, detail=f"Unknown experiment model_id: {model_id}")
 
