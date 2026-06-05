@@ -6,6 +6,8 @@ const state = {
   originMarker: null,
   destinationMarker: null,
   modelInfo: null,
+  availableModels: [],
+  selectedModelId: null,
   fixedRoute: null,
   locations: {
     origin: {
@@ -43,11 +45,13 @@ const elements = {
   capacityKg: document.getElementById("capacity-kg"),
   departureTime: document.getElementById("departure-time"),
   alternative: document.getElementById("alternative"),
+  etaModel: document.getElementById("eta-model"),
   resolveButton: document.getElementById("resolve-button"),
   sampleButton: document.getElementById("sample-button"),
   clearButton: document.getElementById("clear-button"),
   distanceValue: document.getElementById("distance-value"),
   durationValue: document.getElementById("duration-value"),
+  baselineValue: document.getElementById("baseline-value"),
   vehicleValue: document.getElementById("vehicle-value"),
   etaHourValue: document.getElementById("eta-hour-value"),
   etaP50Value: document.getElementById("eta-p50-value"),
@@ -67,8 +71,9 @@ async function fetchConfig() {
   return response.json();
 }
 
-async function fetchEtaModelInfo() {
-  const response = await fetch(`${ETA_API_BASE}/api/eta/model-info`);
+async function fetchEtaModelInfo(modelId) {
+  const suffix = modelId ? `?model_id=${encodeURIComponent(modelId)}` : "";
+  const response = await fetch(`${ETA_API_BASE}/api/eta/model-info${suffix}`);
   const data = await response.json();
   if (!response.ok) {
     throw new Error(data.detail || data.error || "Failed to load ETA model.");
@@ -91,6 +96,40 @@ async function postEtaPrediction(payload) {
     throw new Error(detail || data.error || "ETA prediction failed.");
   }
   return data;
+}
+
+async function fetchVietmapBaseline(departureTime) {
+  const origin = state.locations.origin.point;
+  const destination = state.locations.destination.point;
+  if (!origin || !destination) {
+    throw new Error("Fixed route coordinates are not ready.");
+  }
+
+  const response = await fetch("/api/route", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      origin,
+      destination,
+      vehicle: elements.vehicle?.value || "car",
+      departureTime,
+      alternative: false,
+    }),
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.details || data.error || "Failed to fetch Vietmap baseline ETA.");
+  }
+  const baselineEtaSecs = Number(data.summary?.durationMs) / 1000;
+  if (!Number.isFinite(baselineEtaSecs) || baselineEtaSecs <= 0) {
+    throw new Error("Vietmap route response did not include a valid duration.");
+  }
+  return {
+    ...data,
+    baselineEtaSecs,
+  };
 }
 
 function setStatus(text) {
@@ -128,6 +167,22 @@ function formatEta(minutes) {
     return "-";
   }
   return `${value.toFixed(2)} min`;
+}
+
+function selectedModel() {
+  return state.availableModels.find((model) => model.id === state.selectedModelId) || null;
+}
+
+function populateModelSelect(models, selectedModelId) {
+  elements.etaModel.innerHTML = "";
+  for (const model of models) {
+    const option = document.createElement("option");
+    option.value = model.id;
+    option.textContent = model.available ? model.label : `${model.label} (unavailable)`;
+    option.disabled = !model.available;
+    elements.etaModel.appendChild(option);
+  }
+  elements.etaModel.value = selectedModelId;
 }
 
 function markerIcon(color) {
@@ -231,7 +286,8 @@ function renderFixedRoute(route) {
 function resetSummary() {
   elements.distanceValue.textContent = state.fixedRoute ? formatDistance(state.fixedRoute.distance_meters) : "-";
   elements.durationValue.textContent = "-";
-  elements.vehicleValue.textContent = state.modelInfo?.model_name || "-";
+  elements.baselineValue.textContent = "-";
+  elements.vehicleValue.textContent = selectedModel()?.label || state.modelInfo?.model_name || "-";
   elements.etaHourValue.textContent = "-";
   elements.etaP50Value.textContent = "-";
   elements.etaP85Value.textContent = "-";
@@ -250,23 +306,42 @@ function setDefaultDepartureTime() {
 }
 
 function renderDiagnostics(modelInfo) {
-  const metrics = modelInfo.holdout_metrics || {};
+  const selected = modelInfo.selected_model || selectedModel() || {};
+  const metrics = selected.metrics || modelInfo.holdout_metrics || {};
   const quantileMetrics = Array.isArray(modelInfo.quantile_holdout_metrics)
     ? modelInfo.quantile_holdout_metrics
     : [];
 
+  const testMae = metrics.test_mae ?? metrics.test_mae_seconds;
+  const testP95 = metrics.test_p95 ?? metrics.test_p95_abs_error;
+  const improvement = metrics.mae_improvement_pct ?? metrics.test_mae_improvement_pct;
   const items = [
-    `Point model: ${modelInfo.model_name || "-"}`,
-    `Selection: ${modelInfo.selection_policy || "-"}`,
-    `CV-best: ${modelInfo.cv_best_model_name || modelInfo.model_name || "-"}`,
-    `MAE holdout: ${Number(metrics.test_mae_seconds || 0).toFixed(2)} sec`,
+    `Selected: ${selected.label || modelInfo.model_name || "-"}`,
+    `Type: ${selected.model_type || "legacy"}`,
+    `Target: ${selected.target_type || modelInfo.target_column || "-"}`,
+    `Needs Vietmap baseline: ${selected.requires_baseline ? "yes" : "no"}`,
+  ];
+
+  if (Number.isFinite(Number(testMae))) {
+    items.push(`Test MAE: ${Number(testMae).toFixed(2)} sec`);
+  }
+  if (Number.isFinite(Number(testP95))) {
+    items.push(`Test P95: ${Number(testP95).toFixed(2)} sec`);
+  }
+  if (Number.isFinite(Number(improvement))) {
+    items.push(`MAE improvement vs Vietmap: ${Number(improvement).toFixed(2)}%`);
+  }
+  if (!items.some((item) => item.startsWith("Test MAE")) && Number.isFinite(Number(metrics.test_mae_seconds))) {
+    items.push(`MAE holdout: ${Number(metrics.test_mae_seconds).toFixed(2)} sec`);
+  }
+  items.push(
     ...quantileMetrics.map((metric) => {
       const label = `P${Math.round(Number(metric.quantile) * 100)}`;
       return `${label} coverage: ${Number(metric.test_coverage || 0).toFixed(3)} / target ${Number(
         metric.target_coverage || 0,
       ).toFixed(2)}`;
     }),
-  ];
+  );
 
   elements.stepsList.innerHTML = "";
   elements.stepsCount.textContent = `${items.length} metrics`;
@@ -277,13 +352,16 @@ function renderDiagnostics(modelInfo) {
   }
 }
 
-function renderPrediction(data) {
+function renderPrediction(data, baselineRoute) {
   const prediction = data.prediction;
   const point = prediction.point;
   const quantiles = prediction.quantiles || {};
+  const baselineMinutes = prediction.baseline?.minutes ?? baselineRoute?.baselineEtaSecs / 60;
+  const routeDistance = baselineRoute?.summary?.distanceMeters ?? data.route?.distance_meters;
 
-  elements.distanceValue.textContent = formatDistance(data.route?.distance_meters);
+  elements.distanceValue.textContent = formatDistance(routeDistance);
   elements.durationValue.textContent = formatEta(point.minutes);
+  elements.baselineValue.textContent = formatEta(baselineMinutes);
   elements.vehicleValue.textContent = data.model_name || "-";
   elements.etaHourValue.textContent = `Hour ${prediction.hour}`;
   elements.etaP50Value.textContent = formatEta(quantiles.p50?.minutes);
@@ -301,11 +379,27 @@ async function calculateRoute(event) {
       throw new Error("Please select a departure time.");
     }
 
-    const data = await postEtaPrediction({
-      departure_time: elements.departureTime.value,
-    });
+    const model = selectedModel();
+    if (!model) {
+      throw new Error("Please select a prediction model.");
+    }
 
-    renderPrediction(data);
+    let baselineRoute = null;
+    const payload = {
+      departure_time: elements.departureTime.value,
+      model_id: model.id,
+    };
+
+    if (model.requires_baseline) {
+      setStatus("Vietmap");
+      baselineRoute = await fetchVietmapBaseline(elements.departureTime.value);
+      payload.baseline_eta_secs = baselineRoute.baselineEtaSecs;
+    }
+
+    setStatus("Predicting");
+    const data = await postEtaPrediction(payload);
+
+    renderPrediction(data, baselineRoute);
     setStatus("Ready");
   } catch (error) {
     setStatus("Error");
@@ -317,6 +411,8 @@ async function calculateRoute(event) {
 async function initialize() {
   const [config, modelInfo] = await Promise.all([fetchConfig(), fetchEtaModelInfo()]);
   state.modelInfo = modelInfo;
+  state.availableModels = modelInfo.available_models || [];
+  state.selectedModelId = modelInfo.selected_model_id || state.availableModels.find((model) => model.available)?.id || null;
   state.fixedRoute = modelInfo.route;
 
   state.map = L.map("map", {
@@ -331,6 +427,7 @@ async function initialize() {
   }).addTo(state.map);
 
   renderFixedRoute(modelInfo.route);
+  populateModelSelect(state.availableModels, state.selectedModelId);
   renderDiagnostics(modelInfo);
   setDefaultDepartureTime();
   resetSummary();
@@ -338,6 +435,22 @@ async function initialize() {
 }
 
 elements.form.addEventListener("submit", calculateRoute);
+elements.etaModel.addEventListener("change", async () => {
+  state.selectedModelId = elements.etaModel.value;
+  setError("");
+  setStatus("Loading");
+  try {
+    const modelInfo = await fetchEtaModelInfo(state.selectedModelId);
+    state.modelInfo = modelInfo;
+    state.availableModels = modelInfo.available_models || state.availableModels;
+    renderDiagnostics(modelInfo);
+    resetSummary();
+    setStatus("Ready");
+  } catch (error) {
+    setStatus("Error");
+    setError(error instanceof Error ? error.message : "Failed to load model metadata.");
+  }
+});
 elements.sampleButton.addEventListener("click", () => {
   setDefaultDepartureTime();
   resetSummary();

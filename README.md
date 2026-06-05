@@ -30,6 +30,8 @@ Start the ETA model API in a second terminal when you need model predictions:
 python -m uvicorn api.app:app --host 127.0.0.1 --port 8000
 ```
 
+The frontend now loads available ETA models from FastAPI and shows them in the `Prediction model` dropdown. For experiment models trained in `eta_modeling/`, the browser first calls the local `POST /api/route` Vietmap proxy, extracts `summary.durationMs / 1000`, and sends it to FastAPI as `baseline_eta_secs`.
+
 ## Suggested env values
 
 ### Route API
@@ -84,6 +86,45 @@ If these are not set, the frontend falls back to the public OpenStreetMap tile l
 }
 ```
 
+### `GET /api/eta/models`
+
+Returns the models available to the frontend dropdown:
+
+```json
+{
+  "default_model_id": "mlp_residual_eta",
+  "models": [
+    {
+      "id": "mlp_residual_eta",
+      "label": "MLP residual ETA",
+      "requires_baseline": true,
+      "available": true
+    }
+  ]
+}
+```
+
+### `POST /api/eta/predict`
+
+Legacy fixed-route model:
+
+```json
+{
+  "departure_time": "2026-04-10T08:00:00",
+  "model_id": "legacy_fixed_route"
+}
+```
+
+Experiment residual/direct models:
+
+```json
+{
+  "departure_time": "2026-04-10T08:00:00",
+  "model_id": "mlp_residual_eta",
+  "baseline_eta_secs": 180
+}
+```
+
 ## Notes
 
 - Vietmap recommends backend integration to avoid exposing API credentials.
@@ -118,6 +159,24 @@ To fill `data/output_log.csv`, keep both APIs running and execute:
 ```bash
 node data/fill_output_log.js
 ```
+
+## ETA fixed-trip modeling experiments
+
+An end-to-end MLflow experiment pipeline is available in `eta_modeling/`. It evaluates Vietmap baseline ETA, XGBoost direct ETA, XGBoost residual ETA, MLP residual ETA, and a simplified DeeprETA-like residual architecture.
+
+```bash
+cd eta_modeling
+pip install -r requirements.txt
+python -m src.training.train_baseline --config configs/config.yaml
+python -m src.training.train_xgboost_direct --config configs/config.yaml
+python -m src.training.train_xgboost_residual --config configs/config.yaml
+python -m src.training.train_mlp_residual --config configs/config.yaml
+python -m src.training.train_deepr_eta_like --config configs/config.yaml
+python -m src.training.compare_models --config configs/config.yaml
+mlflow ui
+```
+
+See `eta_modeling/README.md` for schema, metrics, MLflow artifacts, and known limitations.
 
 The script calls the Vietmap proxy with each row's `lat/lng`, `destination_lat/destination_lng`, and timestamp-aligned `departureTime`. If `data/output_log.csv` does not include `timestamp`, the script hydrates it from `data/processed_data.csv` and corrects `hour` to match that timestamp. It then calls the model API with the same `departure_time` and writes both `estimate_time` and `predict_time` in seconds.
 

@@ -81,6 +81,10 @@
           </div>
 
           <div class="field-grid model-time-grid">
+            <label class="field">
+              <span>Prediction model</span>
+              <select id="eta-model" name="eta-model"></select>
+            </label>
             <label class="field model-hidden">
               <span>Vehicle</span>
               <select id="vehicle" name="vehicle">
@@ -112,10 +116,10 @@
           </div>
 
           <p class="helper-copy">
-            FastAPI reads model/artifacts/fixed_route_eta_model.joblib and returns point ETA plus P50/P85/P90.
+            Select a model to compare Vietmap baseline, XGBoost, MLP, and DeeprETA-like predictions.
           </p>
           <p class="helper-copy">
-            Current dataset contains one fixed origin-destination pair, so station inputs are locked.
+            Experiment models use Vietmap route duration as baseline input, so the app fetches it before prediction.
           </p>
         </form>
 
@@ -132,6 +136,10 @@
             <div class="metric-card">
               <span class="metric-label">Point ETA</span>
               <strong id="duration-value">-</strong>
+            </div>
+            <div class="metric-card">
+              <span class="metric-label">Vietmap ETA</span>
+              <strong id="baseline-value">-</strong>
             </div>
             <div class="metric-card">
               <span class="metric-label">Point model</span>

@@ -1,0 +1,100 @@
+project:
+  name: eta_fixed_trip_experiments
+  random_seed: 42
+  timezone: Asia/Ho_Chi_Minh
+
+paths:
+  processed_data: ../../data/processed_data.csv
+  output_log: ../../data/output_log.csv
+  artifacts_dir: ../artifacts
+  plots_dir: ../artifacts/plots
+  metrics_dir: ../artifacts/metrics
+  models_dir: ../artifacts/models
+  predictions_dir: ../artifacts/metrics/predictions
+  mlruns_dir: ../mlruns
+
+fixed_trip:
+  stationId: null
+  destination_stationId: null
+  min_samples: 30
+
+split:
+  train_ratio: 0.70
+  val_ratio: 0.15
+
+features:
+  numeric:
+    - baseline_eta_secs
+    - hour
+    - weekday
+    - month
+    - is_weekend
+    - is_rush_hour
+    - haversine_distance_meters
+    - lat
+    - lng
+    - destination_lat
+    - destination_lng
+    - rain
+    - origin_rain
+    - destination_rain
+    - hour_sin
+    - hour_cos
+    - weekday_sin
+    - weekday_cos
+    - month_sin
+    - month_cos
+  categorical:
+    - stationId
+    - destination_stationId
+    - od_pair
+  use_cyclic_time_features: true
+  use_geohash: false
+
+mlflow:
+  tracking_uri: file:../mlruns
+
+xgboost:
+  n_estimators: 600
+  learning_rate: 0.03
+  max_depth: 3
+  subsample: 0.9
+  colsample_bytree: 0.9
+  reg_lambda: 1.0
+  objective: reg:squarederror
+  tree_method: hist
+  random_state: 42
+  early_stopping_rounds: 50
+
+mlp_residual:
+  hidden_sizes: [128, 64, 32]
+  dropout: 0.15
+  learning_rate: 0.001
+  batch_size: 32
+  epochs: 200
+  patience: 25
+  loss_function: huber
+
+deepr_eta_like:
+  embedding_dim: 16
+  baseline_eta_buckets: 128
+  distance_buckets: 64
+  rain_buckets: 64
+  origin_rain_buckets: 64
+  destination_rain_buckets: 64
+  cyclic_time_buckets: 32
+  hidden_sizes: [128, 64]
+  dropout: 0.15
+  learning_rate: 0.001
+  batch_size: 32
+  epochs: 200
+  patience: 25
+  loss_function: huber
+  use_attention: false
+  use_calibration: true
+  calibration_feature: od_pair
+  asymmetric_huber:
+    enabled: false
+    delta: 30.0
+    underprediction_weight: 1.25
+    overprediction_weight: 1.0
