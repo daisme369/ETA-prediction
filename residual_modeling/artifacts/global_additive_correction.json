@@ -1,0 +1,79 @@
+{
+  "model_name": "global_additive_correction",
+  "target": "actual_eta_secs",
+  "baseline_column": "estimate_time",
+  "actual_column": "delta_time",
+  "prediction_formula": "corrected_eta_secs = estimate_time + global_residual_secs",
+  "correction_type": "median_train_residual",
+  "global_residual_secs": 15.795472999999987,
+  "train_residual_mean_secs": 31.637336367441854,
+  "split_strategy": "chronological_70_15_15",
+  "data_path": "data\\output_log.csv",
+  "split_summary": [
+    {
+      "split": "train",
+      "rows": 215,
+      "timestamp_min": "2026-01-01 05:23:27",
+      "timestamp_max": "2026-03-14 08:24:30"
+    },
+    {
+      "split": "val",
+      "rows": 46,
+      "timestamp_min": "2026-03-14 09:06:41",
+      "timestamp_max": "2026-03-23 14:10:14"
+    },
+    {
+      "split": "test",
+      "rows": 47,
+      "timestamp_min": "2026-03-23 15:07:42",
+      "timestamp_max": "2026-03-30 18:21:39"
+    }
+  ],
+  "metrics": [
+    {
+      "split": "train",
+      "rows": 215,
+      "baseline_mae": 50.38511845116279,
+      "corrected_mae": 47.611481032558146,
+      "mae_improvement_pct": 5.504874264199796,
+      "baseline_rmse": 79.11834390050386,
+      "corrected_rmse": 74.22773015581464,
+      "baseline_mape": 22.95008932893286,
+      "corrected_mape": 23.173911978813894,
+      "baseline_p95": 173.9882819999999,
+      "corrected_p95": 158.19280899999993,
+      "p95_improvement_pct": 9.078469433935783,
+      "corrected_r2": -0.12744393583474523
+    },
+    {
+      "split": "val",
+      "rows": 46,
+      "baseline_mae": 61.40115280434783,
+      "corrected_mae": 58.62324145652174,
+      "mae_improvement_pct": 4.5242006394860175,
+      "baseline_rmse": 123.23866140655244,
+      "corrected_rmse": 119.59391253475316,
+      "baseline_mape": 27.359513555271924,
+      "corrected_mape": 27.895402602507545,
+      "baseline_p95": 119.34764724999998,
+      "corrected_p95": 103.55217425,
+      "p95_improvement_pct": 13.234842381863535,
+      "corrected_r2": -0.09641441051469068
+    },
+    {
+      "split": "test",
+      "rows": 47,
+      "baseline_mae": 37.95616325531915,
+      "corrected_mae": 37.2492514893617,
+      "mae_improvement_pct": 1.8624426320497083,
+      "baseline_rmse": 56.886930194400605,
+      "corrected_rmse": 52.804426976735094,
+      "baseline_mape": 18.343605528486957,
+      "corrected_mape": 19.577862083516,
+      "baseline_p95": 123.74958409999995,
+      "corrected_p95": 107.95411109999996,
+      "p95_improvement_pct": 12.764061483419558,
+      "corrected_r2": 0.16770166638888162
+    }
+  ]
+}

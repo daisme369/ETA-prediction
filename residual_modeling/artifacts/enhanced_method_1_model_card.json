@@ -1,0 +1,435 @@
+{
+  "notebook": "residual_modeling/enhanced_method_1.ipynb",
+  "data_path": "data\\output_log.csv",
+  "target": "actual_eta_secs",
+  "api_eta_column": "estimate_time",
+  "actual_column": "delta_time",
+  "split_strategy": "chronological_70_15_15",
+  "methods": {
+    "api_plus_global_median_residual": {
+      "formula": "api_eta_secs + median(train.residual_secs)",
+      "global_median_residual_secs": 15.795472999999987,
+      "train_mean_residual_secs": 31.637336367441854
+    },
+    "api_plus_time_bin_median_residual": {
+      "formula": "api_eta_secs + median(train.residual_secs | train.time_bin)",
+      "fallback": "global_median_residual_secs for missing/unseen bins",
+      "time_bins": {
+        "early_morning": "4-6",
+        "morning_peak": "7-9",
+        "off_peak_day": "10-14",
+        "evening_peak": "15-18",
+        "late_evening": "19-21",
+        "other": "outside configured bins"
+      },
+      "time_bin_residuals": [
+        {
+          "time_bin": "early_morning",
+          "train_rows": 29,
+          "median_residual_secs": 1.7085859999999968,
+          "mean_residual_secs": 12.360461517241369,
+          "p25_residual_secs": -23.91571000000002,
+          "p75_residual_secs": 33.31394899999998,
+          "fallback_used_when_missing": false
+        },
+        {
+          "time_bin": "morning_peak",
+          "train_rows": 30,
+          "median_residual_secs": 20.921722999999986,
+          "mean_residual_secs": 36.957200833333324,
+          "p25_residual_secs": -4.836063750000022,
+          "p75_residual_secs": 52.488997749999996,
+          "fallback_used_when_missing": false
+        },
+        {
+          "time_bin": "off_peak_day",
+          "train_rows": 35,
+          "median_residual_secs": 5.807301999999993,
+          "mean_residual_secs": 13.637468399999994,
+          "p25_residual_secs": -17.99023000000001,
+          "p75_residual_secs": 25.630580499999994,
+          "fallback_used_when_missing": false
+        },
+        {
+          "time_bin": "evening_peak",
+          "train_rows": 116,
+          "median_residual_secs": 24.81355099999999,
+          "mean_residual_secs": 42.808981077586196,
+          "p25_residual_secs": -4.160117250000013,
+          "p75_residual_secs": 62.47645399999998,
+          "fallback_used_when_missing": false
+        },
+        {
+          "time_bin": "late_evening",
+          "train_rows": 5,
+          "median_residual_secs": -11.769762000000014,
+          "mean_residual_secs": -21.65905780000001,
+          "p25_residual_secs": -44.96542400000001,
+          "p75_residual_secs": -1.7753170000000011,
+          "fallback_used_when_missing": false
+        },
+        {
+          "time_bin": "other",
+          "train_rows": 0,
+          "median_residual_secs": 15.795472999999987,
+          "mean_residual_secs": null,
+          "p25_residual_secs": null,
+          "p75_residual_secs": null,
+          "fallback_used_when_missing": true
+        }
+      ]
+    },
+    "api_plus_smoothed_time_bin_median_residual": {
+      "formula": "api_eta_secs + shrink(median(train.residual_secs | train.time_bin), global_median_residual_secs)",
+      "shrinkage_formula": "n_bin / (n_bin + prior_strength) * bin_median + prior_strength / (n_bin + prior_strength) * global_median",
+      "prior_strength_selection": "best validation MAE, tie-broken by validation P95 then smaller prior_strength",
+      "prior_strength_grid": [
+        0,
+        1,
+        2,
+        5,
+        10,
+        15,
+        20,
+        30,
+        50,
+        75,
+        100,
+        150,
+        200
+      ],
+      "best_prior_strength": 100.0,
+      "validation_search": [
+        {
+          "prior_strength": 0.0,
+          "val_mae": 58.338457369565226,
+          "val_p95": 112.87491674999998
+        },
+        {
+          "prior_strength": 1.0,
+          "val_mae": 58.34195796844291,
+          "val_p95": 112.86336264369658
+        },
+        {
+          "prior_strength": 2.0,
+          "val_mae": 58.34500600211166,
+          "val_p95": 112.85457805096198
+        },
+        {
+          "prior_strength": 5.0,
+          "val_mae": 58.35184029684599,
+          "val_p95": 112.29182387499999
+        },
+        {
+          "prior_strength": 10.0,
+          "val_mae": 58.35739083354568,
+          "val_p95": 111.32075169444444
+        },
+        {
+          "prior_strength": 15.0,
+          "val_mae": 58.35799402292415,
+          "val_p95": 110.54389395
+        },
+        {
+          "prior_strength": 20.0,
+          "val_mae": 58.35540433959118,
+          "val_p95": 109.9082830681818
+        },
+        {
+          "prior_strength": 30.0,
+          "val_mae": 58.344706984228445,
+          "val_p95": 108.93042017307691
+        },
+        {
+          "prior_strength": 50.0,
+          "val_mae": 58.34530526807884,
+          "val_p95": 107.66495054411764
+        },
+        {
+          "prior_strength": 75.0,
+          "val_mae": 58.34253963505499,
+          "val_p95": 106.73022865909091
+        },
+        {
+          "prior_strength": 100.0,
+          "val_mae": 58.336146789736965,
+          "val_p95": 106.1417000648148
+        },
+        {
+          "prior_strength": 150.0,
+          "val_mae": 58.37261373777482,
+          "val_p95": 105.44182822297297
+        },
+        {
+          "prior_strength": 200.0,
+          "val_mae": 58.40833749837047,
+          "val_p95": 105.03977418617019
+        }
+      ],
+      "smoothed_time_bin_residuals": [
+        {
+          "time_bin": "early_morning",
+          "train_rows": 29,
+          "median_residual_secs": 1.7085859999999968,
+          "mean_residual_secs": 12.360461517241369,
+          "p25_residual_secs": -23.91571000000002,
+          "p75_residual_secs": 33.31394899999998,
+          "fallback_used_when_missing": false,
+          "shrinkage_weight": 0.2248062015503876,
+          "smoothed_residual_secs": 12.628653441860454,
+          "prior_strength": 100.0
+        },
+        {
+          "time_bin": "morning_peak",
+          "train_rows": 30,
+          "median_residual_secs": 20.921722999999986,
+          "mean_residual_secs": 36.957200833333324,
+          "p25_residual_secs": -4.836063750000022,
+          "p75_residual_secs": 52.488997749999996,
+          "fallback_used_when_missing": false,
+          "shrinkage_weight": 0.23076923076923078,
+          "smoothed_residual_secs": 16.978453769230754,
+          "prior_strength": 100.0
+        },
+        {
+          "time_bin": "off_peak_day",
+          "train_rows": 35,
+          "median_residual_secs": 5.807301999999993,
+          "mean_residual_secs": 13.637468399999994,
+          "p25_residual_secs": -17.99023000000001,
+          "p75_residual_secs": 25.630580499999994,
+          "fallback_used_when_missing": false,
+          "shrinkage_weight": 0.25925925925925924,
+          "smoothed_residual_secs": 13.205947185185174,
+          "prior_strength": 100.0
+        },
+        {
+          "time_bin": "evening_peak",
+          "train_rows": 116,
+          "median_residual_secs": 24.81355099999999,
+          "mean_residual_secs": 42.808981077586196,
+          "p25_residual_secs": -4.160117250000013,
+          "p75_residual_secs": 62.47645399999998,
+          "fallback_used_when_missing": false,
+          "shrinkage_weight": 0.5370370370370371,
+          "smoothed_residual_secs": 20.638514888888878,
+          "prior_strength": 100.0
+        },
+        {
+          "time_bin": "late_evening",
+          "train_rows": 5,
+          "median_residual_secs": -11.769762000000014,
+          "mean_residual_secs": -21.65905780000001,
+          "p25_residual_secs": -44.96542400000001,
+          "p75_residual_secs": -1.7753170000000011,
+          "fallback_used_when_missing": false,
+          "shrinkage_weight": 0.047619047619047616,
+          "smoothed_residual_secs": 14.482842761904749,
+          "prior_strength": 100.0
+        },
+        {
+          "time_bin": "other",
+          "train_rows": 0,
+          "median_residual_secs": 15.795472999999987,
+          "mean_residual_secs": null,
+          "p25_residual_secs": null,
+          "p75_residual_secs": null,
+          "fallback_used_when_missing": true,
+          "shrinkage_weight": 0.0,
+          "smoothed_residual_secs": 15.795472999999987,
+          "prior_strength": 100.0
+        }
+      ]
+    }
+  },
+  "split_summary": [
+    {
+      "split": "train",
+      "rows": 215,
+      "timestamp_min": "2026-01-01 05:23:27",
+      "timestamp_max": "2026-03-14 08:24:30"
+    },
+    {
+      "split": "val",
+      "rows": 46,
+      "timestamp_min": "2026-03-14 09:06:41",
+      "timestamp_max": "2026-03-23 14:10:14"
+    },
+    {
+      "split": "test",
+      "rows": 47,
+      "timestamp_min": "2026-03-23 15:07:42",
+      "timestamp_max": "2026-03-30 18:21:39"
+    }
+  ],
+  "metrics": [
+    {
+      "split": "train",
+      "method": "api_eta",
+      "rows": 215,
+      "mae": 50.38511845116279,
+      "rmse": 79.11834390050386,
+      "mape": 22.95008932893286,
+      "p50": 32.380547999999976,
+      "p90": 108.37728139999996,
+      "p95": 173.9882819999999,
+      "r2": -0.2809051465800967,
+      "mae_improvement_vs_api_pct": 0.0,
+      "p95_improvement_vs_api_pct": 0.0
+    },
+    {
+      "split": "train",
+      "method": "api_plus_global_median_residual",
+      "rows": 215,
+      "mae": 47.611481032558146,
+      "rmse": 74.22773015581464,
+      "mape": 23.173911978813894,
+      "p50": 32.44260800000001,
+      "p90": 98.62243659999999,
+      "p95": 158.19280899999993,
+      "r2": -0.12744393583474523,
+      "mae_improvement_vs_api_pct": 5.504874264199796,
+      "p95_improvement_vs_api_pct": 9.078469433935783
+    },
+    {
+      "split": "train",
+      "method": "api_plus_time_bin_median_residual",
+      "rows": 215,
+      "mae": 46.295005390697675,
+      "rmse": 72.50338443135033,
+      "mape": 22.58831635828876,
+      "p50": 30.808344000000005,
+      "p90": 97.0147148,
+      "p95": 150.34227939999985,
+      "r2": -0.07567024147947321,
+      "mae_improvement_vs_api_pct": 8.117700595324735,
+      "p95_improvement_vs_api_pct": 13.590571921389552
+    },
+    {
+      "split": "train",
+      "method": "api_plus_smoothed_time_bin_median_residual",
+      "rows": 215,
+      "mae": 47.10677265132986,
+      "rmse": 73.27954348040097,
+      "mape": 23.115326804033625,
+      "p50": 32.088531441860454,
+      "p90": 99.38754679259256,
+      "p95": 154.44778544700839,
+      "r2": -0.0988239194164875,
+      "mae_improvement_vs_api_pct": 6.506575553673763,
+      "p95_improvement_vs_api_pct": 11.230926777581226
+    },
+    {
+      "split": "val",
+      "method": "api_eta",
+      "rows": 46,
+      "mae": 61.40115280434783,
+      "rmse": 123.23866140655244,
+      "mape": 27.359513555271924,
+      "p50": 40.42529449999999,
+      "p90": 96.87578450000001,
+      "p95": 119.34764724999998,
+      "r2": -0.16426148721892364,
+      "mae_improvement_vs_api_pct": 0.0,
+      "p95_improvement_vs_api_pct": 0.0
+    },
+    {
+      "split": "val",
+      "method": "api_plus_global_median_residual",
+      "rows": 46,
+      "mae": 58.62324145652174,
+      "rmse": 119.59391253475316,
+      "mape": 27.895402602507545,
+      "p50": 41.099203,
+      "p90": 83.7288235,
+      "p95": 103.55217425,
+      "r2": -0.09641441051469068,
+      "mae_improvement_vs_api_pct": 4.5242006394860175,
+      "p95_improvement_vs_api_pct": 13.234842381863535
+    },
+    {
+      "split": "val",
+      "method": "api_plus_time_bin_median_residual",
+      "rows": 46,
+      "mae": 58.338457369565226,
+      "rmse": 118.50837272692277,
+      "mape": 27.719438555778574,
+      "p50": 39.16217400000001,
+      "p90": 93.23194800000002,
+      "p95": 112.87491674999998,
+      "r2": -0.07660069584865536,
+      "mae_improvement_vs_api_pct": 4.988009662524991,
+      "p95_improvement_vs_api_pct": 5.423425303425911
+    },
+    {
+      "split": "val",
+      "method": "api_plus_smoothed_time_bin_median_residual",
+      "rows": 46,
+      "mae": 58.336146789736965,
+      "rmse": 118.93953715404845,
+      "mape": 27.89856391242293,
+      "p50": 39.19042446296295,
+      "p90": 87.44510735185187,
+      "p95": 106.1417000648148,
+      "r2": -0.08444885606422647,
+      "mae_improvement_vs_api_pct": 4.991772751201232,
+      "p95_improvement_vs_api_pct": 11.065108939703194
+    },
+    {
+      "split": "test",
+      "method": "api_eta",
+      "rows": 47,
+      "mae": 37.95616325531915,
+      "rmse": 56.886930194400605,
+      "mape": 18.343605528486957,
+      "p50": 23.078712999999993,
+      "p90": 84.59286379999998,
+      "p95": 123.74958409999995,
+      "r2": 0.034030633935551835,
+      "mae_improvement_vs_api_pct": 0.0,
+      "p95_improvement_vs_api_pct": 0.0
+    },
+    {
+      "split": "test",
+      "method": "api_plus_global_median_residual",
+      "rows": 47,
+      "mae": 37.2492514893617,
+      "rmse": 52.804426976735094,
+      "mape": 19.577862083516,
+      "p50": 30.09803500000001,
+      "p90": 68.79739079999999,
+      "p95": 107.95411109999996,
+      "r2": 0.16770166638888162,
+      "mae_improvement_vs_api_pct": 1.8624426320497083,
+      "p95_improvement_vs_api_pct": 12.764061483419558
+    },
+    {
+      "split": "test",
+      "method": "api_plus_time_bin_median_residual",
+      "rows": 47,
+      "mae": 37.96528059574468,
+      "rmse": 51.79407305109586,
+      "mape": 20.451823736784625,
+      "p50": 32.084850999999986,
+      "p90": 64.841483,
+      "p95": 98.93603309999996,
+      "r2": 0.1992471614036908,
+      "mae_improvement_vs_api_pct": -0.024020711377499986,
+      "p95_improvement_vs_api_pct": 20.051421732414536
+    },
+    {
+      "split": "test",
+      "method": "api_plus_smoothed_time_bin_median_residual",
+      "rows": 47,
+      "mae": 38.07266698876592,
+      "rmse": 52.158878660804056,
+      "mape": 20.40220882899488,
+      "p50": 30.86786718518519,
+      "p90": 64.15192577777776,
+      "p95": 103.11106921111106,
+      "r2": 0.18792741518499967,
+      "mae_improvement_vs_api_pct": -0.30694286106603,
+      "p95_improvement_vs_api_pct": 16.677643839361316
+    }
+  ]
+}
