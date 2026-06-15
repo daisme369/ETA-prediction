@@ -21,6 +21,9 @@ ETA_MODELING_DIR = ROOT_DIR / "eta_modeling"
 LEGACY_ARTIFACT_PATH = ROOT_DIR / "model" / "artifacts" / "fixed_route_eta_model.joblib"
 EXPERIMENT_MODELS_DIR = ETA_MODELING_DIR / "artifacts" / "models"
 EXPERIMENT_METRICS_DIR = ETA_MODELING_DIR / "artifacts" / "metrics"
+RESIDUAL_MODELING_ARTIFACTS_DIR = ROOT_DIR / "residual_modeling" / "artifacts"
+RAW_TIME_BIN_RESIDUALS_PATH = RESIDUAL_MODELING_ARTIFACTS_DIR / "enhanced_method_1_time_bin_residuals.csv"
+RAW_TIME_BIN_MODEL_CARD_PATH = RESIDUAL_MODELING_ARTIFACTS_DIR / "enhanced_method_1_model_card.json"
 PROCESSED_DATA_PATH = ROOT_DIR / "data" / "processed_data.csv"
 QUANTILE_LABELS = ("p50", "p85", "p90")
 DEFAULT_MODEL_ID = "mlp_residual_eta"
@@ -225,6 +228,12 @@ def predict_legacy_for_hour(hour: int) -> dict[str, Any]:
 
 
 def read_metrics(model_name: str) -> dict[str, Any]:
+    if model_name == "api_raw_time_bin_median_residual":
+        return read_residual_modeling_metrics(
+            RAW_TIME_BIN_MODEL_CARD_PATH,
+            "api_plus_time_bin_median_residual",
+        )
+
     metrics_path = EXPERIMENT_METRICS_DIR / f"{model_name}_metrics.json"
     if metrics_path.exists():
         try:
@@ -241,6 +250,22 @@ def read_metrics(model_name: str) -> dict[str, Any]:
                 return match.iloc[0].dropna().to_dict()
         except Exception:
             return {}
+    return {}
+
+
+def read_residual_modeling_metrics(model_card_path: Path, method_name: str) -> dict[str, Any]:
+    if not model_card_path.exists():
+        return {}
+    try:
+        model_card = json.loads(model_card_path.read_text(encoding="utf-8"))
+    except Exception:
+        return {}
+    metrics = model_card.get("metrics", [])
+    if not isinstance(metrics, list):
+        return {}
+    for row in metrics:
+        if isinstance(row, dict) and row.get("split") == "test" and row.get("method") == method_name:
+            return row
     return {}
 
 
@@ -389,6 +414,29 @@ def available_model_specs() -> list[dict[str, Any]]:
                     "afternoon_evening_peak": "15-18",
                     "late_evening_low_service": "19-21",
                     "other": "outside configured service hours",
+                },
+            },
+        ),
+        model_spec(
+            "api_raw_time_bin_median_residual",
+            "API + raw time-bin median residual",
+            "api_raw_time_bin_median_residual",
+            "raw_time_bin_median_residual_secs",
+            requires_baseline=True,
+            artifact_paths=[RAW_TIME_BIN_RESIDUALS_PATH],
+            description="Adds the residual_modeling raw time-bin median correction to the routing API ETA.",
+            metadata={
+                "source_notebook": "residual_modeling/enhanced_method_1.ipynb",
+                "residual_artifact": str(RAW_TIME_BIN_RESIDUALS_PATH.relative_to(ROOT_DIR)),
+                "hour_bin_feature": "raw_time_bin",
+                "fallback": "global median residual from the 'other' row, or artifact median when unavailable",
+                "hour_bins": {
+                    "early_morning": "4-6",
+                    "morning_peak": "7-9",
+                    "off_peak_day": "10-14",
+                    "evening_peak": "15-18",
+                    "late_evening": "19-21",
+                    "other": "outside configured bins",
                 },
             },
         ),
@@ -592,18 +640,103 @@ def predict_hour_bin_median(frame: pd.DataFrame) -> float:
     return max(float(frame["baseline_eta_secs"].iloc[0]) + residual, 0.0)
 
 
+def raw_time_bin_for_hour(hour: int) -> str:
+    if 4 <= hour <= 6:
+        return "early_morning"
+    if 7 <= hour <= 9:
+        return "morning_peak"
+    if 10 <= hour <= 14:
+        return "off_peak_day"
+    if 15 <= hour <= 18:
+        return "evening_peak"
+    if 19 <= hour <= 21:
+        return "late_evening"
+    return "other"
+
+
+@lru_cache(maxsize=None)
+def load_raw_time_bin_residuals() -> dict[str, Any]:
+    if not RAW_TIME_BIN_RESIDUALS_PATH.exists():
+        raise HTTPException(
+            status_code=503,
+            detail=f"Raw time-bin residual artifact is missing: {RAW_TIME_BIN_RESIDUALS_PATH.relative_to(ROOT_DIR)}",
+        )
+    try:
+        residuals = pd.read_csv(RAW_TIME_BIN_RESIDUALS_PATH)
+    except Exception as error:
+        raise HTTPException(status_code=503, detail=f"Cannot read raw time-bin residual artifact: {error}") from error
+
+    required_columns = {"time_bin", "median_residual_secs"}
+    missing_columns = required_columns - set(residuals.columns)
+    if missing_columns:
+        raise HTTPException(
+            status_code=503,
+            detail=f"Raw time-bin residual artifact is missing columns: {sorted(missing_columns)}",
+        )
+
+    residual_map = {
+        as_str(row["time_bin"], "other"): as_float(row["median_residual_secs"], 0.0)
+        for _, row in residuals.iterrows()
+    }
+    global_median = as_float(residual_map.get("other"), 0.0)
+    if "other" not in residual_map:
+        global_median = as_float(residuals["median_residual_secs"].median(), 0.0)
+        residual_map["other"] = global_median
+
+    return {
+        "residual_map": residual_map,
+        "global_median_residual_secs": global_median,
+    }
+
+
+def predict_raw_time_bin_median(payload: EtaPredictRequest, hour: int) -> tuple[float, dict[str, Any]]:
+    if payload.baseline_eta_secs is None or payload.baseline_eta_secs <= 0:
+        raise HTTPException(status_code=422, detail="baseline_eta_secs from Vietmap is required for this model.")
+
+    package = load_raw_time_bin_residuals()
+    hour_bin = raw_time_bin_for_hour(hour)
+    residual_map = package["residual_map"]
+    global_median = as_float(package["global_median_residual_secs"], 0.0)
+    residual = as_float(residual_map.get(hour_bin), global_median)
+    pred_eta = max(float(payload.baseline_eta_secs) + residual, 0.0)
+
+    return pred_eta, {
+        "hour_bin": hour_bin,
+        "residual_secs": residual,
+        "residual_source": "time_bin" if hour_bin in residual_map else "global_fallback",
+        "residual_artifact": str(RAW_TIME_BIN_RESIDUALS_PATH.relative_to(ROOT_DIR)),
+    }
+
+
 def predict_experiment_model(model_id: str, payload: EtaPredictRequest, hour: int) -> dict[str, Any]:
-    frame = experiment_feature_frame(payload, hour)
-    baseline = float(frame["baseline_eta_secs"].iloc[0])
+    frame = None
+    if model_id == "api_raw_time_bin_median_residual":
+        pred_eta, extra_metadata = predict_raw_time_bin_median(payload, hour)
+        baseline = float(payload.baseline_eta_secs)
+    else:
+        frame = experiment_feature_frame(payload, hour)
+        baseline = float(frame["baseline_eta_secs"].iloc[0])
+        extra_metadata = {}
+
     if model_id == "vietmap_baseline":
         pred_eta = baseline
     elif model_id in {"xgb_direct_eta", "xgb_residual_eta", "hour_bin_xgb_residual_eta"}:
+        if frame is None:
+            raise HTTPException(status_code=500, detail="Experiment feature frame was not initialized.")
         pred_eta = predict_xgb(model_id, frame)
     elif model_id == "hour_bin_median_eta":
+        if frame is None:
+            raise HTTPException(status_code=500, detail="Experiment feature frame was not initialized.")
         pred_eta = predict_hour_bin_median(frame)
+    elif model_id == "api_raw_time_bin_median_residual":
+        pass
     elif model_id in {"mlp_residual_eta", "hour_bin_mlp_residual_eta"}:
+        if frame is None:
+            raise HTTPException(status_code=500, detail="Experiment feature frame was not initialized.")
         pred_eta = predict_mlp(frame, model_id)
     elif model_id in {"deepr_eta_like", "hour_bin_deepr_eta_like"}:
+        if frame is None:
+            raise HTTPException(status_code=500, detail="Experiment feature frame was not initialized.")
         pred_eta = predict_deep(frame, model_id)
     else:
         raise HTTPException(status_code=404, detail=f"Unknown experiment model_id: {model_id}")
@@ -614,6 +747,7 @@ def predict_experiment_model(model_id: str, payload: EtaPredictRequest, hour: in
         "quantiles": {},
         "baseline": format_prediction(baseline),
         "predicted_residual_secs": float(pred_eta - baseline),
+        "metadata": extra_metadata,
     }
 
 

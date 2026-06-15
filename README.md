@@ -125,6 +125,16 @@ Experiment residual/direct models:
 }
 ```
 
+Raw time-bin residual correction from `residual_modeling/enhanced_method_1.ipynb`:
+
+```json
+{
+  "departure_time": "2026-04-10T18:00:00",
+  "model_id": "api_raw_time_bin_median_residual",
+  "baseline_eta_secs": 180
+}
+```
+
 ## Notes
 
 - Vietmap recommends backend integration to avoid exposing API credentials.
