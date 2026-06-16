@@ -164,6 +164,21 @@ function drawFullRoute(geo) {
 }
 
 // ── Geo polyline helpers ───────────────────────────────────────────────────
+function haversineDist(lat1, lon1, lat2, lon2) {
+  const R = 6371e3;
+  const p1 = (lat1 * Math.PI) / 180, p2 = (lat2 * Math.PI) / 180;
+  const dp = ((lat2 - lat1) * Math.PI) / 180, dl = ((lon2 - lon1) * Math.PI) / 180;
+  const a = Math.sin(dp / 2) ** 2 + Math.cos(p1) * Math.cos(p2) * Math.sin(dl / 2) ** 2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+function polylineLength(geoArray) {
+  let d = 0;
+  for (let i = 0; i < geoArray.length - 1; i++) {
+    d += haversineDist(geoArray[i][0], geoArray[i][1], geoArray[i + 1][0], geoArray[i + 1][1]);
+  }
+  return d;
+}
 // Find the index in the Geo polyline closest to a given lat/lng.
 function nearestGeoIndex(geo, lat, lng) {
   let best = 0;
@@ -396,26 +411,50 @@ async function handlePredict(event) {
       state.map.fitBounds(state.segmentPolyline.getBounds(), { padding: [80, 80] });
     }
 
-    // 2. Predict ETA
-    setStatus("Predicting");
-    let etaSecs, modelLabel = meta?.label || modelId, hourLabel = "-";
+    // 2. Predict ETA piecewise (C->D + D->E + ...)
+    setStatus("Predicting (từng trạm)");
+    let etaSecs = 0;
+    let modelLabel = meta?.label || modelId;
+    let hourLabel = "-";
+    
+    const lo = Math.min(state.originStationIdx, state.destinationStationIdx);
+    const hi = Math.max(state.originStationIdx, state.destinationStationIdx);
+    
+    const fullGeoSegment = extractGeoSegment(state.routeGeo, oStation, dStation);
+    const totalGeoDist = polylineLength(fullGeoSegment) || 1; // avoid division by zero
 
-    try {
+    const promises = [];
+    for (let i = lo; i < hi; i++) {
+      const s1 = state.stations[i];
+      const s2 = state.stations[i + 1];
+      const segGeo = extractGeoSegment(state.routeGeo, s1, s2);
+      const segDist = polylineLength(segGeo);
+      
+      const weight = segDist / totalGeoDist;
+      const segBaselineSecs = baseline.baselineEtaSecs * weight;
+
       const payload = {
         departure_time: el.departureTime.value,
         model_id: modelId,
-        baseline_eta_secs: baseline.baselineEtaSecs,
+        baseline_eta_secs: segBaselineSecs,
       };
-      const data = await postEtaPrediction(payload);
-      etaSecs = data.prediction?.point?.seconds ?? data.prediction?.point?.minutes * 60;
-      hourLabel = `Hour ${data.prediction?.hour ?? new Date(el.departureTime.value).getHours()}`;
-    } catch {
-      // Fallback local
-      const local = applyLocalCorrection(baseline.baselineEtaSecs, el.departureTime.value, modelId);
-      etaSecs = local.corrected;
-      modelLabel = local.desc;
-      hourLabel = `Hour ${local.hour} (local)`;
+
+      promises.push(
+        postEtaPrediction(payload)
+          .then((data) => {
+            if (i === lo) hourLabel = `Hour ${data.prediction?.hour ?? new Date(el.departureTime.value).getHours()}`;
+            return data.prediction?.point?.seconds ?? data.prediction?.point?.minutes * 60;
+          })
+          .catch(() => {
+            const local = applyLocalCorrection(segBaselineSecs, el.departureTime.value, modelId);
+            if (i === lo) { hourLabel = `Hour ${local.hour} (local)`; modelLabel = local.desc; }
+            return local.corrected;
+          })
+      );
     }
+    
+    const segEtas = await Promise.all(promises);
+    etaSecs = segEtas.reduce((acc, val) => acc + val, 0);
 
     // 3. Render
     el.distanceValue.textContent = fmtDist(baseline.summary?.distanceMeters);
