@@ -1,202 +1,162 @@
-# Vietmap Route Frontend
+# Hệ Thống Dự Đoán Thời Gian Di Chuyển (ETA Prediction System)
 
-Minimal frontend and backend scaffold for a Vietmap-powered route viewer where users enter full addresses and the browser never sees the Vietmap API key.
+Dự án này là một giải pháp tích hợp từ giao diện bản đồ trực quan đến các mô hình Học máy (Machine Learning) nhằm tối ưu hóa và dự đoán chính xác thời gian di chuyển thực tế (ETA - Estimated Time of Arrival) cho các chuyến đi. Hệ thống sử dụng Vietmap Route API làm nền tảng tuyến đường cơ sở (Baseline) và áp dụng các mô hình học máy tiên tiến để dự đoán sai số (Residual Correction), giúp nâng cao độ chính xác đáng kể so với kết quả thô từ API bản đồ.
 
-## What it does
+---
 
-- serves a map UI from `public/`
-- resolves origin and destination addresses into `lat/lng` through the backend
-- exposes `POST /api/route` as a backend proxy to Vietmap Route v3
-- exposes `POST /api/resolve-location` for address-to-coordinate extraction
-- reads Vietmap settings from `.env`
-- optionally proxies map tiles if you provide a separate tile API key and tile URL template
+## 1. Kiến Trúc Hệ Thống (System Architecture)
 
-## Setup
+Hệ thống được thiết kế theo mô hình kiến trúc phân lớp nhằm đảm bảo tính bảo mật và hiệu năng:
 
-1. Copy `.env.example` to `.env`
-2. Fill in `VIETMAP_API_KEY`
-3. Optionally fill in `VIETMAP_TILE_API_KEY` and `VIETMAP_TILE_URL_TEMPLATE`
-4. Start the app:
-
-```bash
-npm start
+```mermaid
+graph TD
+    Client[Trình duyệt Web - Frontend public/] -->|Yêu cầu bản đồ & tuyến đường| NodeServer[Node.js Backend Proxy server.js]
+    NodeServer -->|Proxy bảo mật ẩn API Key| VietmapAPI[Vietmap Route & Geocoding API]
+    
+    Client -->|Yêu cầu dự báo ETA Học máy| NodeServer
+    NodeServer -->|Gọi API Dự đoán| FastAPI[FastAPI Model Server api/app.py]
+    
+    FastAPI -->|Load Artifacts| MLModels[(Mô hình Học máy / Artifacts)]
+    
+    subgraph Pipeline Huấn Luyện
+        Data[Dữ liệu thô / Log chuyến đi] -->|Xử lý đặc trưng| TrainPipe[Pipeline eta_modeling/]
+        TrainPipe -->|Huấn luyện & Track| MLflow[(MLflow Tracking)]
+        TrainPipe -->|Xuất Model| MLModels
+    end
 ```
 
-Open `http://localhost:3000`.
+### Chi tiết các thành phần:
+- **Frontend (`public/`)**: Giao diện người dùng viết bằng HTML/CSS/JavaScript thuần, hiển thị bản đồ Leaflet, cho phép nhập địa chỉ điểm xuất phát/đích, trực quan hóa đường đi và so sánh ETA giữa các mô hình khác nhau.
+- **Node.js Backend Proxy (`server.js`)**:
+  - Đóng vai trò là cổng trung gian (API Gateway) kết nối với Vietmap API (Route v3, Search v4, Place v4).
+  - Giúp ẩn đi `VIETMAP_API_KEY` hoàn toàn khỏi trình duyệt để bảo mật thông tin tài khoản.
+  - Proxy các mảnh bản đồ (map tiles) nếu cấu hình, tránh lộ API Key tile.
+- **Python FastAPI Server (`api/app.py`)**:
+  - Cung cấp các API (`/api/eta/models`, `/api/eta/predict`) để phục vụ suy luận (Inference) thời gian thực từ các mô hình Machine Learning đã được huấn luyện.
+  - Nạp các tệp mô hình dạng `.joblib` (scikit-learn/XGBoost) và `.pt` (PyTorch).
+- **Pipeline Huấn Luyện (`eta_modeling/`)**: Quy trình khép kín xử lý dữ liệu đầu vào, chia tập dữ liệu theo thời gian thực tế (chronological split), tối ưu hóa tham số hyperparameter, huấn luyện mô hình và lưu lịch sử thử nghiệm qua MLflow.
 
-Start the ETA model API in a second terminal when you need model predictions:
+---
 
-```bash
-python -m uvicorn api.app:app --host 127.0.0.1 --port 8000
-```
+## 2. Hướng Dẫn Cài Đặt (Setup Instructions)
 
-The frontend now loads available ETA models from FastAPI and shows them in the `Prediction model` dropdown. For experiment models trained in `eta_modeling/`, the browser first calls the local `POST /api/route` Vietmap proxy, extracts `summary.durationMs / 1000`, and sends it to FastAPI as `baseline_eta_secs`.
+Hệ thống yêu cầu cài đặt cả môi trường Node.js (dành cho Backend Proxy & Frontend) và Python (dành cho mô hình Học máy).
 
-## Suggested env values
+### Môi trường Node.js (Web Server)
+1. Cài đặt các thư viện Node.js:
+   ```bash
+   npm install
+   ```
+2. Tạo tệp cấu hình môi trường `.env` từ tệp ví dụ:
+   ```bash
+   copy .env.example .env
+   ```
+3. Cập nhật các thông số API Key trong tệp `.env`:
+   ```env
+   VIETMAP_API_KEY=your_vietmap_api_key_here
+   # Cấu hình tuỳ chọn proxy map tiles nếu có
+   VIETMAP_TILE_API_KEY=your_tile_api_key_here
+   VIETMAP_TILE_URL_TEMPLATE=https://maps.vietmap.vn/maps/tiles/st/{z}/{x}/{y}.png
+   ```
+4. Khởi chạy Web Server:
+   ```bash
+   npm start
+   ```
+   Giao diện bản đồ sẽ khả dụng tại: `http://localhost:3000`.
 
-### Route API
+### Môi trường Python (FastAPI & Machine Learning)
+1. Tạo môi trường ảo Python và kích hoạt:
+   ```bash
+   python -m venv .venv
+   # Windows:
+   .\.venv\Scripts\activate
+   # Linux/macOS:
+   source .venv/bin/activate
+   ```
+2. Cài đặt các thư viện yêu cầu:
+   ```bash
+   pip install -r requirements.txt
+   ```
+3. Chạy FastAPI Model Server:
+   ```bash
+   python -m uvicorn api.app:app --host 127.0.0.1 --port 8000
+   ```
+   FastAPI sẽ chạy tại địa chỉ `http://127.0.0.1:8000`. Bây giờ Frontend trên trình duyệt có thể tự động tải danh sách mô hình và thực hiện dự đoán thời gian di chuyển.
 
-```env
-VIETMAP_API_KEY=your_service_api_key
-VIETMAP_ROUTE_URL=https://maps.vietmap.vn/api/route/v3
-VIETMAP_SEARCH_URL=https://maps.vietmap.vn/api/search/v4
-VIETMAP_PLACE_URL=https://maps.vietmap.vn/api/place/v4
-VIETMAP_DISPLAY_TYPE=5
-```
+---
 
-### Optional tile proxy
+## 3. Các Phương Pháp Sử Dụng & Giải Thích Kiến Trúc
 
-Vietmap documents a dedicated tile key separate from the service key. If you want the map tiles to go through your backend too, add:
+Do tập dữ liệu thực tế hiện tại chưa đủ lớn và đa dạng để tránh hiện tượng quá khớp (overfitting) đối với các mô hình học sâu phức tạp (như MLP hay DeeprETA), hệ thống hiện tại đang sử dụng các **phương pháp hiệu chỉnh thống kê (Statistical Correction Methods)**. Đây là những phương pháp cực kỳ nhẹ, không cần huấn luyện mạng nơ-ron nặng nề, có tính ổn định toán học cao và chống nhiễu tốt dựa trên các phân phối thực tế.
 
-```env
-VIETMAP_TILE_API_KEY=your_tile_api_key
-VIETMAP_TILE_URL_TEMPLATE=https://maps.vietmap.vn/maps/tiles/st/{z}/{x}/{y}.png
-```
+Dưới đây là giải thích kiến trúc và công thức của **3 phương pháp thống kê chính** đã chọn:
 
-If these are not set, the frontend falls back to the public OpenStreetMap tile layer.
+### Phương pháp 1: Additive Global (Hiệu chỉnh cộng toàn cục)
+* **Tổng quan**: Phương pháp này cộng thêm một giá trị sai số cố định vào ETA cơ sở của Vietmap, giả định rằng sai số lệch trung bình luôn không đổi đối với mọi hành trình bất kể thời gian hay thời tiết.
+* **Công thức**:
+  $$\text{ETA}_{\text{dự đoán}} = \text{ETA}_{\text{Vietmap}} + \text{Residual}_{\text{global\_median}}$$
+  Trong đó:
+  $$\text{Residual}_{\text{global\_median}} = \text{Median}\left(\{t_{actual, i} - t_{api, i}\}_{i \in \text{Train}}\right)$$
+* **Ưu & Nhược điểm**:
+  - *Ưu điểm*: Cực kỳ đơn giản, trực quan và không bị ảnh hưởng bởi các trường hợp ngoại lệ (outliers) nhờ sử dụng trung vị (median) thay vì trung bình cộng (mean).
+  - *Nhược điểm*: Bỏ qua các đặc điểm động của thời gian (kẹt xe giờ cao điểm) và quãng đường.
 
-## API shape
+### Phương pháp 2: Ratio Time-Bin (Hiệu chỉnh tỷ lệ theo khung giờ)
+* **Tổng quan**: Phương pháp này chia một ngày thành các khung giờ dịch vụ cố định (Time-Bins) và tính toán tỷ số hiệu chỉnh (Ratio) đặc thù cho từng khung giờ. Phương pháp này mô phỏng ảnh hưởng của mật độ giao thông biến động theo thời gian thực tế trong ngày.
+* **Định nghĩa các khung giờ (Time-Bins)**:
+  - `early_morning`: 4h - 6h sáng (Giao thông thông thoáng)
+  - `morning_peak`: 7h - 9h sáng (Cao điểm sáng)
+  - `off_peak_day`: 10h - 14h chiều (Thấp điểm trưa)
+  - `evening_peak`: 15h - 18h tối (Cao điểm chiều)
+  - `late_evening`: 19h - 21h đêm (Tối muộn)
+  - `other`: Ngoài khung giờ trên
+* **Công thức**:
+  $$\text{ETA}_{\text{dự đoán}} = \text{ETA}_{\text{Vietmap}} \times \text{Ratio}_{\text{bin}}$$
+  Trong đó $\text{Ratio}_{\text{bin}}$ là tỷ lệ trung vị giữa thời gian thực tế và baseline trong khung giờ tương ứng.
+* **Kiến trúc làm mượt co ngót (Shrinkage Smoothing)**:
+  Để giải quyết vấn đề thiếu dữ liệu mẫu (data sparsity) ở một số khung giờ cụ thể, hệ thống áp dụng cơ chế làm mượt co ngót:
+  $$\text{Ratio}_{\text{smoothed}} = w \times \text{Ratio}_{\text{bin\_median}} + (1 - w) \times \text{Ratio}_{\text{global\_median}}$$
+  Với trọng số làm mượt:
+  $$w = \frac{n}{n + k}$$
+  Trong đó $n$ là số dòng dữ liệu thực tế của khung giờ đó trên tập Train, và $k$ là tham số điều hướng (được tối ưu hóa qua tập Validation). Nếu một khung giờ có rất ít dữ liệu ($n$ nhỏ), tỷ số hiệu chỉnh sẽ tự động co về tỷ số toàn cục để tránh dự báo sai lệch lớn.
 
-### `POST /api/resolve-location`
+### Phương pháp 3: Log Ratio Global (Hiệu chỉnh Log-Tỷ lệ toàn cục)
+* **Tổng quan**: Phương pháp này chuyển tỷ lệ thực tế/baseline sang miền logarithm trước khi tính toán. Điều này giúp xử lý các phân phối dữ liệu bị lệch nặng (skewed distribution) - tình trạng rất phổ biến trong dữ liệu giao thông do có những chuyến đi bị kẹt xe kéo dài đột biến.
+* **Công thức**:
+  $$\text{ETA}_{\text{dự đoán}} = \text{ETA}_{\text{Vietmap}} \times e^{\text{LogRatio}_{\text{global}}}$$
+  Trong đó giá trị log-tỷ lệ toàn cục được tính bằng:
+  $$\text{LogRatio}_{\text{global}} = \text{Median}\left(\left\{\ln\left(\frac{t_{actual, i}}{t_{api, i}}\right)\right\}_{i \in \text{Train}}\right)$$
+* **Kiến trúc toán học**:
+  - Việc lấy logarithm giúp đưa phân phối nhân tính (multiplicative distribution) về dạng phân phối cộng tính (additive) cân đối hơn.
+  - Sử dụng hàm số mũ ($e^x$) khi dự đoán giúp đảm bảo giá trị ETA dự đoán luôn dương và tự nhiên đối với mô hình thang tỷ lệ.
 
-```json
-{
-  "address": "197 Tran Phu, Phuong 4, Quan 5, Thanh pho Ho Chi Minh"
-}
-```
+---
 
-### `POST /api/route`
+## 4. Các Chỉ Số Đánh Giá (Evaluation Metrics)
 
-```json
-{
-  "origin": {
-    "lat": 10.776889,
-    "lng": 106.700806,
-    "address": "197 Tran Phu, Phuong 4, Quan 5, Thanh pho Ho Chi Minh"
-  },
-  "destination": {
-    "lat": 10.802640,
-    "lng": 106.714221,
-    "address": "292 Dinh Bo Linh, Phuong 26, Quan Binh Thanh, Thanh pho Ho Chi Minh"
-  },
-  "vehicle": "car",
-  "capacityKg": 2000,
-  "departureTime": "2026-05-26T10:00:00Z",
-  "alternative": false
-}
-```
+Hệ thống đánh giá và so sánh hiệu quả của các mô hình trên tập dữ liệu kiểm thử độc lập (Test Set chiếm 15% dữ liệu được chia theo dòng thời gian) thông qua tập hợp các metrics sau:
 
-### `GET /api/eta/models`
+| Metric | Tên Đầy Đủ | Công Thức / Giải Thích | Mục Tiêu Ý Nghĩa |
+| :--- | :--- | :--- | :--- |
+| **MAE** | Mean Absolute Error | $\frac{1}{n}\sum |y_i - \hat{y}_i|$ | Tính sai số trung bình (theo giây). MAE càng nhỏ, độ chính xác trung bình càng cao. |
+| **RMSE** | Root Mean Squared Error | $\sqrt{\frac{1}{n}\sum (y_i - \hat{y}_i)^2}$ | Phạt nặng các sai số lớn. Đo lường mức độ ổn định của dự đoán. |
+| **MAPE** | Mean Absolute Percentage Error | $\frac{100\%}{n}\sum \left\|\frac{y_i - \hat{y}_i}{y_i}\right\|$ | Sai số phần trăm trung bình. Hữu ích khi so sánh các chuyến đi dài và ngắn. |
+| **p50** | Median Absolute Error | Phân vị thứ 50 của sai số tuyệt đối. | Đại diện cho sai số của đa số các chuyến đi bình thường (ít bị ảnh hưởng bởi điểm dị biệt). |
+| **p95** | 95th Percentile Error | Phân vị thứ 95 của sai số tuyệt đối. | Đại diện cho kịch bản sai số tệ nhất (extreme case). Rất quan trọng trong kinh doanh logistics. |
+| **MAE Impr. %** | MAE Improvement Percentage | $\frac{\text{MAE}_{\text{baseline}} - \text{MAE}_{\text{model}}}{\text{MAE}_{\text{baseline}}} \times 100\%$ | Tỷ lệ cải thiện sai số trung bình của mô hình so với gọi API Vietmap gốc. |
+| **p95 Impr. %** | p95 Improvement Percentage | $\frac{\text{p95}_{\text{baseline}} - \text{p95}_{\text{model}}}{\text{p95}_{\text{baseline}}} \times 100\%$ | Tỷ lệ cải thiện độ lệch trong tình huống xấu nhất. |
+| **Latency** | Inference Latency | Thời gian xử lý trung bình mỗi mẫu (ms/sample). | Đánh giá khả năng đáp ứng thời gian thực (Real-time serving) của mô hình. |
 
-Returns the models available to the frontend dropdown:
-
-```json
-{
-  "default_model_id": "mlp_residual_eta",
-  "models": [
-    {
-      "id": "mlp_residual_eta",
-      "label": "MLP residual ETA",
-      "requires_baseline": true,
-      "available": true
-    }
-  ]
-}
-```
-
-### `POST /api/eta/predict`
-
-Legacy fixed-route model:
-
-```json
-{
-  "departure_time": "2026-04-10T08:00:00",
-  "model_id": "legacy_fixed_route"
-}
-```
-
-Experiment residual/direct models:
-
-```json
-{
-  "departure_time": "2026-04-10T08:00:00",
-  "model_id": "mlp_residual_eta",
-  "baseline_eta_secs": 180
-}
-```
-
-Raw time-bin residual correction from `residual_modeling/enhanced_method_1.ipynb`:
-
-```json
-{
-  "departure_time": "2026-04-10T18:00:00",
-  "model_id": "api_raw_time_bin_median_residual",
-  "baseline_eta_secs": 180
-}
-```
-
-## Notes
-
-- Vietmap recommends backend integration to avoid exposing API credentials.
-- The frontend resolves full addresses on blur or when the user presses `Extract coordinates`.
-- Vietmap currently issues separate keys for tile display and service APIs.
-- The app requests `points_encoded=false` so the frontend can render route geometry without a polyline decoder.
-
-## Mock ETA residual data (Hanoi MVP)
-
-Use the generator in `data/` to create realistic Hanoi origin/destination trips and mock ETA residuals.
-
-```bash
-npm run generate:mock
-```
-
-The generated rows include `request_timestamp` in `Asia/Ho_Chi_Minh` ISO-8601 format. Time features such as `hour_of_day`, `day_of_week`, `is_weekend`, and `is_rush_hour` are derived from that timestamp.
-
-Useful generator options:
-
-```bash
-node data/generate_mock_eta.js --start-date 2026-05-01 --date-range-days 30 --format both
-```
-
-The XGBoost training pipeline supports either random or chronological splitting:
-
-```bash
-python model/model_baseline.py --split-strategy time
-```
-
-To fill `data/output_log.csv`, keep both APIs running and execute:
-
-```bash
-node data/fill_output_log.js
-```
-
-## ETA fixed-trip modeling experiments
-
-An end-to-end MLflow experiment pipeline is available in `eta_modeling/`. It evaluates Vietmap baseline ETA, XGBoost direct ETA, XGBoost residual ETA, MLP residual ETA, and a simplified DeeprETA-like residual architecture.
-
+### So sánh & Quản lý Thử nghiệm
+Khi chạy quy trình so sánh:
 ```bash
 cd eta_modeling
-pip install -r requirements.txt
-python -m src.training.train_baseline --config configs/config.yaml
-python -m src.training.train_xgboost_direct --config configs/config.yaml
-python -m src.training.train_xgboost_residual --config configs/config.yaml
-python -m src.training.train_mlp_residual --config configs/config.yaml
-python -m src.training.train_deepr_eta_like --config configs/config.yaml
 python -m src.training.compare_models --config configs/config.yaml
+```
+Kết quả so sánh chi tiết sẽ được tự động ghi nhận vào bảng so sánh tại `artifacts/metrics/model_comparison.csv` và trực quan hóa qua biểu đồ cột tại `artifacts/plots/model_comparison_mae_p95.png`. 
+
+Bạn có thể mở giao diện quản lý **MLflow** để xem biểu đồ trực quan, tham số huấn luyện chi tiết của từng lượt chạy:
+```bash
 mlflow ui
 ```
-
-See `eta_modeling/README.md` for schema, metrics, MLflow artifacts, and known limitations.
-
-The script calls the Vietmap proxy with each row's `lat/lng`, `destination_lat/destination_lng`, and timestamp-aligned `departureTime`. If `data/output_log.csv` does not include `timestamp`, the script hydrates it from `data/processed_data.csv` and corrects `hour` to match that timestamp. It then calls the model API with the same `departure_time` and writes both `estimate_time` and `predict_time` in seconds.
-
-For a fresh Python environment:
-
-```bash
-python -m venv .venv
-.\.venv\Scripts\pip install -r requirements.txt
-.\.venv\Scripts\python model\model_baseline.py --split-strategy time --n-trials 16 --cv-folds 3
-.\.venv\Scripts\mlflow ui --backend-store-uri .\mlruns
-```
-
-The MLflow run logs dataset metrics, split metadata, nested tuning trials, trace spans, best hyperparameters, model metrics, feature importance, and the serialized sklearn/XGBoost pipeline.
+Sau đó truy cập trình duyệt tại: `http://127.0.0.1:5000`.

@@ -370,34 +370,58 @@ async function handleRoute(request, response) {
     ? payload.vehicle
     : config.vietmapDefaultVehicle;
 
-  let resolvedOrigin;
-  let resolvedDestination;
-  try {
-    resolvedOrigin = await resolveLocationInput(payload.origin, {
-      lat: config.mapCenterLat,
-      lng: config.mapCenterLng,
-    });
-    resolvedDestination = await resolveLocationInput(
-      payload.destination,
-      resolvedOrigin.point || {
+  // ── Build the list of route points ─────────────────────────────────────
+  // Supports two modes:
+  //   1. waypoints: [{lat, lng}, ...] — for bus station multi-point routing
+  //   2. origin + destination (legacy) — for address-based routing
+  let routePoints = [];
+
+  if (Array.isArray(payload.waypoints) && payload.waypoints.length >= 2) {
+    // Waypoints mode: each element is {lat, lng}
+    for (const wp of payload.waypoints) {
+      const pt = normalizePoint(wp);
+      if (!pt) {
+        sendJson(response, 400, {
+          error: `Invalid waypoint coordinates: ${JSON.stringify(wp)}`,
+        });
+        return;
+      }
+      routePoints.push(pt);
+    }
+  } else {
+    // Legacy origin/destination mode
+    let resolvedOrigin;
+    let resolvedDestination;
+    try {
+      resolvedOrigin = await resolveLocationInput(payload.origin, {
         lat: config.mapCenterLat,
         lng: config.mapCenterLng,
-      },
-    );
-  } catch (error) {
-    sendJson(response, 422, {
-      error: error instanceof Error ? error.message : "Failed to resolve one of the locations.",
-    });
-    return;
-  }
+      });
+      resolvedDestination = await resolveLocationInput(
+        payload.destination,
+        resolvedOrigin.point || {
+          lat: config.mapCenterLat,
+          lng: config.mapCenterLng,
+        },
+      );
+    } catch (error) {
+      sendJson(response, 422, {
+        error: error instanceof Error ? error.message : "Failed to resolve one of the locations.",
+      });
+      return;
+    }
+    routePoints = [resolvedOrigin.point, resolvedDestination.point];
 
-  const origin = resolvedOrigin.point;
-  const destination = resolvedDestination.point;
+    // Store for response serialization
+    payload._resolvedOrigin = resolvedOrigin;
+    payload._resolvedDestination = resolvedDestination;
+  }
 
   const upstream = new URL(config.vietmapRouteUrl);
   upstream.searchParams.set("apikey", config.vietmapApiKey);
-  upstream.searchParams.append("point", `${origin.lat},${origin.lng}`);
-  upstream.searchParams.append("point", `${destination.lat},${destination.lng}`);
+  for (const pt of routePoints) {
+    upstream.searchParams.append("point", `${pt.lat},${pt.lng}`);
+  }
   upstream.searchParams.set("vehicle", vehicle);
   upstream.searchParams.set("points_encoded", "false");
   upstream.searchParams.set("annotations", "congestion,congestion_distance");
@@ -446,9 +470,10 @@ async function handleRoute(request, response) {
   const primaryPath = data.paths[0];
   const geometry = normalizeGeometry(primaryPath.points);
 
-  sendJson(response, 200, {
+  const responsePayload = {
     summary: {
       vehicle,
+      waypointCount: routePoints.length,
       distanceMeters: primaryPath.distance,
       durationMs: primaryPath.time,
       distanceLabel: formatDistance(primaryPath.distance),
@@ -470,12 +495,18 @@ async function handleRoute(request, response) {
           durationLabel: formatDuration(instruction.time),
         }))
       : [],
-    resolvedLocations: {
-      origin: serializeResolvedLocation(resolvedOrigin),
-      destination: serializeResolvedLocation(resolvedDestination),
-    },
     raw: data,
-  });
+  };
+
+  // Include resolved locations when using legacy mode
+  if (payload._resolvedOrigin) {
+    responsePayload.resolvedLocations = {
+      origin: serializeResolvedLocation(payload._resolvedOrigin),
+      destination: serializeResolvedLocation(payload._resolvedDestination),
+    };
+  }
+
+  sendJson(response, 200, responsePayload);
 }
 
 async function handleTileProxy(url, response) {
@@ -577,6 +608,18 @@ const server = http.createServer(async (request, response) => {
             attribution: config.publicMapTileAttribution,
           },
     });
+    return;
+  }
+
+  if (request.method === "GET" && url.pathname === "/api/bus-routes") {
+    try {
+      const routeFile = path.join(rootDir, "route.json");
+      const raw = await fsp.readFile(routeFile, "utf8");
+      const data = JSON.parse(raw);
+      sendJson(response, 200, data);
+    } catch (error) {
+      sendJson(response, 500, { error: "Failed to load bus route data." });
+    }
     return;
   }
 

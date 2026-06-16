@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vietmap Route Studio</title>
+    <title>VinBus ETA Predictor</title>
+    <meta name="description" content="Dự đoán ETA cho tuyến xe buýt VinBus sử dụng các phương pháp hiệu chỉnh thống kê." />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -21,45 +22,52 @@
   <body>
     <div class="page-shell">
       <aside class="control-panel">
-        <div class="panel-kicker">FastAPI ETA model</div>
-        <h1>Fixed Bus ETA</h1>
+        <div class="panel-kicker">VinBus ETA Predictor</div>
+        <h1>Bus ETA</h1>
         <p class="panel-copy">
-          Test the packed ETA model on the fixed two-station route. Change only departure time.
+          Chọn tuyến VinBus, trạm xuất phát và trạm đến, phương pháp dự đoán và thời gian khởi hành.
         </p>
 
         <form id="route-form" class="route-form">
+          <!-- Route + direction selector -->
           <div class="field-grid">
             <label class="field">
-              <span>Origin address</span>
-              <input
-                id="origin-address"
-                name="origin-address"
-                type="text"
-                autocomplete="street-address"
-                placeholder="Fixed origin station"
-                readonly
-                required
-              />
+              <span>Tuyến xe</span>
+              <select id="bus-route" name="bus-route">
+                <option value="" disabled selected>Đang tải...</option>
+              </select>
             </label>
             <label class="field">
-              <span>Destination address</span>
-              <input
-                id="destination-address"
-                name="destination-address"
-                type="text"
-                autocomplete="street-address"
-                placeholder="Fixed destination station"
-                readonly
-                required
-              />
+              <span>Chiều</span>
+              <select id="bus-direction" name="bus-direction">
+                <option value="Go">Lượt đi</option>
+                <option value="Re">Lượt về</option>
+              </select>
             </label>
           </div>
 
+          <!-- Station selectors -->
+          <div class="field-grid">
+            <label class="field">
+              <span>Trạm xuất phát</span>
+              <select id="origin-station" name="origin-station">
+                <option value="" disabled selected>-- Chọn trạm --</option>
+              </select>
+            </label>
+            <label class="field">
+              <span>Trạm đến</span>
+              <select id="destination-station" name="destination-station">
+                <option value="" disabled selected>-- Chọn trạm --</option>
+              </select>
+            </label>
+          </div>
+
+          <!-- Station info cards -->
           <div class="resolved-grid">
             <article class="resolved-card">
               <div class="resolved-head">
-                <h3>Origin station</h3>
-                <span id="origin-resolve-state" class="resolve-state">Waiting</span>
+                <h3>Xuất phát</h3>
+                <span id="origin-resolve-state" class="resolve-state">Chờ</span>
               </div>
               <p id="origin-display" class="resolved-display">-</p>
               <div class="resolved-meta">
@@ -69,8 +77,8 @@
             </article>
             <article class="resolved-card">
               <div class="resolved-head">
-                <h3>Destination station</h3>
-                <span id="destination-resolve-state" class="resolve-state">Waiting</span>
+                <h3>Điểm đến</h3>
+                <span id="destination-resolve-state" class="resolve-state">Chờ</span>
               </div>
               <p id="destination-display" class="resolved-display">-</p>
               <div class="resolved-meta">
@@ -80,100 +88,89 @@
             </article>
           </div>
 
-          <div class="field-grid model-time-grid">
+          <!-- Model selector + departure time -->
+          <div class="field-grid">
             <label class="field">
-              <span>Prediction model</span>
-              <select id="eta-model" name="eta-model"></select>
-            </label>
-            <label class="field model-hidden">
-              <span>Vehicle</span>
-              <select id="vehicle" name="vehicle">
-                <option value="car">Car</option>
-                <option value="motorcycle">Motorcycle</option>
-                <option value="truck">Truck</option>
+              <span>Phương pháp dự đoán</span>
+              <select id="eta-model" name="eta-model">
+                <option value="ratio_time_bin" selected>⭐ Ratio Time-bin</option>
+                <option value="log_ratio_global">Log-Ratio Global</option>
+                <option value="additive_global">Additive Global</option>
               </select>
             </label>
-            <label class="field model-hidden">
-              <span>Truck capacity (kg)</span>
-              <input id="capacity-kg" name="capacity-kg" type="number" min="1" placeholder="Optional" />
-            </label>
-            <label class="field field-wide">
-              <span>Departure time</span>
+            <label class="field">
+              <span>Thời gian khởi hành</span>
               <input id="departure-time" name="departure-time" type="datetime-local" />
             </label>
           </div>
 
-          <label class="toggle model-hidden">
-            <input id="alternative" name="alternative" type="checkbox" />
-            <span>Ask Vietmap for an alternative route when available</span>
-          </label>
-
           <div class="action-row">
-            <button class="primary-action" type="submit">Predict ETA</button>
-            <button class="secondary-action model-hidden" id="resolve-button" type="button">Extract coordinates</button>
-            <button class="secondary-action" id="sample-button" type="button">Reset time</button>
-            <button class="ghost-action model-hidden" id="clear-button" type="button">Clear route</button>
+            <button class="primary-action" type="submit" id="predict-button">Dự đoán ETA</button>
+            <button class="secondary-action" id="sample-button" type="button">Đặt lại giờ</button>
           </div>
 
           <p class="helper-copy">
-            Select a model to compare Vietmap baseline, XGBoost, MLP, and DeeprETA-like predictions.
-          </p>
-          <p class="helper-copy">
-            Experiment models use Vietmap route duration as baseline input, so the app fetches it before prediction.
+            Mô hình sử dụng ETA từ Vietmap làm baseline, sau đó áp dụng hiệu chỉnh thống kê theo phương pháp đã chọn.
           </p>
         </form>
 
+        <!-- Prediction results -->
         <section class="summary-card">
           <div class="summary-header">
-            <h2>Route summary</h2>
+            <h2>Kết quả dự đoán</h2>
             <span id="status-pill" class="status-pill">Idle</span>
           </div>
           <div class="metric-row">
             <div class="metric-card">
-              <span class="metric-label">Distance</span>
+              <span class="metric-label">Khoảng cách</span>
               <strong id="distance-value">-</strong>
             </div>
-            <div class="metric-card">
-              <span class="metric-label">Point ETA</span>
+            <div class="metric-card highlight-card">
+              <span class="metric-label">ETA Dự đoán</span>
               <strong id="duration-value">-</strong>
             </div>
             <div class="metric-card">
-              <span class="metric-label">Vietmap ETA</span>
+              <span class="metric-label">ETA Vietmap</span>
               <strong id="baseline-value">-</strong>
             </div>
             <div class="metric-card">
-              <span class="metric-label">Point model</span>
-              <strong id="vehicle-value">-</strong>
+              <span class="metric-label">Phương pháp</span>
+              <strong id="method-value">-</strong>
             </div>
           </div>
           <p id="error-message" class="error-message" hidden></p>
         </section>
 
-        <section class="summary-card">
+        <!-- Model info -->
+        <section class="summary-card model-info-card">
           <div class="summary-header">
-            <h2>Quantile ETA</h2>
+            <h2>Thông tin phương pháp</h2>
             <span id="eta-hour-value">-</span>
           </div>
-          <div class="metric-row quantile-row">
+          <div class="model-desc" id="model-description">
+            Chọn một phương pháp để xem thông tin chi tiết.
+          </div>
+          <div class="metric-row">
             <div class="metric-card">
-              <span class="metric-label">P50</span>
-              <strong id="eta-p50-value">-</strong>
+              <span class="metric-label">Test MAE</span>
+              <strong id="info-mae">-</strong>
             </div>
             <div class="metric-card">
-              <span class="metric-label">P85</span>
-              <strong id="eta-p85-value">-</strong>
+              <span class="metric-label">Test P95</span>
+              <strong id="info-p95">-</strong>
             </div>
             <div class="metric-card">
-              <span class="metric-label">P90</span>
-              <strong id="eta-p90-value">-</strong>
+              <span class="metric-label">vs Baseline</span>
+              <strong id="info-improvement">-</strong>
             </div>
           </div>
         </section>
 
+        <!-- Diagnostics -->
         <section class="steps-card">
           <div class="summary-header">
-            <h2>Model diagnostics</h2>
-            <span id="steps-count">0 metrics</span>
+            <h2>Diagnostics</h2>
+            <span id="steps-count">0 items</span>
           </div>
           <ol id="steps-list" class="steps-list"></ol>
         </section>
@@ -182,13 +179,13 @@
       <main class="map-stage">
         <div class="map-header">
           <div>
-            <p class="map-eyebrow">Fixed route canvas</p>
-            <h2>Two-point bus ETA test</h2>
+            <p class="map-eyebrow">VinBus Route Canvas</p>
+            <h2 id="map-title">Chọn tuyến xe</h2>
           </div>
           <div class="legend-card">
-            <span><i class="legend-swatch origin-swatch"></i> Origin</span>
-            <span><i class="legend-swatch destination-swatch"></i> Destination</span>
-            <span><i class="legend-swatch route-swatch"></i> Vietmap route</span>
+            <span><i class="legend-swatch origin-swatch"></i> Xuất phát</span>
+            <span><i class="legend-swatch destination-swatch"></i> Đến</span>
+            <span><i class="legend-swatch route-swatch"></i> Tuyến đường</span>
           </div>
         </div>
         <div id="map" class="map-canvas" aria-label="Interactive route map"></div>
