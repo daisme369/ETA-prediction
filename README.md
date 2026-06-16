@@ -35,10 +35,38 @@ graph TD
   - Cung cấp các API (`/api/eta/models`, `/api/eta/predict`) để phục vụ suy luận (Inference) thời gian thực từ các mô hình Machine Learning đã được huấn luyện.
   - Nạp các tệp mô hình dạng `.joblib` (scikit-learn/XGBoost) và `.pt` (PyTorch).
 - **Pipeline Huấn Luyện (`eta_modeling/`)**: Quy trình khép kín xử lý dữ liệu đầu vào, chia tập dữ liệu theo thời gian thực tế (chronological split), tối ưu hóa tham số hyperparameter, huấn luyện mô hình và lưu lịch sử thử nghiệm qua MLflow.
+---
+
+## 2. Cấu Trúc Thư Mục (Folder Structure)
+
+Dưới đây là cấu trúc thư mục chính của dự án và mô tả vai trò của từng thành phần:
+
+```text
+├── api/                       # Mã nguồn Python FastAPI phục vụ API dự đoán ETA học máy
+│   └── app.py                 # File chạy chính của FastAPI server
+├── docs/                      # Tài liệu mô tả hệ thống
+├── eta_modeling/              # Thư mục huấn luyện mô hình sâu và XGBoost (MLflow pipeline)
+│   ├── configs/               # Chứa file cấu hình tham số huấn luyện (config.yaml)
+│   ├── src/                   # Mã nguồn Python (xử lý dữ liệu, thiết lập mô hình, huấn luyện)
+│   └── artifacts/             # Kết quả lưu trữ mô hình và các chỉ số (plots, metrics, models)
+├── model/                     # Thư mục chứa các script mô hình baseline và file lưu trữ cũ
+├── public/                    # Tài nguyên giao diện người dùng (Frontend)
+│   ├── index.html             # Trang giao diện chính hiển thị bản đồ Leaflet
+│   └── map.js                 # Điều khiển giao diện bản đồ, xử lý vẽ tuyến đường và gọi API
+├── residual_modeling/         # Thư mục nghiên cứu các phương pháp hiệu chỉnh thống kê
+│   ├── baseline.ipynb         # Notebook khảo sát dữ liệu và mô hình baseline
+│   ├── enhanced_method_1.ipynb# Notebook xây dựng phương pháp hiệu chỉnh thống kê nâng cao
+│   ├── method3.ipynb          # Notebook nghiên cứu phương pháp hiệu chỉnh thống kê số 3
+│   └── method_comparison.py   # Script so sánh hiệu năng các phương pháp thống kê
+├── server.js                  # Backend Proxy (Node.js) kết nối Vietmap API và serve tĩnh Frontend
+├── route.json                 # Cấu hình các tuyến đường xe buýt cố định phục vụ hiển thị nhanh
+├── requirements.txt           # Danh sách thư viện Python phục vụ chạy mô hình
+└── package.json               # Cấu hình package và các script chạy của Node.js
+```
 
 ---
 
-## 2. Hướng Dẫn Cài Đặt (Setup Instructions)
+## 3. Hướng Dẫn Cài Đặt (Setup Instructions)
 
 Hệ thống yêu cầu cài đặt cả môi trường Node.js (dành cho Backend Proxy & Frontend) và Python (dành cho mô hình Học máy).
 
@@ -85,7 +113,7 @@ Hệ thống yêu cầu cài đặt cả môi trường Node.js (dành cho Backe
 
 ---
 
-## 3. Các Phương Pháp Sử Dụng & Giải Thích Kiến Trúc
+## 4. Các Phương Pháp Sử Dụng & Giải Thích Kiến Trúc
 
 Do tập dữ liệu thực tế hiện tại chưa đủ lớn và đa dạng để tránh hiện tượng quá khớp (overfitting) đối với các mô hình học sâu phức tạp (như MLP hay DeeprETA), hệ thống hiện tại đang sử dụng các **phương pháp hiệu chỉnh thống kê (Statistical Correction Methods)**. Đây là những phương pháp cực kỳ nhẹ, không cần huấn luyện mạng nơ-ron nặng nề, có tính ổn định toán học cao và chống nhiễu tốt dựa trên các phân phối thực tế.
 
@@ -132,7 +160,7 @@ Dưới đây là giải thích kiến trúc và công thức của **3 phương
 
 ---
 
-## 4. Các Chỉ Số Đánh Giá (Evaluation Metrics)
+## 5. Các Chỉ Số Đánh Giá (Evaluation Metrics)
 
 Hệ thống đánh giá và so sánh hiệu quả của các mô hình trên tập dữ liệu kiểm thử độc lập (Test Set chiếm 15% dữ liệu được chia theo dòng thời gian) thông qua tập hợp các metrics sau:
 
