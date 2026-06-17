@@ -1,0 +1,18 @@
+{
+  "version": 2,
+  "cleanUrls": true,
+  "rewrites": [
+    {
+      "source": "/api/eta/:path*",
+      "destination": "https://YOUR_FASTAPI_BACKEND_URL.railway.app/api/eta/:path*"
+    },
+    {
+      "source": "/api/:path*",
+      "destination": "https://YOUR_NODE_BACKEND_URL.railway.app/api/:path*"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/public/$1"
+    }
+  ]
+}
