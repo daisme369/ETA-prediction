@@ -1,4 +1,7 @@
-const ETA_API_BASE = "http://localhost:8000";
+// Nếu đang chạy ở local thì gọi localhost, nếu trên Vercel thì gọi backend Render
+const ETA_API_BASE = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" 
+  ? "http://localhost:8000" 
+  : "https://https://eta-fastapi-backend.onrender.com"; // TODO: Đổi thành URL backend thực tế của bạn trên Render
 
 // ── Model metadata (from experiment results) ──────────────────────────────
 const MODEL_META = {
