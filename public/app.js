@@ -1,7 +1,7 @@
 // Nếu đang chạy ở local thì gọi localhost, nếu trên Vercel thì gọi backend Render
-const ETA_API_BASE = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" 
-  ? "http://localhost:8000" 
-  : "https://https://eta-fastapi-backend.onrender.com"; // TODO: Đổi thành URL backend thực tế của bạn trên Render
+const ETA_API_BASE = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+  ? "http://localhost:8000"
+  : "https://eta-fastapi-backend.onrender.com"; // TODO: Đổi thành URL backend thực tế của bạn trên Render
 
 // ── Model metadata (from experiment results) ──────────────────────────────
 const MODEL_META = {
@@ -419,10 +419,10 @@ async function handlePredict(event) {
     let etaSecs = 0;
     let modelLabel = meta?.label || modelId;
     let hourLabel = "-";
-    
+
     const lo = Math.min(state.originStationIdx, state.destinationStationIdx);
     const hi = Math.max(state.originStationIdx, state.destinationStationIdx);
-    
+
     const fullGeoSegment = extractGeoSegment(state.routeGeo, oStation, dStation);
     const totalGeoDist = polylineLength(fullGeoSegment) || 1; // avoid division by zero
 
@@ -432,7 +432,7 @@ async function handlePredict(event) {
       const s2 = state.stations[i + 1];
       const segGeo = extractGeoSegment(state.routeGeo, s1, s2);
       const segDist = polylineLength(segGeo);
-      
+
       const weight = segDist / totalGeoDist;
       const segBaselineSecs = baseline.baselineEtaSecs * weight;
 
@@ -455,7 +455,7 @@ async function handlePredict(event) {
           })
       );
     }
-    
+
     const segEtas = await Promise.all(promises);
     etaSecs = segEtas.reduce((acc, val) => acc + val, 0);
 
