@@ -1,0 +1,17 @@
+# Ignore backend code and machine learning artifacts on Vercel
+api/
+eta_modeling/
+residual_modeling/
+model/
+data/
+docs/
+.venv/
+node_modules/
+requirements.txt
+server.js
+package.json
+package-lock.json
+route.json
+benchmark.py
+.env
+.env.example
