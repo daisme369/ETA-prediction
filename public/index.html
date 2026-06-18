@@ -90,7 +90,7 @@
 
           <!-- Model selector + departure time -->
           <div class="field-grid">
-            <label class="field">
+            <label class="field wide-field" style="grid-column: 1 / -1;">
               <span>Phương pháp dự đoán</span>
               <select id="eta-model" name="eta-model">
                 <option value="ratio_time_bin" selected>⭐ Ratio Time-bin</option>
@@ -99,8 +99,12 @@
               </select>
             </label>
             <label class="field">
-              <span>Thời gian khởi hành</span>
-              <input id="departure-time" name="departure-time" type="datetime-local" />
+              <span>Ngày khởi hành</span>
+              <input id="departure-date" name="departure-date" type="date" />
+            </label>
+            <label class="field">
+              <span>Giờ khởi hành</span>
+              <input id="departure-time" name="departure-time" type="time" />
             </label>
           </div>
 

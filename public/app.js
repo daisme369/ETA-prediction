@@ -97,6 +97,7 @@ const el = {
   originResolveState: document.getElementById("origin-resolve-state"),
   destinationResolveState: document.getElementById("destination-resolve-state"),
   etaModel: document.getElementById("eta-model"),
+  departureDate: document.getElementById("departure-date"),
   departureTime: document.getElementById("departure-time"),
   sampleButton: document.getElementById("sample-button"),
   distanceValue: document.getElementById("distance-value"),
@@ -133,9 +134,8 @@ function fmtEta(sec) {
 function setDefaultDepartureTime() {
   const now = new Date(); now.setSeconds(0, 0);
   const p = (v) => String(v).padStart(2, "0");
-  el.departureTime.value =
-    [now.getFullYear(), p(now.getMonth() + 1), p(now.getDate())].join("-") +
-    `T${p(now.getHours())}:${p(now.getMinutes())}`;
+  el.departureDate.value = [now.getFullYear(), p(now.getMonth() + 1), p(now.getDate())].join("-");
+  el.departureTime.value = `${p(now.getHours())}:${p(now.getMinutes())}`;
 }
 
 // ── Map helpers ────────────────────────────────────────────────────────────
@@ -391,7 +391,8 @@ async function handlePredict(event) {
     if (state.originStationIdx === state.destinationStationIdx) {
       throw new Error("Trạm xuất phát và trạm đến phải khác nhau.");
     }
-    if (!el.departureTime.value) throw new Error("Vui lòng chọn thời gian khởi hành.");
+    if (!el.departureDate.value || !el.departureTime.value) throw new Error("Vui lòng chọn ngày và giờ khởi hành.");
+    const depDateTime = `${el.departureDate.value}T${el.departureTime.value}`;
 
     const modelId = el.etaModel.value;
     state.selectedModelId = modelId;
@@ -402,7 +403,7 @@ async function handlePredict(event) {
 
     // 1. Fetch Vietmap baseline with only origin + destination (2 points, no zigzag)
     setStatus("Vietmap");
-    const baseline = await fetchVietmapBaseline(oStation.Geo, dStation.Geo, el.departureTime.value);
+    const baseline = await fetchVietmapBaseline(oStation.Geo, dStation.Geo, depDateTime);
 
     // Draw the actual bus route Geo segment on the map (not Vietmap's routed path)
     if (state.routeGeo.length > 0) {
@@ -437,7 +438,7 @@ async function handlePredict(event) {
       const segBaselineSecs = baseline.baselineEtaSecs * weight;
 
       const payload = {
-        departure_time: el.departureTime.value,
+        departure_time: depDateTime,
         model_id: modelId,
         baseline_eta_secs: segBaselineSecs,
       };
@@ -445,11 +446,11 @@ async function handlePredict(event) {
       promises.push(
         postEtaPrediction(payload)
           .then((data) => {
-            if (i === lo) hourLabel = `Hour ${data.prediction?.hour ?? new Date(el.departureTime.value).getHours()}`;
+            if (i === lo) hourLabel = `Hour ${data.prediction?.hour ?? new Date(depDateTime).getHours()}`;
             return data.prediction?.point?.seconds ?? data.prediction?.point?.minutes * 60;
           })
           .catch(() => {
-            const local = applyLocalCorrection(segBaselineSecs, el.departureTime.value, modelId);
+            const local = applyLocalCorrection(segBaselineSecs, depDateTime, modelId);
             if (i === lo) { hourLabel = `Hour ${local.hour} (local)`; modelLabel = local.desc; }
             return local.corrected;
           })
@@ -474,19 +475,43 @@ async function handlePredict(event) {
 }
 
 // ── Direction change ───────────────────────────────────────────────────────
-function onDirectionChange() {
+async function onDirectionChange() {
   const dir = el.busDirection.value;
   state.currentDirection = dir;
   const dirData = state.busRouteData?.[dir];
   if (!dirData) return;
 
   clearAll();
-  state.routeGeo = dirData.Geo;  // store for segment extraction
-  drawFullRoute(dirData.Geo);
   populateStations(dirData.Station);
   drawStationMarkers(dirData.Station);
   resetSummary();
   setError("");
+
+  let routeGeo = dirData.Geo;
+  // If Geo has only start/end points, fetch actual road geometry from Vietmap
+  if (routeGeo && routeGeo.length <= 2 && dirData.Station && dirData.Station.length >= 2) {
+    setStatus("Đang tải lộ trình...");
+    try {
+      const r = await fetch("/api/route", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          waypoints: dirData.Station.map(s => ({ lat: s.Geo.Lat, lng: s.Geo.Lng })),
+          vehicle: "car"
+        })
+      });
+      const data = await r.json();
+      if (r.ok && data.geometry) {
+        routeGeo = data.geometry.map(p => ({ Lat: p[0], Lng: p[1] }));
+      }
+    } catch (err) {
+      console.warn("Failed to fetch full geometry from Vietmap", err);
+    }
+    setStatus("Ready");
+  }
+
+  state.routeGeo = routeGeo;  // store for segment extraction
+  drawFullRoute(routeGeo);
 }
 
 // ── Initialization ─────────────────────────────────────────────────────────
@@ -500,21 +525,32 @@ async function initialize() {
   L.tileLayer(config.tileLayer.url, { attribution: config.tileLayer.attribution, maxZoom: 19 }).addTo(state.map);
 
   // Load route data into memory
-  const dt = busData.dt;
-  state.busRouteData = dt;
+  const dtArray = Array.isArray(busData.dt) ? busData.dt : [busData.dt];
 
-  // Populate route dropdown (single route for PoC)
+  // Populate route dropdown
   el.busRoute.innerHTML = "";
-  const opt = document.createElement("option");
-  opt.value = dt.Code;
-  opt.textContent = `${dt.Code} — ${dt.Name} (${dt.Enterprise})`;
-  opt.selected = true;
-  el.busRoute.appendChild(opt);
+  dtArray.forEach((route, index) => {
+    const opt = document.createElement("option");
+    opt.value = index;
+    opt.textContent = `${route.Code} — ${route.Name} (${route.Enterprise})`;
+    if (index === 0) opt.selected = true;
+    el.busRoute.appendChild(opt);
+  });
 
-  el.mapTitle.textContent = `${dt.Code}: ${dt.Name}`;
+  // Set initial state
+  state.busRouteData = dtArray[0];
+  el.mapTitle.textContent = `${state.busRouteData.Code}: ${state.busRouteData.Name}`;
+
+  // Add event listener for route change
+  el.busRoute.addEventListener("change", () => {
+    const selectedIdx = Number(el.busRoute.value);
+    state.busRouteData = dtArray[selectedIdx];
+    el.mapTitle.textContent = `${state.busRouteData.Code}: ${state.busRouteData.Name}`;
+    onDirectionChange();
+  });
 
   // Initialize with "Go" direction
-  onDirectionChange();
+  await onDirectionChange();
 
   setDefaultDepartureTime();
   renderModelInfo(state.selectedModelId);
