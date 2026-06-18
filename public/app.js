@@ -148,6 +148,54 @@ function mkIcon(color, size = 14) {
   });
 }
 
+function mkPinIcon(color, size = 28) {
+  return L.divIcon({
+    className: "custom-pin-marker",
+    html: `<div style="
+      width: ${size}px;
+      height: ${size}px;
+      background: ${color};
+      border-radius: 50% 50% 50% 0;
+      transform: rotate(-45deg);
+      border: 3px solid white;
+      box-shadow: -2px 2px 4px rgba(0,0,0,0.3);
+      position: relative;
+    "><div style="
+      width: ${size*0.4}px;
+      height: ${size*0.4}px;
+      background: white;
+      border-radius: 50%;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    "></div></div>`,
+    iconSize: [size, size],
+    iconAnchor: [size / 2, size],
+    popupAnchor: [0, -size]
+  });
+}
+
+function mkBusIcon(color = "#3b82f6", size = 22) {
+  const busSvg = `<svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg"><path d="M4 16C4 16.55 4.45 17 5 17H6V19C6 19.55 6.45 20 7 20C7.55 20 8 19.55 8 19V17H16V19C16 19.55 16.45 20 17 20C17.55 20 18 19.55 18 19V17H19C19.55 17 20 16.55 20 16V6C20 2.5 16.42 2 12 2C7.58 2 4 2.5 4 6V16ZM6 12C5.45 12 5 11.55 5 11C5 10.45 5.45 10 6 10C6.55 10 7 10.45 7 11C7 11.55 6.55 12 6 12ZM18 12C17.45 12 17 11.55 17 11C17 10.45 17.45 10 18 10C18.55 10 19 10.45 19 11C19 11.55 18.55 12 18 12ZM12 4C15.5 4 17.65 4.28 17.9 5H6.1C6.35 4.28 8.5 4 12 4ZM5 14H19V15H5V14Z"/></svg>`;
+  return L.divIcon({
+    className: "custom-bus-marker",
+    html: `<div style="
+      width: ${size}px;
+      height: ${size}px;
+      background: ${color};
+      border-radius: 50%;
+      border: 2px solid white;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    "><div style="width: ${size*0.7}px; height: ${size*0.7}px; display: flex; align-items: center; justify-content: center;">${busSvg}</div></div>`,
+    iconSize: [size, size],
+    iconAnchor: [size / 2, size / 2],
+  });
+}
+
 function clearAll() {
   if (state.routePolyline) { state.routePolyline.remove(); state.routePolyline = null; }
   if (state.segmentPolyline) { state.segmentPolyline.remove(); state.segmentPolyline = null; }
@@ -161,7 +209,7 @@ function drawFullRoute(geo) {
   if (state.routePolyline) state.routePolyline.remove();
   const latlngs = geo.map((p) => [p.Lat, p.Lng]);
   state.routePolyline = L.polyline(latlngs, {
-    color: "#ef5b2a", weight: 4, opacity: 0.45, lineCap: "round", dashArray: "6,8",
+    color: "#0f9d58", weight: 4, opacity: 0.45, lineCap: "round", dashArray: "6,8",
   }).addTo(state.map);
   state.map.fitBounds(state.routePolyline.getBounds(), { padding: [60, 60] });
 }
@@ -208,7 +256,7 @@ function drawStationMarkers(stations) {
   for (const m of state.stationMarkers) m.remove();
   state.stationMarkers = [];
   for (const s of stations) {
-    const m = L.marker([s.Geo.Lat, s.Geo.Lng], { icon: mkIcon("#6875f5", 10) })
+    const m = L.marker([s.Geo.Lat, s.Geo.Lng], { icon: mkBusIcon("#3b82f6", 24) })
       .addTo(state.map)
       .bindPopup(`<strong>${s.Name}</strong><br/>Mã: ${s.Code}`);
     state.stationMarkers.push(m);
@@ -234,7 +282,7 @@ function highlightOriginDest() {
   }
   if (dIdx !== null) {
     const s = state.stations[dIdx];
-    state.destinationMarker = L.marker([s.Geo.Lat, s.Geo.Lng], { icon: mkIcon("#c63b35", 20), zIndexOffset: 1000 })
+    state.destinationMarker = L.marker([s.Geo.Lat, s.Geo.Lng], { icon: mkPinIcon("#c63b35", 36), zIndexOffset: 1000 })
       .addTo(state.map).bindPopup(`<strong>Điểm đến:</strong> ${s.Name}`);
     el.destinationDisplay.textContent = s.Name;
     el.destinationLat.textContent = fmtCoord(s.Geo.Lat);
