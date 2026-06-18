@@ -427,6 +427,10 @@ async function handlePredict(event) {
     const fullGeoSegment = extractGeoSegment(state.routeGeo, oStation, dStation);
     const totalGeoDist = polylineLength(fullGeoSegment) || 1; // avoid division by zero
 
+    // These model IDs are local-only correction formulas, not backend models
+    const LOCAL_ONLY_MODELS = new Set(["ratio_time_bin", "log_ratio_global", "additive_global"]);
+    const isLocalModel = LOCAL_ONLY_MODELS.has(modelId);
+
     const promises = [];
     for (let i = lo; i < hi; i++) {
       const s1 = state.stations[i];
@@ -437,24 +441,31 @@ async function handlePredict(event) {
       const weight = segDist / totalGeoDist;
       const segBaselineSecs = baseline.baselineEtaSecs * weight;
 
-      const payload = {
-        departure_time: depDateTime,
-        model_id: modelId,
-        baseline_eta_secs: segBaselineSecs,
-      };
+      if (isLocalModel) {
+        // Apply local correction directly — no backend call needed
+        const local = applyLocalCorrection(segBaselineSecs, depDateTime, modelId);
+        if (i === lo) { hourLabel = `Hour ${local.hour} (local)`; modelLabel = local.desc; }
+        promises.push(Promise.resolve(local.corrected));
+      } else {
+        const payload = {
+          departure_time: depDateTime,
+          model_id: modelId,
+          baseline_eta_secs: segBaselineSecs,
+        };
 
-      promises.push(
-        postEtaPrediction(payload)
-          .then((data) => {
-            if (i === lo) hourLabel = `Hour ${data.prediction?.hour ?? new Date(depDateTime).getHours()}`;
-            return data.prediction?.point?.seconds ?? data.prediction?.point?.minutes * 60;
-          })
-          .catch(() => {
-            const local = applyLocalCorrection(segBaselineSecs, depDateTime, modelId);
-            if (i === lo) { hourLabel = `Hour ${local.hour} (local)`; modelLabel = local.desc; }
-            return local.corrected;
-          })
-      );
+        promises.push(
+          postEtaPrediction(payload)
+            .then((data) => {
+              if (i === lo) hourLabel = `Hour ${data.prediction?.hour ?? new Date(depDateTime).getHours()}`;
+              return data.prediction?.point?.seconds ?? data.prediction?.point?.minutes * 60;
+            })
+            .catch(() => {
+              const local = applyLocalCorrection(segBaselineSecs, depDateTime, modelId);
+              if (i === lo) { hourLabel = `Hour ${local.hour} (local)`; modelLabel = local.desc; }
+              return local.corrected;
+            })
+        );
+      }
     }
 
     const segEtas = await Promise.all(promises);
