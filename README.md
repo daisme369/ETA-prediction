@@ -1,6 +1,7 @@
 # Hệ Thống Dự Đoán Thời Gian Di Chuyển (ETA Prediction System)
 
 Dự án này là một giải pháp tích hợp từ giao diện bản đồ trực quan đến các mô hình Học máy (Machine Learning) nhằm tối ưu hóa và dự đoán chính xác thời gian di chuyển thực tế (ETA - Estimated Time of Arrival) cho các chuyến đi. Hệ thống sử dụng Vietmap Route API làm nền tảng tuyến đường cơ sở (Baseline) và áp dụng các mô hình học máy tiên tiến để dự đoán sai số (Residual Correction), giúp nâng cao độ chính xác đáng kể so với kết quả thô từ API bản đồ.
+![alt text](image-1.png)
 
 ---
 
