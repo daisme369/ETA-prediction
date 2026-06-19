@@ -24,6 +24,7 @@ EXPERIMENT_METRICS_DIR = ETA_MODELING_DIR / "artifacts" / "metrics"
 RESIDUAL_MODELING_ARTIFACTS_DIR = ROOT_DIR / "residual_modeling" / "artifacts"
 RAW_TIME_BIN_RESIDUALS_PATH = RESIDUAL_MODELING_ARTIFACTS_DIR / "enhanced_method_1_time_bin_residuals.csv"
 RAW_TIME_BIN_MODEL_CARD_PATH = RESIDUAL_MODELING_ARTIFACTS_DIR / "enhanced_method_1_model_card.json"
+CORRECTION_MODEL_CARD_PATH = RESIDUAL_MODELING_ARTIFACTS_DIR / "correction_method_comparison_model_card.json"
 PROCESSED_DATA_PATH = ROOT_DIR / "data" / "processed_data.csv"
 QUANTILE_LABELS = ("p50", "p85", "p90")
 DEFAULT_MODEL_ID = "mlp_residual_eta"
@@ -457,6 +458,33 @@ def available_model_specs() -> list[dict[str, Any]]:
             description="PyTorch MLP residual model using categorical hour_bin.",
         ),
         model_spec(
+            "ratio_global",
+            "API + Global Ratio Correction",
+            "ratio_global",
+            "corrected_eta_secs",
+            requires_baseline=True,
+            artifact_paths=[CORRECTION_MODEL_CARD_PATH],
+            description="Multiplies Vietmap ETA by the global median ratio (1.1009). Best MAE: 37.24s. MAE improvement +1.89%, P95 improvement +12.70% vs baseline.",
+        ),
+        model_spec(
+            "ratio_time_bin",
+            "API + Time-Bin Ratio Correction (Primary)",
+            "ratio_time_bin",
+            "corrected_eta_secs",
+            requires_baseline=True,
+            artifact_paths=[CORRECTION_MODEL_CARD_PATH],
+            description="PRIMARY METHOD: Multiplies Vietmap ETA by a time-of-day specific ratio. Best P95: 97.28s, best RMSE: 51.20s. P95 improvement +21.39% vs baseline.",
+        ),
+        model_spec(
+            "log_ratio_global",
+            "API + Global Log-Ratio Correction",
+            "log_ratio_global",
+            "corrected_eta_secs",
+            requires_baseline=True,
+            artifact_paths=[CORRECTION_MODEL_CARD_PATH],
+            description="Multiplies Vietmap ETA by exp(global_log_ratio). Mathematically equivalent to ratio_global; more robust with skewed distributions.",
+        ),
+        model_spec(
             "hour_bin_deepr_eta_like",
             "Hour-bin DeeprETA-like residual",
             "hour_bin_deepr_eta_like",
@@ -684,6 +712,87 @@ def load_raw_time_bin_residuals() -> dict[str, Any]:
     }
 
 
+@lru_cache(maxsize=None)
+def load_ratio_params() -> dict[str, Any]:
+    """Load ratio correction parameters from correction_method_comparison_model_card.json."""
+    if not CORRECTION_MODEL_CARD_PATH.exists():
+        raise HTTPException(
+            status_code=503,
+            detail=f"Ratio correction artifact is missing: {CORRECTION_MODEL_CARD_PATH.relative_to(ROOT_DIR)}",
+        )
+    try:
+        card = json.loads(CORRECTION_MODEL_CARD_PATH.read_text(encoding="utf-8"))
+    except Exception as error:
+        raise HTTPException(status_code=503, detail=f"Cannot read ratio artifact: {error}") from error
+
+    ratio_section = card.get("methods", {}).get("ratio", {})
+    log_ratio_section = card.get("methods", {}).get("log_ratio", {})
+
+    global_ratio = as_float(ratio_section.get("global_ratio"), 1.0)
+    global_log_ratio = as_float(log_ratio_section.get("global_log_ratio"), 0.0)
+
+    time_bin_ratio_map: dict[str, float] = {}
+    for row in ratio_section.get("time_bin_table", []):
+        tb = as_str(row.get("time_bin"), "other")
+        # Use smoothed_ratio (equals median_ratio when k=0, which is the selected_k)
+        time_bin_ratio_map[tb] = as_float(row.get("smoothed_ratio", row.get("median_ratio")), global_ratio)
+
+    if "other" not in time_bin_ratio_map:
+        time_bin_ratio_map["other"] = global_ratio
+
+    return {
+        "global_ratio": global_ratio,
+        "global_log_ratio": global_log_ratio,
+        "time_bin_ratio_map": time_bin_ratio_map,
+        "artifact": str(CORRECTION_MODEL_CARD_PATH.relative_to(ROOT_DIR)),
+    }
+
+
+def predict_ratio_correction(
+    model_id: str, payload: EtaPredictRequest, hour: int
+) -> tuple[float, dict[str, Any]]:
+    """Shared handler for ratio_global, ratio_time_bin, log_ratio_global."""
+    if payload.baseline_eta_secs is None or payload.baseline_eta_secs <= 0:
+        raise HTTPException(status_code=422, detail="baseline_eta_secs from Vietmap is required for this model.")
+
+    params = load_ratio_params()
+    baseline = float(payload.baseline_eta_secs)
+
+    if model_id == "ratio_global":
+        ratio = params["global_ratio"]
+        metadata = {
+            "correction_type": "ratio_global",
+            "ratio_applied": ratio,
+            "ratio_source": "global",
+        }
+    elif model_id == "ratio_time_bin":
+        hour_bin = raw_time_bin_for_hour(hour)
+        ratio_map = params["time_bin_ratio_map"]
+        ratio = as_float(ratio_map.get(hour_bin, ratio_map.get("other")), params["global_ratio"])
+        metadata = {
+            "correction_type": "ratio_time_bin",
+            "hour_bin": hour_bin,
+            "ratio_applied": ratio,
+            "ratio_source": "time_bin" if hour_bin in ratio_map else "global_fallback",
+        }
+    elif model_id == "log_ratio_global":
+        import math as _math
+        log_ratio = params["global_log_ratio"]
+        ratio = _math.exp(log_ratio)
+        metadata = {
+            "correction_type": "log_ratio_global",
+            "log_ratio": log_ratio,
+            "ratio_applied": ratio,
+            "ratio_source": "global",
+        }
+    else:
+        raise HTTPException(status_code=404, detail=f"Unknown ratio model_id: {model_id}")
+
+    pred_eta = max(baseline * ratio, 0.0)
+    metadata["artifact"] = params["artifact"]
+    return pred_eta, metadata
+
+
 def predict_raw_time_bin_median(payload: EtaPredictRequest, hour: int) -> tuple[float, dict[str, Any]]:
     if payload.baseline_eta_secs is None or payload.baseline_eta_secs <= 0:
         raise HTTPException(status_code=422, detail="baseline_eta_secs from Vietmap is required for this model.")
@@ -708,6 +817,9 @@ def predict_experiment_model(model_id: str, payload: EtaPredictRequest, hour: in
     if model_id == "api_raw_time_bin_median_residual":
         pred_eta, extra_metadata = predict_raw_time_bin_median(payload, hour)
         baseline = float(payload.baseline_eta_secs)
+    elif model_id in {"ratio_global", "ratio_time_bin", "log_ratio_global"}:
+        pred_eta, extra_metadata = predict_ratio_correction(model_id, payload, hour)
+        baseline = float(payload.baseline_eta_secs)
     else:
         frame = experiment_feature_frame(payload, hour)
         baseline = float(frame["baseline_eta_secs"].iloc[0])
@@ -725,6 +837,8 @@ def predict_experiment_model(model_id: str, payload: EtaPredictRequest, hour: in
         pred_eta = predict_hour_bin_median(frame)
     elif model_id == "api_raw_time_bin_median_residual":
         pass
+    elif model_id in {"ratio_global", "ratio_time_bin", "log_ratio_global"}:
+        pass  # already computed above
     elif model_id in {"mlp_residual_eta", "hour_bin_mlp_residual_eta"}:
         if frame is None:
             raise HTTPException(status_code=500, detail="Experiment feature frame was not initialized.")
