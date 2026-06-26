@@ -3511,6 +3511,1323 @@
                     }
                 ]
             }
+        },
+        {
+            "FleetID": 33,
+            "Enterprise": "Vinbus",
+            "Code": "33",
+            "Name": "Bến xe An Sương - Bến Xe Buýt ÐH Quốc Gia",
+            "OperationsTime": "",
+            "Frequency": "",
+            "BusCount": "",
+            "Cost": "",
+            "CostInt": 0,
+            "FirstStation": "Bến xe An Sương",
+            "LastStation": "Bến Xe Buýt ÐH Quốc Gia",
+            "Go": {
+                "Anomaly": 0,
+                "Route": "Bến xe An Sương - Cầu vượt An Sương - Bến xe Tây Nam - Trạm đăng kiểm - Thái An - Đài phát thanh Quán Tre - Phan Bội Châu - Bác sĩ Liêm - Ngã tư Đình - Cây xăng Thạnh Xuân - Cao su Vina - Ngã tư Tân Thới Hiệp - UBND Quận 12 - Bãi xe Tri Ân - Khách sạn Phi Vũ - Gò Sao - Cây xăng Thạnh Xuân - Cầu Cả Bốn - Bến xe Ngã tư Ga - Cầu Ga - An Phú Đông - Công ty Vĩnh Hưng - Đài liệt sỹ An Phú Đông - Đại Học Nguyễn Tất Thành - Công ty đá Ngọc Ngân - Cây xăng Petrolimex 12 - Bãi đậu xe kho hàng - Aone - Ngã 4 Bình Phước - Chợ Đầu Mối - Chợ Đầu Mối - Chợ Tam Bình - Hồ Bơi - Chợ Tam Hải - Cầu vượt Sóng Thần - Bến xe Lam Hồng - Giày da Thái Bình - Linh Xuân - Cầu vượt Linh Xuân - Vietcombank - Nghĩa trang TP - ĐH Kinh tế Luật - Công ty điện tử Samsung - ĐH Nông Lâm - ĐH Nông Lâm - Bến Xe Buýt ÐH Quốc Gia",
+                "Geo": [
+                    {
+                        "Lng": 106.61337280273,
+                        "Lat": 10.843737602234
+                    },
+                    {
+                        "Lng": 106.61766052246,
+                        "Lat": 10.844568252563
+                    },
+                    {
+                        "Lng": 106.619087,
+                        "Lat": 10.845851
+                    },
+                    {
+                        "Lng": 106.621506,
+                        "Lat": 10.847418
+                    },
+                    {
+                        "Lng": 106.623123,
+                        "Lat": 10.848157
+                    },
+                    {
+                        "Lng": 106.625069,
+                        "Lat": 10.849082
+                    },
+                    {
+                        "Lng": 106.632347,
+                        "Lat": 10.852583
+                    },
+                    {
+                        "Lng": 106.633719,
+                        "Lat": 10.853322
+                    },
+                    {
+                        "Lng": 106.639832,
+                        "Lat": 10.856667
+                    },
+                    {
+                        "Lng": 106.644233,
+                        "Lat": 10.858953
+                    },
+                    {
+                        "Lng": 106.647781,
+                        "Lat": 10.86097
+                    },
+                    {
+                        "Lng": 106.651199,
+                        "Lat": 10.861881
+                    },
+                    {
+                        "Lng": 106.654053,
+                        "Lat": 10.861808
+                    },
+                    {
+                        "Lng": 106.657127,
+                        "Lat": 10.861651
+                    },
+                    {
+                        "Lng": 106.662247,
+                        "Lat": 10.861335
+                    },
+                    {
+                        "Lng": 106.666458,
+                        "Lat": 10.861503
+                    },
+                    {
+                        "Lng": 106.671882,
+                        "Lat": 10.861577
+                    },
+                    {
+                        "Lng": 106.674446,
+                        "Lat": 10.861619
+                    },
+                    {
+                        "Lng": 106.678078,
+                        "Lat": 10.861472
+                    },
+                    {
+                        "Lng": 106.68201,
+                        "Lat": 10.861171
+                    },
+                    {
+                        "Lng": 106.685711,
+                        "Lat": 10.860929
+                    },
+                    {
+                        "Lng": 106.689178,
+                        "Lat": 10.86075
+                    },
+                    {
+                        "Lng": 106.692331,
+                        "Lat": 10.860386
+                    },
+                    {
+                        "Lng": 106.694514,
+                        "Lat": 10.860365
+                    },
+                    {
+                        "Lng": 106.700699,
+                        "Lat": 10.859675
+                    },
+                    {
+                        "Lng": 106.706048,
+                        "Lat": 10.859017
+                    },
+                    {
+                        "Lng": 106.708912,
+                        "Lat": 10.858616
+                    },
+                    {
+                        "Lng": 106.713504,
+                        "Lat": 10.859659
+                    },
+                    {
+                        "Lng": 106.720451,
+                        "Lat": 10.863315
+                    },
+                    {
+                        "Lng": 106.727425,
+                        "Lat": 10.86689
+                    },
+                    {
+                        "Lng": 106.730198,
+                        "Lat": 10.86831
+                    },
+                    {
+                        "Lng": 106.73538,
+                        "Lat": 10.87086
+                    },
+                    {
+                        "Lng": 106.739666,
+                        "Lat": 10.871766
+                    },
+                    {
+                        "Lng": 106.744081,
+                        "Lat": 10.872935
+                    },
+                    {
+                        "Lng": 106.747128,
+                        "Lat": 10.873905
+                    },
+                    {
+                        "Lng": 106.75562,
+                        "Lat": 10.875706
+                    },
+                    {
+                        "Lng": 106.757466,
+                        "Lat": 10.875353
+                    },
+                    {
+                        "Lng": 106.76091,
+                        "Lat": 10.874474
+                    },
+                    {
+                        "Lng": 106.762476,
+                        "Lat": 10.873973
+                    },
+                    {
+                        "Lng": 106.769643,
+                        "Lat": 10.871597
+                    },
+                    {
+                        "Lng": 106.773039,
+                        "Lat": 10.870507
+                    },
+                    {
+                        "Lng": 106.776724,
+                        "Lat": 10.869306
+                    },
+                    {
+                        "Lng": 106.778656,
+                        "Lat": 10.868691
+                    },
+                    {
+                        "Lng": 106.787277,
+                        "Lat": 10.867122
+                    },
+                    {
+                        "Lng": 106.790283,
+                        "Lat": 10.866912
+                    },
+                    {
+                        "Lng": 106.77871704102,
+                        "Lat": 10.884156227112
+                    }
+                ],
+                "Station": [
+                    {
+                        "ObjectID": 100166,
+                        "Code": "100166",
+                        "Name": "Bến xe An Sương",
+                        "FleetOver": "04, 104, 122, 151, 27, 33, 41, 60, 60-1, 61-3, 65, 66, 71, 74, 85",
+                        "Geo": {
+                            "Lng": 106.61337280273,
+                            "Lat": 10.843737602234
+                        }
+                    },
+                    {
+                        "ObjectID": 1002342,
+                        "Code": "1002342",
+                        "Name": "Cầu vượt An Sương",
+                        "FleetOver": "24, 33, 61-3",
+                        "Geo": {
+                            "Lng": 106.61766052246,
+                            "Lat": 10.844568252563
+                        }
+                    },
+                    {
+                        "ObjectID": 1002343,
+                        "Code": "1002343",
+                        "Name": "Bến xe Tây Nam",
+                        "FleetOver": "24, 33, 61-3",
+                        "Geo": {
+                            "Lng": 106.619087,
+                            "Lat": 10.845851
+                        }
+                    },
+                    {
+                        "ObjectID": 1002341,
+                        "Code": "1002341",
+                        "Name": "Trạm đăng kiểm",
+                        "FleetOver": "24, 33, 61-3",
+                        "Geo": {
+                            "Lng": 106.621506,
+                            "Lat": 10.847418
+                        }
+                    },
+                    {
+                        "ObjectID": 1002346,
+                        "Code": "1002346",
+                        "Name": "Thái An",
+                        "FleetOver": "24, 33, 61-3",
+                        "Geo": {
+                            "Lng": 106.623123,
+                            "Lat": 10.848157
+                        }
+                    },
+                    {
+                        "ObjectID": 1002344,
+                        "Code": "1002344",
+                        "Name": "Đài phát thanh Quán Tre",
+                        "FleetOver": "24, 33, 61-3",
+                        "Geo": {
+                            "Lng": 106.625069,
+                            "Lat": 10.849082
+                        }
+                    },
+                    {
+                        "ObjectID": 1002677,
+                        "Code": "1002677",
+                        "Name": "Phan Bội Châu",
+                        "FleetOver": "33, 61-3, 61-8, 62",
+                        "Geo": {
+                            "Lng": 106.632347,
+                            "Lat": 10.852583
+                        }
+                    },
+                    {
+                        "ObjectID": 1002675,
+                        "Code": "1002675",
+                        "Name": "Bác sĩ Liêm",
+                        "FleetOver": "33, 61-3, 61-8, 62",
+                        "Geo": {
+                            "Lng": 106.633719,
+                            "Lat": 10.853322
+                        }
+                    },
+                    {
+                        "ObjectID": 1002676,
+                        "Code": "1002676",
+                        "Name": "Ngã tư Đình",
+                        "FleetOver": "33, 61-3, 61-8, 62",
+                        "Geo": {
+                            "Lng": 106.639832,
+                            "Lat": 10.856667
+                        }
+                    },
+                    {
+                        "ObjectID": 1002678,
+                        "Code": "1002678",
+                        "Name": "Cây xăng Thạnh Xuân",
+                        "FleetOver": "33, 61-3, 61-8, 62",
+                        "Geo": {
+                            "Lng": 106.644233,
+                            "Lat": 10.858953
+                        }
+                    },
+                    {
+                        "ObjectID": 1002680,
+                        "Code": "1002680",
+                        "Name": "Cao su Vina",
+                        "FleetOver": "33, 61-3, 61-8, 62",
+                        "Geo": {
+                            "Lng": 106.647781,
+                            "Lat": 10.86097
+                        }
+                    },
+                    {
+                        "ObjectID": 100932,
+                        "Code": "100932",
+                        "Name": "Ngã tư Tân Thới Hiệp",
+                        "FleetOver": "103, 33, 61-3, 61-8",
+                        "Geo": {
+                            "Lng": 106.651199,
+                            "Lat": 10.861881
+                        }
+                    },
+                    {
+                        "ObjectID": 100935,
+                        "Code": "100935",
+                        "Name": "UBND Quận 12",
+                        "FleetOver": "103, 33, 61-3, 61-8",
+                        "Geo": {
+                            "Lng": 106.654053,
+                            "Lat": 10.861808
+                        }
+                    },
+                    {
+                        "ObjectID": 100933,
+                        "Code": "100933",
+                        "Name": "Bãi xe Tri Ân",
+                        "FleetOver": "103, 33, 61-3, 61-8",
+                        "Geo": {
+                            "Lng": 106.657127,
+                            "Lat": 10.861651
+                        }
+                    },
+                    {
+                        "ObjectID": 100936,
+                        "Code": "100936",
+                        "Name": "Khách sạn Phi Vũ",
+                        "FleetOver": "103, 33, 61-3, 61-8",
+                        "Geo": {
+                            "Lng": 106.662247,
+                            "Lat": 10.861335
+                        }
+                    },
+                    {
+                        "ObjectID": 100942,
+                        "Code": "100942",
+                        "Name": "Gò Sao",
+                        "FleetOver": "103, 33, 61-3, 61-8",
+                        "Geo": {
+                            "Lng": 106.666458,
+                            "Lat": 10.861503
+                        }
+                    },
+                    {
+                        "ObjectID": 100937,
+                        "Code": "100937",
+                        "Name": "Cây xăng Thạnh Xuân",
+                        "FleetOver": "103, 33, 40, 59, 61-3, 61-8",
+                        "Geo": {
+                            "Lng": 106.671882,
+                            "Lat": 10.861577
+                        }
+                    },
+                    {
+                        "ObjectID": 100938,
+                        "Code": "100938",
+                        "Name": "Cầu Cả Bốn",
+                        "FleetOver": "103, 33, 40, 59, 61-3, 61-8",
+                        "Geo": {
+                            "Lng": 106.674446,
+                            "Lat": 10.861619
+                        }
+                    },
+                    {
+                        "ObjectID": 100944,
+                        "Code": "100944",
+                        "Name": "Bến xe Ngã tư Ga",
+                        "FleetOver": "103, 33, 40, 59, 61-3, 61-8",
+                        "Geo": {
+                            "Lng": 106.678078,
+                            "Lat": 10.861472
+                        }
+                    },
+                    {
+                        "ObjectID": 1002356,
+                        "Code": "1002356",
+                        "Name": "Cầu Ga",
+                        "FleetOver": "33, 61-3, 61-8",
+                        "Geo": {
+                            "Lng": 106.68201,
+                            "Lat": 10.861171
+                        }
+                    },
+                    {
+                        "ObjectID": 1002359,
+                        "Code": "1002359",
+                        "Name": "An Phú Đông",
+                        "FleetOver": "33, 61-3, 61-8",
+                        "Geo": {
+                            "Lng": 106.685711,
+                            "Lat": 10.860929
+                        }
+                    },
+                    {
+                        "ObjectID": 1002358,
+                        "Code": "1002358",
+                        "Name": "Công ty Vĩnh Hưng",
+                        "FleetOver": "33, 61-3, 61-8",
+                        "Geo": {
+                            "Lng": 106.689178,
+                            "Lat": 10.86075
+                        }
+                    },
+                    {
+                        "ObjectID": 1002360,
+                        "Code": "1002360",
+                        "Name": "Đài liệt sỹ An Phú Đông",
+                        "FleetOver": "33, 61-3, 61-8",
+                        "Geo": {
+                            "Lng": 106.692331,
+                            "Lat": 10.860386
+                        }
+                    },
+                    {
+                        "ObjectID": 1002361,
+                        "Code": "1002361",
+                        "Name": "Đại Học Nguyễn Tất Thành",
+                        "FleetOver": "33, 61-3, 61-8",
+                        "Geo": {
+                            "Lng": 106.694514,
+                            "Lat": 10.860365
+                        }
+                    },
+                    {
+                        "ObjectID": 1002364,
+                        "Code": "1002364",
+                        "Name": "Công ty đá Ngọc Ngân",
+                        "FleetOver": "33, 61-3, 61-8",
+                        "Geo": {
+                            "Lng": 106.700699,
+                            "Lat": 10.859675
+                        }
+                    },
+                    {
+                        "ObjectID": 1002362,
+                        "Code": "1002362",
+                        "Name": "Cây xăng Petrolimex 12",
+                        "FleetOver": "33, 61-3, 61-8",
+                        "Geo": {
+                            "Lng": 106.706048,
+                            "Lat": 10.859017
+                        }
+                    },
+                    {
+                        "ObjectID": 1002363,
+                        "Code": "1002363",
+                        "Name": "Bãi đậu xe kho hàng",
+                        "FleetOver": "33, 61-3, 61-8",
+                        "Geo": {
+                            "Lng": 106.708912,
+                            "Lat": 10.858616
+                        }
+                    },
+                    {
+                        "ObjectID": 1002368,
+                        "Code": "1002368",
+                        "Name": "Aone",
+                        "FleetOver": "33, 61-3, 61-8",
+                        "Geo": {
+                            "Lng": 106.713504,
+                            "Lat": 10.859659
+                        }
+                    },
+                    {
+                        "ObjectID": 1002365,
+                        "Code": "1002365",
+                        "Name": "Ngã 4 Bình Phước",
+                        "FleetOver": "33, 61-3, 61-8",
+                        "Geo": {
+                            "Lng": 106.720451,
+                            "Lat": 10.863315
+                        }
+                    },
+                    {
+                        "ObjectID": 100315,
+                        "Code": "100315",
+                        "Name": "Chợ Đầu Mối",
+                        "FleetOver": "05, 19, 29, 33, 42, 89",
+                        "Geo": {
+                            "Lng": 106.727425,
+                            "Lat": 10.86689
+                        }
+                    },
+                    {
+                        "ObjectID": 100320,
+                        "Code": "100320",
+                        "Name": "Chợ Đầu Mối",
+                        "FleetOver": "05, 19, 29, 33, 42, 89",
+                        "Geo": {
+                            "Lng": 106.730198,
+                            "Lat": 10.86831
+                        }
+                    },
+                    {
+                        "ObjectID": 100317,
+                        "Code": "100317",
+                        "Name": "Chợ Tam Bình",
+                        "FleetOver": "05, 19, 33",
+                        "Geo": {
+                            "Lng": 106.73538,
+                            "Lat": 10.87086
+                        }
+                    },
+                    {
+                        "ObjectID": 100322,
+                        "Code": "100322",
+                        "Name": "Hồ Bơi",
+                        "FleetOver": "05, 19, 33",
+                        "Geo": {
+                            "Lng": 106.739666,
+                            "Lat": 10.871766
+                        }
+                    },
+                    {
+                        "ObjectID": 100319,
+                        "Code": "100319",
+                        "Name": "Chợ Tam Hải",
+                        "FleetOver": "05, 19, 33",
+                        "Geo": {
+                            "Lng": 106.744081,
+                            "Lat": 10.872935
+                        }
+                    },
+                    {
+                        "ObjectID": 100321,
+                        "Code": "100321",
+                        "Name": "Cầu vượt Sóng Thần",
+                        "FleetOver": "05, 19, 33",
+                        "Geo": {
+                            "Lng": 106.747128,
+                            "Lat": 10.873905
+                        }
+                    },
+                    {
+                        "ObjectID": 100323,
+                        "Code": "100323",
+                        "Name": "Bến xe Lam Hồng",
+                        "FleetOver": "05, 19, 33",
+                        "Geo": {
+                            "Lng": 106.75562,
+                            "Lat": 10.875706
+                        }
+                    },
+                    {
+                        "ObjectID": 100325,
+                        "Code": "100325",
+                        "Name": "Giày da Thái Bình",
+                        "FleetOver": "05, 19, 33",
+                        "Geo": {
+                            "Lng": 106.757466,
+                            "Lat": 10.875353
+                        }
+                    },
+                    {
+                        "ObjectID": 100328,
+                        "Code": "100328",
+                        "Name": "Linh Xuân",
+                        "FleetOver": "05, 19, 33",
+                        "Geo": {
+                            "Lng": 106.76091,
+                            "Lat": 10.874474
+                        }
+                    },
+                    {
+                        "ObjectID": 100324,
+                        "Code": "100324",
+                        "Name": "Cầu vượt Linh Xuân",
+                        "FleetOver": "05, 19, 33",
+                        "Geo": {
+                            "Lng": 106.762476,
+                            "Lat": 10.873973
+                        }
+                    },
+                    {
+                        "ObjectID": 1002083,
+                        "Code": "1002083",
+                        "Name": "Vietcombank",
+                        "FleetOver": "19, 33, 50, 53, 93",
+                        "Geo": {
+                            "Lng": 106.769643,
+                            "Lat": 10.871597
+                        }
+                    },
+                    {
+                        "ObjectID": 1002084,
+                        "Code": "1002084",
+                        "Name": "Nghĩa trang TP",
+                        "FleetOver": "19, 33, 50, 93",
+                        "Geo": {
+                            "Lng": 106.773039,
+                            "Lat": 10.870507
+                        }
+                    },
+                    {
+                        "ObjectID": 1001040,
+                        "Code": "1001040",
+                        "Name": "ĐH Kinh tế Luật",
+                        "FleetOver": "104, 19, 33, 50, 93",
+                        "Geo": {
+                            "Lng": 106.776724,
+                            "Lat": 10.869306
+                        }
+                    },
+                    {
+                        "ObjectID": 1001041,
+                        "Code": "1001041",
+                        "Name": "Công ty điện tử Samsung",
+                        "FleetOver": "104, 19, 33, 50, 93",
+                        "Geo": {
+                            "Lng": 106.778656,
+                            "Lat": 10.868691
+                        }
+                    },
+                    {
+                        "ObjectID": 1001042,
+                        "Code": "1001042",
+                        "Name": "ĐH Nông Lâm",
+                        "FleetOver": "104, 19, 33, 50, 93",
+                        "Geo": {
+                            "Lng": 106.787277,
+                            "Lat": 10.867122
+                        }
+                    },
+                    {
+                        "ObjectID": 100396,
+                        "Code": "100396",
+                        "Name": "ĐH Nông Lâm",
+                        "FleetOver": "06, 19, 33, 50",
+                        "Geo": {
+                            "Lng": 106.790283,
+                            "Lat": 10.866912
+                        }
+                    },
+                    {
+                        "ObjectID": 1004112,
+                        "Code": "1004112",
+                        "Name": "Bến Xe Buýt ÐH Quốc Gia",
+                        "FleetOver": "33, 53, 99",
+                        "Geo": {
+                            "Lng": 106.77871704102,
+                            "Lat": 10.884156227112
+                        }
+                    }
+                ]
+            },
+            "Re": {
+                "Anomaly": 0,
+                "Route": "Bến Xe Buýt ÐH Quốc Gia - ĐH Nông Lâm - ĐH Nông Lâm - Công ty điện tử Samsung - ĐH Kinh tế Luật - Nghĩa trang TP - Vietcombank - Cầu vượt Linh Xuân - Linh Xuân - Giày da Thái Bình - Bến xe Lam Hồng - Cầu vượt Sóng Thần - Chợ Tam Hải - Hồ Bơi - Chợ Tam Bình - Chợ Đầu Mối - Chợ Đầu Mối - Ngã 4 Bình Phước - Aone - Bãi đậu xe kho hàng - Cây xăng Petrolimex 12 - Công ty đá Ngọc Ngân - Đại Học Nguyễn Tất Thành - Đài liệt sỹ An Phú Đông - Công ty Vĩnh Hưng - An Phú Đông - Cầu Ga - Bến xe Ngã tư Ga - Cầu Cả Bốn - Cây xăng Thạnh Xuân - Gò Sao - Khách sạn Phi Vũ - Bãi xe Tri Ân - UBND Quận 12 - Ngã tư Tân Thới Hiệp - Cao su Vina - Cây xăng Thạnh Xuân - Ngã tư Đình - Bác sĩ Liêm - Phan Bội Châu - Đài phát thanh Quán Tre - Thái An - Trạm đăng kiểm - Bến xe Tây Nam - Cầu vượt An Sương - Bến xe An Sương",
+                "Geo": [
+                    {
+                        "Lng": 106.77871704102,
+                        "Lat": 10.884156227112
+                    },
+                    {
+                        "Lng": 106.790283,
+                        "Lat": 10.866912
+                    },
+                    {
+                        "Lng": 106.787277,
+                        "Lat": 10.867122
+                    },
+                    {
+                        "Lng": 106.778656,
+                        "Lat": 10.868691
+                    },
+                    {
+                        "Lng": 106.776724,
+                        "Lat": 10.869306
+                    },
+                    {
+                        "Lng": 106.773039,
+                        "Lat": 10.870507
+                    },
+                    {
+                        "Lng": 106.769643,
+                        "Lat": 10.871597
+                    },
+                    {
+                        "Lng": 106.762476,
+                        "Lat": 10.873973
+                    },
+                    {
+                        "Lng": 106.76091,
+                        "Lat": 10.874474
+                    },
+                    {
+                        "Lng": 106.757466,
+                        "Lat": 10.875353
+                    },
+                    {
+                        "Lng": 106.75562,
+                        "Lat": 10.875706
+                    },
+                    {
+                        "Lng": 106.747128,
+                        "Lat": 10.873905
+                    },
+                    {
+                        "Lng": 106.744081,
+                        "Lat": 10.872935
+                    },
+                    {
+                        "Lng": 106.739666,
+                        "Lat": 10.871766
+                    },
+                    {
+                        "Lng": 106.73538,
+                        "Lat": 10.87086
+                    },
+                    {
+                        "Lng": 106.730198,
+                        "Lat": 10.86831
+                    },
+                    {
+                        "Lng": 106.727425,
+                        "Lat": 10.86689
+                    },
+                    {
+                        "Lng": 106.720451,
+                        "Lat": 10.863315
+                    },
+                    {
+                        "Lng": 106.713504,
+                        "Lat": 10.859659
+                    },
+                    {
+                        "Lng": 106.708912,
+                        "Lat": 10.858616
+                    },
+                    {
+                        "Lng": 106.706048,
+                        "Lat": 10.859017
+                    },
+                    {
+                        "Lng": 106.700699,
+                        "Lat": 10.859675
+                    },
+                    {
+                        "Lng": 106.694514,
+                        "Lat": 10.860365
+                    },
+                    {
+                        "Lng": 106.692331,
+                        "Lat": 10.860386
+                    },
+                    {
+                        "Lng": 106.689178,
+                        "Lat": 10.86075
+                    },
+                    {
+                        "Lng": 106.685711,
+                        "Lat": 10.860929
+                    },
+                    {
+                        "Lng": 106.68201,
+                        "Lat": 10.861171
+                    },
+                    {
+                        "Lng": 106.678078,
+                        "Lat": 10.861472
+                    },
+                    {
+                        "Lng": 106.674446,
+                        "Lat": 10.861619
+                    },
+                    {
+                        "Lng": 106.671882,
+                        "Lat": 10.861577
+                    },
+                    {
+                        "Lng": 106.666458,
+                        "Lat": 10.861503
+                    },
+                    {
+                        "Lng": 106.662247,
+                        "Lat": 10.861335
+                    },
+                    {
+                        "Lng": 106.657127,
+                        "Lat": 10.861651
+                    },
+                    {
+                        "Lng": 106.654053,
+                        "Lat": 10.861808
+                    },
+                    {
+                        "Lng": 106.651199,
+                        "Lat": 10.861881
+                    },
+                    {
+                        "Lng": 106.647781,
+                        "Lat": 10.86097
+                    },
+                    {
+                        "Lng": 106.644233,
+                        "Lat": 10.858953
+                    },
+                    {
+                        "Lng": 106.639832,
+                        "Lat": 10.856667
+                    },
+                    {
+                        "Lng": 106.633719,
+                        "Lat": 10.853322
+                    },
+                    {
+                        "Lng": 106.632347,
+                        "Lat": 10.852583
+                    },
+                    {
+                        "Lng": 106.625069,
+                        "Lat": 10.849082
+                    },
+                    {
+                        "Lng": 106.623123,
+                        "Lat": 10.848157
+                    },
+                    {
+                        "Lng": 106.621506,
+                        "Lat": 10.847418
+                    },
+                    {
+                        "Lng": 106.619087,
+                        "Lat": 10.845851
+                    },
+                    {
+                        "Lng": 106.61766052246,
+                        "Lat": 10.844568252563
+                    },
+                    {
+                        "Lng": 106.61337280273,
+                        "Lat": 10.843737602234
+                    }
+                ],
+                "Station": [
+                    {
+                        "ObjectID": 1004112,
+                        "Code": "1004112",
+                        "Name": "Bến Xe Buýt ÐH Quốc Gia",
+                        "FleetOver": "33, 53, 99",
+                        "Geo": {
+                            "Lng": 106.77871704102,
+                            "Lat": 10.884156227112
+                        }
+                    },
+                    {
+                        "ObjectID": 100396,
+                        "Code": "100396",
+                        "Name": "ĐH Nông Lâm",
+                        "FleetOver": "06, 19, 33, 50",
+                        "Geo": {
+                            "Lng": 106.790283,
+                            "Lat": 10.866912
+                        }
+                    },
+                    {
+                        "ObjectID": 1001042,
+                        "Code": "1001042",
+                        "Name": "ĐH Nông Lâm",
+                        "FleetOver": "104, 19, 33, 50, 93",
+                        "Geo": {
+                            "Lng": 106.787277,
+                            "Lat": 10.867122
+                        }
+                    },
+                    {
+                        "ObjectID": 1001041,
+                        "Code": "1001041",
+                        "Name": "Công ty điện tử Samsung",
+                        "FleetOver": "104, 19, 33, 50, 93",
+                        "Geo": {
+                            "Lng": 106.778656,
+                            "Lat": 10.868691
+                        }
+                    },
+                    {
+                        "ObjectID": 1001040,
+                        "Code": "1001040",
+                        "Name": "ĐH Kinh tế Luật",
+                        "FleetOver": "104, 19, 33, 50, 93",
+                        "Geo": {
+                            "Lng": 106.776724,
+                            "Lat": 10.869306
+                        }
+                    },
+                    {
+                        "ObjectID": 1002084,
+                        "Code": "1002084",
+                        "Name": "Nghĩa trang TP",
+                        "FleetOver": "19, 33, 50, 93",
+                        "Geo": {
+                            "Lng": 106.773039,
+                            "Lat": 10.870507
+                        }
+                    },
+                    {
+                        "ObjectID": 1002083,
+                        "Code": "1002083",
+                        "Name": "Vietcombank",
+                        "FleetOver": "19, 33, 50, 53, 93",
+                        "Geo": {
+                            "Lng": 106.769643,
+                            "Lat": 10.871597
+                        }
+                    },
+                    {
+                        "ObjectID": 100324,
+                        "Code": "100324",
+                        "Name": "Cầu vượt Linh Xuân",
+                        "FleetOver": "05, 19, 33",
+                        "Geo": {
+                            "Lng": 106.762476,
+                            "Lat": 10.873973
+                        }
+                    },
+                    {
+                        "ObjectID": 100328,
+                        "Code": "100328",
+                        "Name": "Linh Xuân",
+                        "FleetOver": "05, 19, 33",
+                        "Geo": {
+                            "Lng": 106.76091,
+                            "Lat": 10.874474
+                        }
+                    },
+                    {
+                        "ObjectID": 100325,
+                        "Code": "100325",
+                        "Name": "Giày da Thái Bình",
+                        "FleetOver": "05, 19, 33",
+                        "Geo": {
+                            "Lng": 106.757466,
+                            "Lat": 10.875353
+                        }
+                    },
+                    {
+                        "ObjectID": 100323,
+                        "Code": "100323",
+                        "Name": "Bến xe Lam Hồng",
+                        "FleetOver": "05, 19, 33",
+                        "Geo": {
+                            "Lng": 106.75562,
+                            "Lat": 10.875706
+                        }
+                    },
+                    {
+                        "ObjectID": 100321,
+                        "Code": "100321",
+                        "Name": "Cầu vượt Sóng Thần",
+                        "FleetOver": "05, 19, 33",
+                        "Geo": {
+                            "Lng": 106.747128,
+                            "Lat": 10.873905
+                        }
+                    },
+                    {
+                        "ObjectID": 100319,
+                        "Code": "100319",
+                        "Name": "Chợ Tam Hải",
+                        "FleetOver": "05, 19, 33",
+                        "Geo": {
+                            "Lng": 106.744081,
+                            "Lat": 10.872935
+                        }
+                    },
+                    {
+                        "ObjectID": 100322,
+                        "Code": "100322",
+                        "Name": "Hồ Bơi",
+                        "FleetOver": "05, 19, 33",
+                        "Geo": {
+                            "Lng": 106.739666,
+                            "Lat": 10.871766
+                        }
+                    },
+                    {
+                        "ObjectID": 100317,
+                        "Code": "100317",
+                        "Name": "Chợ Tam Bình",
+                        "FleetOver": "05, 19, 33",
+                        "Geo": {
+                            "Lng": 106.73538,
+                            "Lat": 10.87086
+                        }
+                    },
+                    {
+                        "ObjectID": 100320,
+                        "Code": "100320",
+                        "Name": "Chợ Đầu Mối",
+                        "FleetOver": "05, 19, 29, 33, 42, 89",
+                        "Geo": {
+                            "Lng": 106.730198,
+                            "Lat": 10.86831
+                        }
+                    },
+                    {
+                        "ObjectID": 100315,
+                        "Code": "100315",
+                        "Name": "Chợ Đầu Mối",
+                        "FleetOver": "05, 19, 29, 33, 42, 89",
+                        "Geo": {
+                            "Lng": 106.727425,
+                            "Lat": 10.86689
+                        }
+                    },
+                    {
+                        "ObjectID": 1002365,
+                        "Code": "1002365",
+                        "Name": "Ngã 4 Bình Phước",
+                        "FleetOver": "33, 61-3, 61-8",
+                        "Geo": {
+                            "Lng": 106.720451,
+                            "Lat": 10.863315
+                        }
+                    },
+                    {
+                        "ObjectID": 1002368,
+                        "Code": "1002368",
+                        "Name": "Aone",
+                        "FleetOver": "33, 61-3, 61-8",
+                        "Geo": {
+                            "Lng": 106.713504,
+                            "Lat": 10.859659
+                        }
+                    },
+                    {
+                        "ObjectID": 1002363,
+                        "Code": "1002363",
+                        "Name": "Bãi đậu xe kho hàng",
+                        "FleetOver": "33, 61-3, 61-8",
+                        "Geo": {
+                            "Lng": 106.708912,
+                            "Lat": 10.858616
+                        }
+                    },
+                    {
+                        "ObjectID": 1002362,
+                        "Code": "1002362",
+                        "Name": "Cây xăng Petrolimex 12",
+                        "FleetOver": "33, 61-3, 61-8",
+                        "Geo": {
+                            "Lng": 106.706048,
+                            "Lat": 10.859017
+                        }
+                    },
+                    {
+                        "ObjectID": 1002364,
+                        "Code": "1002364",
+                        "Name": "Công ty đá Ngọc Ngân",
+                        "FleetOver": "33, 61-3, 61-8",
+                        "Geo": {
+                            "Lng": 106.700699,
+                            "Lat": 10.859675
+                        }
+                    },
+                    {
+                        "ObjectID": 1002361,
+                        "Code": "1002361",
+                        "Name": "Đại Học Nguyễn Tất Thành",
+                        "FleetOver": "33, 61-3, 61-8",
+                        "Geo": {
+                            "Lng": 106.694514,
+                            "Lat": 10.860365
+                        }
+                    },
+                    {
+                        "ObjectID": 1002360,
+                        "Code": "1002360",
+                        "Name": "Đài liệt sỹ An Phú Đông",
+                        "FleetOver": "33, 61-3, 61-8",
+                        "Geo": {
+                            "Lng": 106.692331,
+                            "Lat": 10.860386
+                        }
+                    },
+                    {
+                        "ObjectID": 1002358,
+                        "Code": "1002358",
+                        "Name": "Công ty Vĩnh Hưng",
+                        "FleetOver": "33, 61-3, 61-8",
+                        "Geo": {
+                            "Lng": 106.689178,
+                            "Lat": 10.86075
+                        }
+                    },
+                    {
+                        "ObjectID": 1002359,
+                        "Code": "1002359",
+                        "Name": "An Phú Đông",
+                        "FleetOver": "33, 61-3, 61-8",
+                        "Geo": {
+                            "Lng": 106.685711,
+                            "Lat": 10.860929
+                        }
+                    },
+                    {
+                        "ObjectID": 1002356,
+                        "Code": "1002356",
+                        "Name": "Cầu Ga",
+                        "FleetOver": "33, 61-3, 61-8",
+                        "Geo": {
+                            "Lng": 106.68201,
+                            "Lat": 10.861171
+                        }
+                    },
+                    {
+                        "ObjectID": 100944,
+                        "Code": "100944",
+                        "Name": "Bến xe Ngã tư Ga",
+                        "FleetOver": "103, 33, 40, 59, 61-3, 61-8",
+                        "Geo": {
+                            "Lng": 106.678078,
+                            "Lat": 10.861472
+                        }
+                    },
+                    {
+                        "ObjectID": 100938,
+                        "Code": "100938",
+                        "Name": "Cầu Cả Bốn",
+                        "FleetOver": "103, 33, 40, 59, 61-3, 61-8",
+                        "Geo": {
+                            "Lng": 106.674446,
+                            "Lat": 10.861619
+                        }
+                    },
+                    {
+                        "ObjectID": 100937,
+                        "Code": "100937",
+                        "Name": "Cây xăng Thạnh Xuân",
+                        "FleetOver": "103, 33, 40, 59, 61-3, 61-8",
+                        "Geo": {
+                            "Lng": 106.671882,
+                            "Lat": 10.861577
+                        }
+                    },
+                    {
+                        "ObjectID": 100942,
+                        "Code": "100942",
+                        "Name": "Gò Sao",
+                        "FleetOver": "103, 33, 61-3, 61-8",
+                        "Geo": {
+                            "Lng": 106.666458,
+                            "Lat": 10.861503
+                        }
+                    },
+                    {
+                        "ObjectID": 100936,
+                        "Code": "100936",
+                        "Name": "Khách sạn Phi Vũ",
+                        "FleetOver": "103, 33, 61-3, 61-8",
+                        "Geo": {
+                            "Lng": 106.662247,
+                            "Lat": 10.861335
+                        }
+                    },
+                    {
+                        "ObjectID": 100933,
+                        "Code": "100933",
+                        "Name": "Bãi xe Tri Ân",
+                        "FleetOver": "103, 33, 61-3, 61-8",
+                        "Geo": {
+                            "Lng": 106.657127,
+                            "Lat": 10.861651
+                        }
+                    },
+                    {
+                        "ObjectID": 100935,
+                        "Code": "100935",
+                        "Name": "UBND Quận 12",
+                        "FleetOver": "103, 33, 61-3, 61-8",
+                        "Geo": {
+                            "Lng": 106.654053,
+                            "Lat": 10.861808
+                        }
+                    },
+                    {
+                        "ObjectID": 100932,
+                        "Code": "100932",
+                        "Name": "Ngã tư Tân Thới Hiệp",
+                        "FleetOver": "103, 33, 61-3, 61-8",
+                        "Geo": {
+                            "Lng": 106.651199,
+                            "Lat": 10.861881
+                        }
+                    },
+                    {
+                        "ObjectID": 1002680,
+                        "Code": "1002680",
+                        "Name": "Cao su Vina",
+                        "FleetOver": "33, 61-3, 61-8, 62",
+                        "Geo": {
+                            "Lng": 106.647781,
+                            "Lat": 10.86097
+                        }
+                    },
+                    {
+                        "ObjectID": 1002678,
+                        "Code": "1002678",
+                        "Name": "Cây xăng Thạnh Xuân",
+                        "FleetOver": "33, 61-3, 61-8, 62",
+                        "Geo": {
+                            "Lng": 106.644233,
+                            "Lat": 10.858953
+                        }
+                    },
+                    {
+                        "ObjectID": 1002676,
+                        "Code": "1002676",
+                        "Name": "Ngã tư Đình",
+                        "FleetOver": "33, 61-3, 61-8, 62",
+                        "Geo": {
+                            "Lng": 106.639832,
+                            "Lat": 10.856667
+                        }
+                    },
+                    {
+                        "ObjectID": 1002675,
+                        "Code": "1002675",
+                        "Name": "Bác sĩ Liêm",
+                        "FleetOver": "33, 61-3, 61-8, 62",
+                        "Geo": {
+                            "Lng": 106.633719,
+                            "Lat": 10.853322
+                        }
+                    },
+                    {
+                        "ObjectID": 1002677,
+                        "Code": "1002677",
+                        "Name": "Phan Bội Châu",
+                        "FleetOver": "33, 61-3, 61-8, 62",
+                        "Geo": {
+                            "Lng": 106.632347,
+                            "Lat": 10.852583
+                        }
+                    },
+                    {
+                        "ObjectID": 1002344,
+                        "Code": "1002344",
+                        "Name": "Đài phát thanh Quán Tre",
+                        "FleetOver": "24, 33, 61-3",
+                        "Geo": {
+                            "Lng": 106.625069,
+                            "Lat": 10.849082
+                        }
+                    },
+                    {
+                        "ObjectID": 1002346,
+                        "Code": "1002346",
+                        "Name": "Thái An",
+                        "FleetOver": "24, 33, 61-3",
+                        "Geo": {
+                            "Lng": 106.623123,
+                            "Lat": 10.848157
+                        }
+                    },
+                    {
+                        "ObjectID": 1002341,
+                        "Code": "1002341",
+                        "Name": "Trạm đăng kiểm",
+                        "FleetOver": "24, 33, 61-3",
+                        "Geo": {
+                            "Lng": 106.621506,
+                            "Lat": 10.847418
+                        }
+                    },
+                    {
+                        "ObjectID": 1002343,
+                        "Code": "1002343",
+                        "Name": "Bến xe Tây Nam",
+                        "FleetOver": "24, 33, 61-3",
+                        "Geo": {
+                            "Lng": 106.619087,
+                            "Lat": 10.845851
+                        }
+                    },
+                    {
+                        "ObjectID": 1002342,
+                        "Code": "1002342",
+                        "Name": "Cầu vượt An Sương",
+                        "FleetOver": "24, 33, 61-3",
+                        "Geo": {
+                            "Lng": 106.61766052246,
+                            "Lat": 10.844568252563
+                        }
+                    },
+                    {
+                        "ObjectID": 100166,
+                        "Code": "100166",
+                        "Name": "Bến xe An Sương",
+                        "FleetOver": "04, 104, 122, 151, 27, 33, 41, 60, 60-1, 61-3, 65, 66, 71, 74, 85",
+                        "Geo": {
+                            "Lng": 106.61337280273,
+                            "Lat": 10.843737602234
+                        }
+                    }
+                ]
+            }
         }
     ],
     "msg": "Construct"
